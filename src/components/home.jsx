@@ -1,30 +1,24 @@
 import React, { Component } from "react";
-import { io } from "socket.io-client";
 
 class HomePage extends Component {
-  socket;
   state = {
     modalActive: false,
     hostActive: false,
     joinActive: false,
+    roomName: null,
+    playerName: null,
   };
 
   constructor(props) {
     super(props);
-    // Set connection
-    this.socket = io("http://localhost:5000");
-    // IO handler
-    this.socket.on("hostReady", (data) => {
-      console.log(data);
-    });
-    this.socket.on("newJoin", (playerName) => {
-      console.log(playerName);
-    });
     // Binds
     this.handleHostClick = this.handleHostClick.bind(this);
     this.handleHostEnter = this.handleHostEnter.bind(this);
     this.handleJoinClick = this.handleJoinClick.bind(this);
+    this.handleJoinEnter = this.handleJoinEnter.bind(this);
     this.handleModalClick = this.handleModalClick.bind(this);
+    this.handlePlayerName = this.handlePlayerName.bind(this);
+    this.handleRoomName = this.handleRoomName.bind(this);
   }
 
   getModalClass() {
@@ -41,7 +35,11 @@ class HomePage extends Component {
         <div>
           <div className="field">
             <p className="control has-icons-left has-icons-right">
-              <input className="input" placeholder="Name" />
+              <input
+                className="input"
+                placeholder="Player Name"
+                onChange={this.handlePlayerName}
+              />
               <span className="icon is-small is-left">
                 <i className="fas fa-signature"></i>
               </span>
@@ -62,7 +60,11 @@ class HomePage extends Component {
         <div>
           <div className="field">
             <p className="control has-icons-left has-icons-right">
-              <input className="input" placeholder="Name" />
+              <input
+                className="input"
+                placeholder="player Name"
+                onChange={this.handlePlayerName}
+              />
               <span className="icon is-small is-left">
                 <i className="fas fa-signature"></i>
               </span>
@@ -73,7 +75,11 @@ class HomePage extends Component {
           </div>
           <div className="field">
             <p className="control has-icons-left has-icons-right">
-              <input className="input" placeholder="Room Name" />
+              <input
+                className="input"
+                placeholder="Room Name"
+                onChange={this.handleRoomName}
+              />
               <span className="icon is-small is-left">
                 <i className="fab fa-chromecast"></i>
               </span>
@@ -92,12 +98,22 @@ class HomePage extends Component {
     }
   }
 
+  handlePlayerName(event) {
+    this.setState({ playerName: event.target.value });
+  }
+
+  handleRoomName(event) {
+    this.setState({ roomName: event.target.value });
+  }
+
   handleHostClick() {
     this.handleModalClick();
     this.setState({ hostActive: true });
   }
 
   handleHostEnter() {
+    sessionStorage.setItem("entryType", "host");
+    sessionStorage.setItem("playerName", this.state.playerName);
     window.location.href = "/room";
   }
 
@@ -107,6 +123,9 @@ class HomePage extends Component {
   }
 
   handleJoinEnter() {
+    sessionStorage.setItem("entryType", "join");
+    sessionStorage.setItem("playerName", this.state.playerName);
+    sessionStorage.setItem("roomName", this.state.roomName);
     window.location.href = "/room";
   }
 
