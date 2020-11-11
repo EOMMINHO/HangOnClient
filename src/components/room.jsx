@@ -7,6 +7,9 @@ class Room extends Component {
     playerName: "",
     roomName: "",
     participants: null,
+    clinked: false,
+    clinkInProgress: false,
+    attentionInProgress: false,
   };
 
   constructor() {
@@ -29,6 +32,24 @@ class Room extends Component {
     this.socket.on("disconnectResponse", (participants) => {
       this.setState({ participants: participants });
     });
+    this.socket.on("clinkResponse", (isSuccess, playerName) => {
+      if (isSuccess) {
+        this.setState({ clinkInProgress: true });
+        console.log(`${playerName} has requested to clink`);
+      }
+    });
+    this.socket.on("clinkAgreeResponse", (playerName) => {
+      this.setState({ clinkInProgress: false, clinked: false });
+      console.log(`${playerName} has agreed to clink`);
+    });
+    this.socket.on("attentionResponse", (isSuccess, participants) => {
+      if (isSuccess) {
+        this.setState({ participants: participants });
+      }
+    });
+    this.socket.on("attentionAgreeResponse", (participants) => {
+      this.setState({ participants: participants });
+    });
     // Initialize room
     let entryType = sessionStorage.getItem("entryType");
     let playerName = sessionStorage.getItem("playerName");
@@ -40,14 +61,82 @@ class Room extends Component {
       this.state.roomName = roomName;
       this.socket.emit("join", playerName, roomName);
     }
+    // binding
+    this.handleClink = this.handleClink.bind(this);
+    this.handleClinkAgree = this.handleClinkAgree.bind(this);
+    this.handleAttention = this.handleAttention.bind(this);
+    this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
+  }
+
+  handleClink() {
+    this.setState({ clinked: true });
+    this.socket.emit("clink", this.state.playerName, this.state.roomName);
+  }
+
+  handleClinkAgree() {
+    this.socket.emit("clinkAgree", this.state.playerName, this.state.roomName);
+  }
+
+  handleAttention() {
+    this.setState({ attentionInProgress: true });
+    this.socket.emit("attention", this.state.playerName, this.state.roomName);
+  }
+
+  handleAttentionAgree() {
+    this.socket.emit(
+      "attentionAgree",
+      this.state.playerName,
+      this.state.roomName
+    );
+  }
+
+  getClinkClass() {
+    if (this.state.clinkInProgress) {
+      return "button is-loading";
+    } else {
+      return "button";
+    }
+  }
+
+  getClinkAgreeClass() {
+    if (this.state.clinkInProgress && !this.state.clinked) {
+      return "button";
+    } else {
+      return "button is-static";
+    }
   }
 
   render() {
     return (
-      <div className="container">
-        <h1>Room Name : {this.state.roomName}</h1>
-        <h1>Player Name : {this.state.playerName}</h1>
-        <h1>Participants: {JSON.stringify(this.state.participants)}</h1>
+      <div className="container my-6">
+        <h1 className="has-text-centered">Room Name : {this.state.roomName}</h1>
+        <h1 className="has-text-centered">
+          Player Name : {this.state.playerName}
+        </h1>
+        <h1 className="has-text-centered">
+          Participants: {JSON.stringify(this.state.participants)}
+        </h1>
+        <div className="has-text-centered mt-6">
+          <button className={this.getClinkClass()} onClick={this.handleClink}>
+            Clink
+          </button>
+          <button
+            className={this.getClinkAgreeClass()}
+            onClick={this.handleClinkAgree}
+          >
+            Clink Agree
+          </button>
+        </div>
+        <div className="has-text-centered mt-2">
+          <button className="button" onClick={this.handleAttention}>
+            Attention
+          </button>
+        </div>
+        <div className="has-text-centered mt-2">
+          <button className="button" onClick={this.handleAttentionAgree}>
+            Attention Agree
+          </button>
+        </div>
       </div>
     );
   }
