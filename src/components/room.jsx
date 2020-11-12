@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
+const Util = require("../utils/utils");
+const delay = require("delay");
 
 class Room extends Component {
   socket;
+  noob = true; // noob need to send initiator to old users (RTC).
+  peers = {};
   state = {
     playerName: "",
     roomName: "",
@@ -15,22 +19,44 @@ class Room extends Component {
   constructor() {
     super();
     // Set connection
-    this.socket = io("http://localhost:5000");
+    this.socket = io("http://192.168.0.15:5000");
     // IO handler
     this.socket.on("hostResponse", (roomName, participants) => {
       this.setState({ roomName: roomName });
       this.setState({ participants: participants });
+      this.noob = false;
     });
     this.socket.on("joinResponse", (isSuccess, participants) => {
       if (isSuccess) {
         this.setState({ participants: participants });
+        // send initiator
+        if (this.noob) {
+          Util.makeNewPeers(
+            this.socket,
+            this.state.roomName,
+            this.peers,
+            participants,
+            this.state.playerName
+          );
+        } else {
+          Util.makeNewPeer(
+            this.socket,
+            this.state.roomName,
+            this.peers,
+            participants,
+            this.state.playerName
+          );
+        }
+        this.noob = false;
       } else {
         alert("There is no such room");
         window.location.href = "/";
       }
     });
-    this.socket.on("disconnectResponse", (participants) => {
+    this.socket.on("disconnectResponse", (participants, userName) => {
       this.setState({ participants: participants });
+      Util.disconnectPeer(this.peers, userName);
+      console.log(this.peers);
     });
     this.socket.on("clinkResponse", (isSuccess, playerName) => {
       if (isSuccess) {
@@ -49,6 +75,17 @@ class Room extends Component {
     });
     this.socket.on("attentionAgreeResponse", (participants) => {
       this.setState({ participants: participants });
+    });
+    // P2P for video conference
+    this.localVideoRef = React.createRef();
+    this.socket.on("RTC_answer", async (offerer, receiver, data) => {
+      // if receiver is me, signal it to offerer.
+      if (receiver === this.state.playerName) {
+        while (!Object.keys(this.peers).includes(offerer)) {
+          await delay(100);
+        }
+        this.peers[offerer].signal(data);
+      }
     });
     // Initialize room
     let entryType = sessionStorage.getItem("entryType");
@@ -136,6 +173,15 @@ class Room extends Component {
           <button className="button" onClick={this.handleAttentionAgree}>
             Attention Agree
           </button>
+        </div>
+        <div>
+          <video
+            id="local-video"
+            ref={this.localVideoRef}
+            autoPlay
+            muted
+          ></video>
+          <video id="received-video" autoPlay></video>
         </div>
       </div>
     );
