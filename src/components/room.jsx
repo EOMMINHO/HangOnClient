@@ -7,17 +7,29 @@ class Room extends Component {
   socket;
   noob = true; // noob need to send initiator to old users (RTC).
   peers = {};
+  videoRefs = {};
   state = {
     playerName: "",
     roomName: "",
-    participants: null,
+    participants: {},
     clinked: false,
     clinkInProgress: false,
     attentionInProgress: false,
+    videoOn: false,
+    videoAvailable: false,
   };
 
   constructor() {
     super();
+    // set reference to local video
+    this.localVideoRef = React.createRef();
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      let types = devices.map((x) => x.kind);
+      if (types.includes("videoinput") && types.includes("audioinput")) {
+        this.state.videoAvailable = true;
+      }
+    });
+
     // Set connection
     this.socket = io("http://192.168.0.15:5000");
     // IO handler
@@ -28,7 +40,6 @@ class Room extends Component {
     });
     this.socket.on("joinResponse", (isSuccess, participants) => {
       if (isSuccess) {
-        this.setState({ participants: participants });
         // send initiator
         if (this.noob) {
           Util.makeNewPeers(
@@ -36,7 +47,8 @@ class Room extends Component {
             this.state.roomName,
             this.peers,
             participants,
-            this.state.playerName
+            this.state.playerName,
+            this.videoRefs
           );
         } else {
           Util.makeNewPeer(
@@ -44,10 +56,12 @@ class Room extends Component {
             this.state.roomName,
             this.peers,
             participants,
-            this.state.playerName
+            this.state.playerName,
+            this.videoRefs
           );
         }
         this.noob = false;
+        this.setState({ participants: participants });
       } else {
         alert("There is no such room");
         window.location.href = "/";
@@ -77,7 +91,6 @@ class Room extends Component {
       this.setState({ participants: participants });
     });
     // P2P for video conference
-    this.localVideoRef = React.createRef();
     this.socket.on("RTC_answer", async (offerer, receiver, data) => {
       // if receiver is me, signal it to offerer.
       if (receiver === this.state.playerName) {
@@ -103,6 +116,7 @@ class Room extends Component {
     this.handleClinkAgree = this.handleClinkAgree.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
     this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
+    this.handleVideo = this.handleVideo.bind(this);
   }
 
   handleClink() {
@@ -127,6 +141,17 @@ class Room extends Component {
     );
   }
 
+  async handleVideo() {
+    let stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    this.localVideoRef.current.srcObject = stream;
+    Object.values(this.peers).forEach((p) => {
+      p.addStream(stream);
+    });
+  }
+
   getClinkClass() {
     if (this.state.clinkInProgress) {
       return "button is-loading";
@@ -141,6 +166,32 @@ class Room extends Component {
     } else {
       return "button is-static";
     }
+  }
+
+  getVideoButtonClass() {
+    if (this.state.videoAvailable) {
+      return "button";
+    } else {
+      return "button is-static";
+    }
+  }
+
+  getVideos() {
+    return Object.keys(this.state.participants).map((userName) => {
+      if (userName !== this.state.playerName) {
+        return (
+          <video
+            key={userName}
+            ref={this.videoRefs[userName]}
+            width="300"
+            height="150"
+            poster="/video-not-working.png"
+            autoPlay
+          ></video>
+        );
+      }
+      return null;
+    });
   }
 
   render() {
@@ -174,15 +225,23 @@ class Room extends Component {
             Attention Agree
           </button>
         </div>
-        <div>
+        <div className="has-text-centered mt-2">
           <video
-            id="local-video"
             ref={this.localVideoRef}
+            width="300"
+            height="150"
+            poster="/video-not-working.png"
             autoPlay
             muted
           ></video>
-          <video id="received-video" autoPlay></video>
+          <button
+            className={this.getVideoButtonClass()}
+            onClick={this.handleVideo}
+          >
+            Video On
+          </button>
         </div>
+        <div className="has-text-centered">{this.getVideos()}</div>
       </div>
     );
   }
