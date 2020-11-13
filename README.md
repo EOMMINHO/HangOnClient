@@ -4,7 +4,7 @@ This is a KAIST CS473 Project.
 
 # USAGE
 
-## Deploy
+## Development
 
 1. command "npm i" will install every dependencies required to run the program.
 2. command "npm start" will start the server with PORT 3000.
