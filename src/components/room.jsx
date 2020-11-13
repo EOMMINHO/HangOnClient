@@ -31,7 +31,7 @@ class Room extends Component {
     });
 
     // Set connection
-    this.socket = io("http://hangonserver.minhoeom.com:5000");
+    this.socket = io("https://hangonserver.minhoeom.com");
     // IO handler
     this.socket.on("hostResponse", (roomName, participants) => {
       this.setState({ roomName: roomName });
