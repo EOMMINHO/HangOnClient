@@ -2,7 +2,15 @@ const React = require("react");
 const Peer = require("simple-peer");
 
 // make a new peer for old users
-function makeNewPeer(socket, roomName, peers, participants, myName, videoRefs) {
+function makeNewPeer(
+  socket,
+  roomName,
+  peers,
+  participants,
+  myName,
+  videoRefs,
+  stream
+) {
   // find a new peer
   let oldPeers = Object.keys(peers);
   let newPeers = Object.keys(participants);
@@ -30,6 +38,10 @@ function makeNewPeer(socket, roomName, peers, participants, myName, videoRefs) {
   p.on("error", (err) => {
     console.log(err);
   });
+  // add stream
+  if (stream) {
+    p.addStream(stream);
+  }
   // store it to global variable
   peers[newUser] = p;
 }
@@ -41,7 +53,8 @@ function makeNewPeers(
   peers,
   participants,
   myName,
-  videoRefs
+  videoRefs,
+  stream
 ) {
   // find receivers
   let newPeers = Object.keys(participants);
@@ -75,6 +88,11 @@ function makeNewPeers(
     p.on("error", (err) => {
       console.log(err);
     });
+    // add stream
+    if (stream) {
+      p.addStream(stream);
+    }
+    // store it to global variable
     peers[userName] = p;
   });
 }

@@ -8,6 +8,7 @@ class Room extends Component {
   noob = true; // noob need to send initiator to old users (RTC).
   peers = {};
   videoRefs = {};
+  stream = null;
   state = {
     playerName: "",
     roomName: "",
@@ -48,7 +49,8 @@ class Room extends Component {
             this.peers,
             participants,
             this.state.playerName,
-            this.videoRefs
+            this.videoRefs,
+            this.stream
           );
         } else {
           Util.makeNewPeer(
@@ -57,7 +59,8 @@ class Room extends Component {
             this.peers,
             participants,
             this.state.playerName,
-            this.videoRefs
+            this.videoRefs,
+            this.stream
           );
         }
         this.noob = false;
@@ -142,13 +145,13 @@ class Room extends Component {
   }
 
   async handleVideo() {
-    let stream = await navigator.mediaDevices.getUserMedia({
+    this.stream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
-    this.localVideoRef.current.srcObject = stream;
+    this.localVideoRef.current.srcObject = this.stream;
     Object.values(this.peers).forEach((p) => {
-      p.addStream(stream);
+      p.addStream(this.stream);
     });
   }
 
