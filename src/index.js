@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "bulma/css/bulma.css";
 import HomePage from "./components/home";
 import Room from "./components/room";
+import Intro from "./components/Intro/IntroIndex";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -12,7 +13,7 @@ ReactDOM.render(
         <Room />
       </Route>
       <Route path="/">
-        <HomePage />
+        <Intro />
       </Route>
     </Switch>
   </BrowserRouter>,
