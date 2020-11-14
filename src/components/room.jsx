@@ -158,6 +158,10 @@ class Room extends Component {
   }
 
   async handleVideo() {
+    if (this.state.videoOn) {
+      return alert("Video Off is currently not available");
+    }
+    this.setState({ videoOn: true });
     this.stream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
@@ -185,10 +189,20 @@ class Room extends Component {
   }
 
   getVideoButtonClass() {
+    // Make button clickable only if the device has video/audio input,
+    // and when video is turned off.
     if (this.state.videoAvailable) {
       return "button";
     } else {
       return "button is-static";
+    }
+  }
+
+  getVideoInnerHTML() {
+    if (this.state.videoOn) {
+      return "Video Off";
+    } else {
+      return "Video On";
     }
   }
 
@@ -264,7 +278,7 @@ class Room extends Component {
             className={this.getVideoButtonClass()}
             onClick={this.handleVideo}
           >
-            Video On
+            {this.getVideoInnerHTML()}
           </button>
         </div>
         <div className="has-text-centered">{this.getVideos()}</div>
