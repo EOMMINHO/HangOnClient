@@ -93,6 +93,9 @@ class Room extends Component {
     this.socket.on("attentionAgreeResponse", (participants) => {
       this.setState({ participants: participants });
     });
+    this.socket.on("seatShuffleResponse", (participants) => {
+      this.setState({ participants: participants });
+    });
     // P2P for video conference
     this.socket.on("RTC_answer", async (offerer, receiver, data) => {
       // if receiver is me, signal it to offerer.
@@ -119,6 +122,8 @@ class Room extends Component {
     this.handleClinkAgree = this.handleClinkAgree.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
     this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
+    this.handleSeatSwap = this.handleSeatSwap.bind(this);
+    this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
   }
 
@@ -142,6 +147,14 @@ class Room extends Component {
       this.state.playerName,
       this.state.roomName
     );
+  }
+
+  handleSeatSwap() {
+    alert("currently unavailable");
+  }
+
+  handleSeatShuffle() {
+    this.socket.emit("seatShuffle", this.state.roomName);
   }
 
   async handleVideo() {
@@ -226,6 +239,16 @@ class Room extends Component {
         <div className="has-text-centered mt-2">
           <button className="button" onClick={this.handleAttentionAgree}>
             Attention Agree
+          </button>
+        </div>
+        <div className="has-text-centered mt-2">
+          <button className="button" onClick={this.handleSeatSwap}>
+            Seat Swap
+          </button>
+        </div>
+        <div className="has-text-centered mt-2">
+          <button className="button" onClick={this.handleSeatShuffle}>
+            Seat Shuffle
           </button>
         </div>
         <div className="has-text-centered mt-2">
