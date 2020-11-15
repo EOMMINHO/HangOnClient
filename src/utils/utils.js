@@ -103,6 +103,26 @@ function disconnectPeer(peers, peerName) {
   delete peers[peerName];
 }
 
+// stop the video
+function stopVideo(stream) {
+  stream.getTracks().forEach(function (track) {
+    if (track.readyState === "live" && track.kind === "video") {
+      track.stop();
+    }
+  });
+}
+
+// stop the audio
+function stopAudio(stream) {
+  stream.getTracks().forEach(function (track) {
+    if (track.readyState === "live" && track.kind === "audio") {
+      track.stop();
+    }
+  });
+}
+
 module.exports.makeNewPeer = makeNewPeer;
 module.exports.makeNewPeers = makeNewPeers;
 module.exports.disconnectPeer = disconnectPeer;
+module.exports.stopVideo = stopVideo;
+module.exports.stopAudio = stopAudio;

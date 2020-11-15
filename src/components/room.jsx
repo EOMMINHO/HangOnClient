@@ -17,18 +17,20 @@ class Room extends Component {
     clinkInProgress: false,
     attentionInProgress: false,
     videoOn: false,
+    audioOn: false,
     videoAvailable: false,
+    audioAvailable: false,
   };
 
   constructor() {
     super();
     // set reference to local video
     this.localVideoRef = React.createRef();
+    // set the availableness of media devices
     navigator.mediaDevices.enumerateDevices().then((devices) => {
       let types = devices.map((x) => x.kind);
-      if (types.includes("videoinput") && types.includes("audioinput")) {
-        this.state.videoAvailable = true;
-      }
+      this.state.videoAvailable = types.includes("videoinput");
+      this.state.audioAvailable = types.includes("audioinput");
     });
 
     // Set connection
@@ -125,6 +127,7 @@ class Room extends Component {
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
+    this.handleAudio = this.handleAudio.bind(this);
   }
 
   handleClink() {
@@ -159,17 +162,37 @@ class Room extends Component {
 
   async handleVideo() {
     if (this.state.videoOn) {
-      return alert("Video Off is currently not available");
+      this.setState({ videoOn: false });
+      Util.stopVideo(this.stream);
+      this.localVideoRef.current.srcObject = null;
+    } else {
+      this.setState({ videoOn: true });
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: this.state.audioOn,
+      });
+      this.localVideoRef.current.srcObject = this.stream;
+      Object.values(this.peers).forEach((p) => {
+        p.addStream(this.stream);
+      });
     }
-    this.setState({ videoOn: true });
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    this.localVideoRef.current.srcObject = this.stream;
-    Object.values(this.peers).forEach((p) => {
-      p.addStream(this.stream);
-    });
+  }
+
+  async handleAudio() {
+    if (this.state.audioOn) {
+      this.setState({ audioOn: false });
+      Util.stopAudio(this.stream);
+    } else {
+      this.setState({ audioOn: true });
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: this.state.videoOn,
+        audio: true,
+      });
+      this.localVideoRef.current.srcObject = this.stream;
+      Object.values(this.peers).forEach((p) => {
+        p.addStream(this.stream);
+      });
+    }
   }
 
   getClinkClass() {
@@ -198,11 +221,29 @@ class Room extends Component {
     }
   }
 
+  getAudioButtonClass() {
+    // Make button clickable only if the device has audio input,
+    // and when audio is turned off.
+    if (this.state.audioAvailable) {
+      return "button";
+    } else {
+      return "button is-static";
+    }
+  }
+
   getVideoInnerHTML() {
     if (this.state.videoOn) {
       return "Video Off";
     } else {
       return "Video On";
+    }
+  }
+
+  getAudioInnerHTML() {
+    if (this.state.audioOn) {
+      return "Audio Off";
+    } else {
+      return "Audio On";
     }
   }
 
@@ -279,6 +320,12 @@ class Room extends Component {
             onClick={this.handleVideo}
           >
             {this.getVideoInnerHTML()}
+          </button>
+          <button
+            className={this.getAudioButtonClass()}
+            onClick={this.handleAudio}
+          >
+            {this.getAudioInnerHTML()}
           </button>
         </div>
         <div className="has-text-centered">{this.getVideos()}</div>
