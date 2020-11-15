@@ -9,6 +9,7 @@ function makeNewPeer(
   participants,
   myName,
   videoRefs,
+  chatBoardRef,
   stream
 ) {
   // find a new peer
@@ -35,9 +36,15 @@ function makeNewPeer(
       videoRef.current.src = window.URL.createObjectURL(stream);
     }
   });
+  p.on("data", (data) => {
+    let newText = new TextDecoder("utf-8").decode(data);
+    chatBoardRef.current.value = chatBoardRef.current.value + `${newText}\n`;
+    chatBoardRef.current.scrollTop = chatBoardRef.current.scrollHeight;
+  });
   p.on("error", (err) => {
     console.log(err);
   });
+
   // add stream
   if (stream) {
     p.addStream(stream);
@@ -54,6 +61,7 @@ function makeNewPeers(
   participants,
   myName,
   videoRefs,
+  chatBoardRef,
   stream
 ) {
   // find receivers
@@ -84,6 +92,11 @@ function makeNewPeers(
       } else {
         videoRef.current.src = window.URL.createObjectURL(stream);
       }
+    });
+    p.on("data", (data) => {
+      let newText = new TextDecoder("utf-8").decode(data);
+      chatBoardRef.current.value = chatBoardRef.current.value + `${newText}\n`;
+      chatBoardRef.current.scrollTop = chatBoardRef.current.scrollHeight;
     });
     p.on("error", (err) => {
       console.log(err);

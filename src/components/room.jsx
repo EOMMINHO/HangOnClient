@@ -33,6 +33,10 @@ class Room extends Component {
       this.state.audioAvailable = types.includes("audioinput");
     });
 
+    // set reference to chatting
+    this.chatRef = React.createRef();
+    this.chatBoardRef = React.createRef();
+
     // Set connection
     this.socket = io("https://hangonserver.minhoeom.com");
     // IO handler
@@ -52,6 +56,7 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
+            this.chatBoardRef,
             this.stream
           );
         } else {
@@ -62,6 +67,7 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
+            this.chatBoardRef,
             this.stream
           );
         }
@@ -128,6 +134,7 @@ class Room extends Component {
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
+    this.handleChat = this.handleChat.bind(this);
   }
 
   handleClink() {
@@ -192,6 +199,20 @@ class Room extends Component {
       Object.values(this.peers).forEach((p) => {
         p.addStream(this.stream);
       });
+    }
+  }
+
+  handleChat(e) {
+    if (e.key === "Enter" && this.chatRef.current.value !== "") {
+      // send to peers
+      let newmsg = this.state.playerName + ": " + this.chatRef.current.value;
+      Object.values(this.peers).forEach((p) => {
+        p.send(newmsg);
+      });
+      this.chatRef.current.value = "";
+      this.chatBoardRef.current.value =
+        this.chatBoardRef.current.value + `${newmsg}\n`;
+      this.chatBoardRef.current.scrollTop = this.chatBoardRef.current.scrollHeight;
     }
   }
 
@@ -305,6 +326,23 @@ class Room extends Component {
           <button className="button" onClick={this.handleSeatShuffle}>
             Seat Shuffle
           </button>
+        </div>
+        <div className="has-text-centered mt-2">
+          <div className="control">
+            <textarea
+              className="textarea has-fixed-size"
+              readOnly
+              rows="10"
+              ref={this.chatBoardRef}
+            ></textarea>
+          </div>
+          <input
+            className="input"
+            type="text"
+            placeholder="text"
+            ref={this.chatRef}
+            onKeyPress={(e) => this.handleChat(e)}
+          />
         </div>
         <div className="has-text-centered mt-2">
           <video
