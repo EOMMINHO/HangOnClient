@@ -13,6 +13,7 @@ class Room extends Component {
     playerName: "",
     roomName: "",
     participants: {},
+    clink_participants: {},
     clinked: false,
     clinkInProgress: false,
     attentionInProgress: false,
@@ -87,11 +88,16 @@ class Room extends Component {
       if (isSuccess) {
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
+        this.setState({ clink_participants = {playerName} });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
       this.setState({ clinkInProgress: false, clinked: false });
       console.log(`${playerName} has agreed to clink`);
+      if (playerName === this.state.playerName) {
+        this.setState({clinked = true});
+      }
+      this.setState({ clink_participants = clink_participants.concat(playerName) })
     });
     this.socket.on("attentionResponse", (isSuccess, participants) => {
       if (isSuccess) {
@@ -135,6 +141,39 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
+    this.handleModalClick = this.handleModalClick.bind(this);
+  }
+  
+  getModalClass() {
+    if (this.state.modalActive) {
+      return "modal is-active";
+    } else {
+      return "modal";
+    }
+  }
+
+  getModalContent() {
+    if (this.state.clinked) {
+      return (
+        <div>
+          <div className="field">
+            getClinkVideos();
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  handleModalOutClick() {
+    this.setState({ modalActive: !this.state.modalActive });
+    if (this.state.clinked) {
+      const idx = clink_participants.indexOf(this.state.playerName);
+      clink_participants.splice(idx, 1);
+    }
+    this.setState({ clinked: false });
+    this.setState({ attended: false });
   }
 
   handleClink() {
@@ -270,7 +309,29 @@ class Room extends Component {
 
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
-      if (userName !== this.state.playerName) {
+      if (userName !== this.state.playerName && !this.state.clinked) {
+        return (
+          <video
+            key={userName}
+            ref={this.videoRefs[userName]}
+            width="300"
+            height="150"
+            poster="/video-not-working.png"
+            autoPlay
+            style={{
+              "-webkit-transform": "scaleX(-1)",
+              transform: "scaleX(-1)",
+            }}
+          ></video>
+        );
+      }
+      return null;
+    });
+  }
+
+  getClinkVideos() {
+    return Object.keys(this.state.clink_participants).map((userName) => {
+      if (userName !== this.state.playerName && this.state.clinked) {
         return (
           <video
             key={userName}
@@ -289,6 +350,18 @@ class Room extends Component {
   render() {
     return (
       <div className="container my-6">
+        <div className={this.getModalClass()}>
+          <div
+            className="modal-background"
+            // onClick={this.handleModalClick}
+          ></div>
+          <div className="modal-content box">{this.getModalContent()}</div>
+          <button
+            className="modal-close is-large"
+            aria-label="close"
+            onClick={this.handleModalOutClick}
+          ></button>
+        </div>
         <h1 className="has-text-centered">Room Name : {this.state.roomName}</h1>
         <h1 className="has-text-centered">
           Player Name : {this.state.playerName}
