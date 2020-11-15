@@ -114,6 +114,14 @@ class Room extends Component {
         this.peers[offerer].signal(data);
       }
     });
+    this.socket.on("videoOffResponse", (userName) => {
+      let videoRef = this.videoRefs[userName];
+      if ("srcObject" in videoRef.current) {
+        videoRef.current.srcObject = null;
+      } else {
+        videoRef.current.src = null;
+      }
+    });
     // Initialize room
     let entryType = sessionStorage.getItem("entryType");
     let playerName = sessionStorage.getItem("playerName");
@@ -172,6 +180,7 @@ class Room extends Component {
       this.setState({ videoOn: false });
       Util.stopVideo(this.stream);
       this.localVideoRef.current.srcObject = null;
+      this.socket.emit("videoOff", this.state.playerName, this.state.roomName);
     } else {
       this.setState({ videoOn: true });
       this.stream = await navigator.mediaDevices.getUserMedia({
