@@ -279,6 +279,10 @@ class Room extends Component {
             height="150"
             poster="/video-not-working.png"
             autoPlay
+            style={{
+              "-webkit-transform": "scaleX(-1)",
+              transform: "scaleX(-1)",
+            }}
           ></video>
         );
       }
@@ -352,6 +356,10 @@ class Room extends Component {
             poster="/video-not-working.png"
             autoPlay
             muted
+            style={{
+              "-webkit-transform": "scaleX(-1)",
+              transform: "scaleX(-1)",
+            }}
           ></video>
           <button
             className={this.getVideoButtonClass()}
