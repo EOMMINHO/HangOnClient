@@ -16,6 +16,8 @@ class Room extends Component {
     clink_participants: {},
     clinked: false,
     clinkInProgress: false,
+    attention_target: "",
+    attended: false,
     attentionInProgress: false,
     videoOn: false,
     audioOn: false,
@@ -88,24 +90,28 @@ class Room extends Component {
       if (isSuccess) {
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
-        this.setState({ clink_participants = {playerName} });
+        this.setState({ clink_participants: {playerName} });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
       this.setState({ clinkInProgress: false, clinked: false });
       console.log(`${playerName} has agreed to clink`);
       if (playerName === this.state.playerName) {
-        this.setState({clinked = true});
+        this.setState({clinked: true});
       }
-      this.setState({ clink_participants = clink_participants.concat(playerName) })
+      this.setState({ clink_participants: clink_participants.concat(playerName) })
     });
-    this.socket.on("attentionResponse", (isSuccess, participants) => {
+    this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ participants: participants });
+        this.setState({ attentionInProgress: true });
+        console.log(`${playerName} has requested to get attention`);
+        this.setState({ attention_target: playerName });
       }
     });
-    this.socket.on("attentionAgreeResponse", (participants) => {
-      this.setState({ participants: participants });
+    this.socket.on("attentionAgreeResponse", (isSuccess) => {
+      if (isSuccess) {
+        this.setState({attended: true});
+      }
     });
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
@@ -161,7 +167,17 @@ class Room extends Component {
           </div>
         </div>
       );
-    } else {
+    }
+    else if (this.state.attended) {
+      return (
+        <div>
+          <div className="field">
+            getAttentionVideo();
+          </div>
+        </div>
+      );
+    }
+    else {
       return null;
     }
   }
@@ -271,6 +287,22 @@ class Room extends Component {
     }
   }
 
+  getAttentionClass() {
+    if (this.state.attentionInProgress) {
+      return "button is-loading";
+    } else {
+      return "button";
+    }
+  }
+
+  getAttentionAgreeClass() {
+    if (this.state.attentionInProgress && !this.state.attended) {
+      return "button";
+    } else {
+      return "button is-static";
+    }
+  }
+
   getVideoButtonClass() {
     // Make button clickable only if the device has video/audio input,
     // and when video is turned off.
@@ -332,6 +364,24 @@ class Room extends Component {
   getClinkVideos() {
     return Object.keys(this.state.clink_participants).map((userName) => {
       if (userName !== this.state.playerName && this.state.clinked) {
+        return (
+          <video
+            key={userName}
+            ref={this.videoRefs[userName]}
+            width="300"
+            height="150"
+            poster="/video-not-working.png"
+            autoPlay
+          ></video>
+        );
+      }
+      return null;
+    });
+  }
+
+  getAttentionVideo() {
+    return Object.keys(this.state.participants).map((userName) => {
+      if (userName === this.state.attention_target && this.state.attended) {
         return (
           <video
             key={userName}
