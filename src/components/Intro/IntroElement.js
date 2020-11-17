@@ -47,6 +47,8 @@ export const IntroP = styled.p`
 
 export const IntroBtn = styled.button`
   font-size: 1.4rem;
+  width: 250px;
+  margin-bottom: 1rem;
   padding: 1rem 4rem;
   border: none;
   background: #e31837;

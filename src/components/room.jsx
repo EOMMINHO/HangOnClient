@@ -308,7 +308,7 @@ class Room extends Component {
         </h1>
         <h1 className="has-text-centered">
           Participants: {JSON.stringify(this.state.participants)}
-        </h1>
+        </h1> 
         <div className="has-text-centered mt-6">
           <button className={this.getClinkClass()} onClick={this.handleClink}>
             Clink

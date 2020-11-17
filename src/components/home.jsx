@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Navbar from "./NavBar/NavbarIndex";
 
 class HomePage extends Component {
   state = {
@@ -137,6 +138,7 @@ class HomePage extends Component {
 
   render() {
     return (
+      
       <div className="container">
         <div className={this.getModalClass()}>
           <div

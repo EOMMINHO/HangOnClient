@@ -7,19 +7,29 @@ import {
   IntroP,
   IntroBtn
 } from './IntroElement';
-import { useHistory } from 'react-router-dom';
+import { useState } from 'react';
+import Navbar from '../NavBar/NavbarIndex';
+import HomePage from '../home';
+import { Modal } from './Modal';
 
 
 const Intro = () => {
-  const history = useHistory();
-  const handleClick = () => history.push('/choose');
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(prev => !prev);
+  };
   return (
     <IntroContainer>
+      <Navbar/>
       <IntroContent>
         <IntroItems>
           <IntroH1>Best Online Drinking Web</IntroH1>
           <IntroP>Enjoy Your Party!</IntroP>
-          <IntroBtn onClick = {handleClick}>Host Room</IntroBtn>
+          <IntroBtn onClick = {openModal}>Host Room</IntroBtn>
+          <Modal showModal ={showModal} setShowModal={setShowModal} />
+          <IntroBtn onClick = {openModal}>Join Room</IntroBtn>
+          <Modal showModal ={showModal} setShowModal={setShowModal} />
         </IntroItems>
       </IntroContent>
     </IntroContainer>

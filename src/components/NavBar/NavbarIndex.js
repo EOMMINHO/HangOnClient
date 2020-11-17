@@ -1,11 +1,12 @@
 import React from 'react';
-import { Nav } from './NavbarElements';
+import { Nav, NavLink } from './NavbarElements';
 
-const Navbar = ({ toggle }) => {
+const Navbar = () => {
+  
   return (
     <>
       <Nav>
-        Hang On
+        <NavLink to = '/'> Hang On </NavLink>
       </Nav>
     </>
   );

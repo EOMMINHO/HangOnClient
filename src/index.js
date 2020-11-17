@@ -5,6 +5,7 @@ import "bulma/css/bulma.css";
 import Room from "./components/room";
 import Intro from "./components/Intro/IntroIndex";
 import HomePage from "./components/home";
+import Navbar from "./components/NavBar/NavbarIndex";
 
 ReactDOM.render(
   <BrowserRouter>
