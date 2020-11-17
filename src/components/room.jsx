@@ -13,7 +13,7 @@ class Room extends Component {
     playerName: "",
     roomName: "",
     participants: {},
-    clink_participants: {},
+    clink_participants: [],
     clinked: false,
     clinkInProgress: false,
     attention_target: "",
@@ -88,18 +88,21 @@ class Room extends Component {
     });
     this.socket.on("clinkResponse", (isSuccess, playerName) => {
       if (isSuccess) {
+        if (playerName === this.state.playerName) {
+          this.setState({ clinked: true, modalActive: true });
+        }
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
-        this.setState({ clink_participants: {playerName} });
+        this.setState({ clink_participants: [playerName] });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
-      this.setState({ clinkInProgress: false, clinked: false });
+      this.setState({ clinkInProgress: false });
       console.log(`${playerName} has agreed to clink`);
       if (playerName === this.state.playerName) {
-        this.setState({clinked: true});
+        this.setState({ clinked: true, modalActive: true });
       }
-      this.setState({ clink_participants: clink_participants.concat(playerName) })
+      this.setState({ clink_participants: this.state.clink_participants.concat(playerName) })
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
@@ -147,7 +150,7 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
-    this.handleModalClick = this.handleModalClick.bind(this);
+    this.handleModalOutClick = this.handleModalOutClick.bind(this);
   }
   
   getModalClass() {
@@ -163,7 +166,7 @@ class Room extends Component {
       return (
         <div>
           <div className="field">
-            getClinkVideos();
+            {this.getClinkVideos()}
           </div>
         </div>
       );
@@ -172,7 +175,7 @@ class Room extends Component {
       return (
         <div>
           <div className="field">
-            getAttentionVideo();
+            {this.getAttentionVideo()}
           </div>
         </div>
       );
@@ -185,8 +188,8 @@ class Room extends Component {
   handleModalOutClick() {
     this.setState({ modalActive: !this.state.modalActive });
     if (this.state.clinked) {
-      const idx = clink_participants.indexOf(this.state.playerName);
-      clink_participants.splice(idx, 1);
+      const idx = this.state.clink_participants.indexOf(this.state.playerName);
+      this.state.clink_participants.splice(idx, 1);
     }
     this.setState({ clinked: false });
     this.setState({ attended: false });
@@ -363,7 +366,7 @@ class Room extends Component {
 
   getClinkVideos() {
     return Object.keys(this.state.clink_participants).map((userName) => {
-      if (userName !== this.state.playerName && this.state.clinked) {
+      if (userName !== this.state.playerName) {
         return (
           <video
             key={userName}
@@ -381,7 +384,7 @@ class Room extends Component {
 
   getAttentionVideo() {
     return Object.keys(this.state.participants).map((userName) => {
-      if (userName === this.state.attention_target && this.state.attended) {
+      if (userName === this.state.attention_target) {
         return (
           <video
             key={userName}
