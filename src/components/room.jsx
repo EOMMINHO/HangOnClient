@@ -7,7 +7,9 @@ class Room extends Component {
   socket;
   noob = true; // noob need to send initiator to old users (RTC).
   peers = {};
+  peers_clink = {};
   videoRefs = {};
+  videoRefs_clink = {};
   stream = null;
   state = {
     playerName: "",
@@ -89,8 +91,18 @@ class Room extends Component {
     this.socket.on("clinkResponse", (isSuccess, playerName) => {
       if (isSuccess) {
         if (playerName === this.state.playerName) {
+          let videoRef_clink = React.createRef();
+          this.videoRefs_clink[playerName] = videoRef_clink;
           this.setState({ clinked: true, modalActive: true });
+          if ("srcObject" in videoRef_clink.current) {
+            videoRef_clink.current.srcObject = this.stream;
+          } else {
+            videoRef_clink.current.src = window.URL.createObjectURL(this.stream);
+          }
         }
+        /*let p = new Peer({ initiator: true });
+        p.addStream(this.stream);
+        peers_clink[playerName] = p;*/
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
         this.setState({ clink_participants: [playerName] });
@@ -100,8 +112,16 @@ class Room extends Component {
       //this.setState({ clinkInProgress: false });
       console.log(`${playerName} has agreed to clink`);
       if (playerName === this.state.playerName) {
+        let videoRef_clink = React.createRef();
+        this.videoRefs_clink[playerName] = videoRef_clink;
         this.setState({ clinked: true, modalActive: true });
+        if ("srcObject" in videoRef_clink.current) {
+          videoRef_clink.current.srcObject = this.stream;
+        } else {
+          videoRef_clink.current.src = window.URL.createObjectURL(this.stream);
+        }
       }
+      //peers_clink[playerName] = peers_clink[playerName].addStream(this.stream);
       this.setState({ clink_participants: this.state.clink_participants.concat(playerName) })
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
@@ -191,6 +211,7 @@ class Room extends Component {
     if (this.state.clinked) {
       const idx = this.state.clink_participants.indexOf(this.state.playerName);
       this.state.clink_participants.splice(idx, 1);
+      delete this.videoRefs_clink[this.state.playerName];
     }
     this.setState({ clinked: false });
     //this.setState({ attended: false });
@@ -367,11 +388,19 @@ class Room extends Component {
 
   getClinkVideos() {
     return Object.keys(this.state.clink_participants).map((userName) => {
+      /*this.peers_clink.forEach((p) => {
+        let videoRef = React.createRef();
+        videoRefs[userName] = videoRef;
+      if ("srcObject" in videoRef.current) {
+        videoRef.current.srcObject = stream;
+      } else {
+        videoRef.current.src = window.URL.createObjectURL(stream);
+      }*/
       if (userName !== this.state.playerName) {
         return (
           <video
             key={userName}
-            ref={this.videoRefs[userName]}
+            ref={this.videoRefs_clink[userName]}
             width="300"
             height="150"
             poster="/video-not-working.png"
