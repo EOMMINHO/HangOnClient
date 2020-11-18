@@ -4,11 +4,9 @@ import { Nav, NavLink } from './NavbarElements';
 const Navbar = () => {
   
   return (
-    <>
       <Nav>
-        <NavLink to = '/'> Hang On </NavLink>
+        <NavLink to = "/"> Hang On </NavLink>
       </Nav>
-    </>
   );
 };
 

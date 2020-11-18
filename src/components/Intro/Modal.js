@@ -1,17 +1,16 @@
-import React, { useRef, useEffect, useCallback, useHistory } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { useSpring, animated } from 'react-spring';
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
 
 const Background = styled.div`
-  width: 100%;
+  width: 120%;
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
   margin-left: -102px;
   margin-top: -80px;
   position: fixed;
   display: flex;
-  justify-content: center;
   align-items: center;
 `;
 
@@ -19,11 +18,11 @@ const ModalWrapper = styled.div`
   width: 600px;
   height: 200px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+  margin-left: 70%;
   background: #fff;
   color: #000;
   display: grid;
   position: relative;
-  z-index: 10;
   border-radius: 10px;
 `;
 

@@ -11,7 +11,7 @@ ReactDOM.render(
     <Switch>
       <Route path="/room" component = {Room} />
       <Route path="/choose" component = {HomePage}/>
-      <Route path="/" component = {Intro}/>
+      <Route exact path="/" component = {Intro}/>
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

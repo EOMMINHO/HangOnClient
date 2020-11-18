@@ -9,7 +9,6 @@ import {
 } from './IntroElement';
 import { useState } from 'react';
 import Navbar from '../NavBar/NavbarIndex';
-import HomePage from '../home';
 import { Modal } from './Modal';
 import { ModalJoin } from './ModalJoin';
 
