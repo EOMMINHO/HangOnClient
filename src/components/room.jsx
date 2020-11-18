@@ -42,7 +42,8 @@ class Room extends Component {
     // IO handler
     this.socket.on("hostResponse", (isSuccess, roomName, participants) => {
       if (!isSuccess) {
-        return alert(roomName);
+        alert(roomName);
+        return (window.location.href = "/");
       }
       this.setState({ roomName: roomName });
       this.setState({ participants: participants });
