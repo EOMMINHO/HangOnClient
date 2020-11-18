@@ -40,7 +40,10 @@ class Room extends Component {
     // Set connection
     this.socket = io("https://hangonserver.minhoeom.com");
     // IO handler
-    this.socket.on("hostResponse", (roomName, participants) => {
+    this.socket.on("hostResponse", (isSuccess, roomName, participants) => {
+      if (!isSuccess) {
+        return alert(roomName);
+      }
       this.setState({ roomName: roomName });
       this.setState({ participants: participants });
       this.noob = false;
@@ -289,7 +292,7 @@ class Room extends Component {
             poster="/video-not-working.png"
             autoPlay
             style={{
-              "-webkit-transform": "scaleX(-1)",
+              WebkitTransform: "scaleX(-1)",
               transform: "scaleX(-1)",
             }}
           ></video>
@@ -308,7 +311,7 @@ class Room extends Component {
         </h1>
         <h1 className="has-text-centered">
           Participants: {JSON.stringify(this.state.participants)}
-        </h1> 
+        </h1>
         <div className="has-text-centered mt-6">
           <button className={this.getClinkClass()} onClick={this.handleClink}>
             Clink
@@ -366,7 +369,7 @@ class Room extends Component {
             autoPlay
             muted
             style={{
-              "-webkit-transform": "scaleX(-1)",
+              WebkitTransform: "scaleX(-1)",
               transform: "scaleX(-1)",
             }}
           ></video>
