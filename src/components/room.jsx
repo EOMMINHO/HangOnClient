@@ -97,7 +97,7 @@ class Room extends Component {
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
-      this.setState({ clinkInProgress: false });
+      //this.setState({ clinkInProgress: false });
       console.log(`${playerName} has agreed to clink`);
       if (playerName === this.state.playerName) {
         this.setState({ clinked: true, modalActive: true });
@@ -112,8 +112,9 @@ class Room extends Component {
       }
     });
     this.socket.on("attentionAgreeResponse", (isSuccess) => {
+      this.setState({ attentionInProgress: false });
       if (isSuccess) {
-        this.setState({attended: true});
+        this.setState({ attended: true });
       }
     });
     this.socket.on("seatShuffleResponse", (participants) => {
@@ -192,7 +193,7 @@ class Room extends Component {
       this.state.clink_participants.splice(idx, 1);
     }
     this.setState({ clinked: false });
-    this.setState({ attended: false });
+    //this.setState({ attended: false });
   }
 
   handleClink() {
@@ -383,21 +384,19 @@ class Room extends Component {
   }
 
   getAttentionVideo() {
-    return Object.keys(this.state.participants).map((userName) => {
-      if (userName === this.state.attention_target) {
-        return (
+    if (this.state.attended) {
+      return (
           <video
-            key={userName}
-            ref={this.videoRefs[userName]}
+            key={this.state.attention_target}
+            ref={this.videoRefs[this.state.attention_target]}
             width="300"
             height="150"
             poster="/video-not-working.png"
             autoPlay
           ></video>
-        );
-      }
-      return null;
-    });
+      );
+    }
+    else return null;
   }
 
   render() {
@@ -434,12 +433,13 @@ class Room extends Component {
           </button>
         </div>
         <div className="has-text-centered mt-2">
-          <button className="button" onClick={this.handleAttention}>
+          <button className={this.getAttentionClass()} onClick={this.handleAttention}>
             Attention
           </button>
-        </div>
-        <div className="has-text-centered mt-2">
-          <button className="button" onClick={this.handleAttentionAgree}>
+          <button
+            className={this.getAttentionAgreeClass()}
+            onClick={this.handleAttentionAgree}
+          >
             Attention Agree
           </button>
         </div>
@@ -469,6 +469,9 @@ class Room extends Component {
             ref={this.chatRef}
             onKeyPress={(e) => this.handleChat(e)}
           />
+        </div>
+        <div className="container my-6">
+          <div className="has-text-centered">{this.getAttentionVideo()}</div>
         </div>
         <div className="has-text-centered mt-2">
           <video
