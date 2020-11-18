@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Navbar from "./NavBar/NavbarIndex";
 
 class HomePage extends Component {
   state = {

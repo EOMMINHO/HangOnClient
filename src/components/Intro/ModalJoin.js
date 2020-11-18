@@ -17,7 +17,7 @@ const Background = styled.div`
 
 const ModalWrapper = styled.div`
   width: 600px;
-  height: 200px;
+  height: 300px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
   background: #fff;
   color: #000;
@@ -65,31 +65,31 @@ const TextBox = styled.input`
 
 `;
 
-export const Modal = ({ showModal, setShowModal }) => {
+export const ModalJoin = ({ showModalJoin, setShowModalJoin }) => {
   const modalRef = useRef();
 
   const animation = useSpring({
     config: {
       duration: 250
     },
-    opacity: showModal ? 1 : 0,
-    transform: showModal ? `translateY(0%)` : `translateY(-100%)`
+    opacity: showModalJoin ? 1 : 0,
+    transform: showModalJoin ? `translateY(0%)` : `translateY(-100%)`
   });
 
   const closeModal = e => {
     if (modalRef.current === e.target) {
-      setShowModal(false);
+      setShowModalJoin(false);
     }
   };
 
   const keyPress = useCallback(
     e => {
-      if (e.key === 'Escape' && showModal) {
-        setShowModal(false);
+      if (e.key === 'Escape' && showModalJoin) {
+        setShowModalJoin(false);
         console.log('I pressed');
       }
     },
-    [setShowModal, showModal]
+    [setShowModalJoin, showModalJoin]
   );
 
   useEffect(
@@ -102,17 +102,20 @@ export const Modal = ({ showModal, setShowModal }) => {
   
   function handleClick () {
     var user = document.getElementById("userName").value;
+    var room = document.getElementById("roomName").value
     sessionStorage.setItem("playerName", user);
-    sessionStorage.setItem("entryType", "host");
+    sessionStorage.setItem("roomName", room);
+    sessionStorage.setItem("entryType", "join");
     window.location.href = "/room";
   }
 
+
   return (
     <>
-      {showModal ? (
+      {showModalJoin ? (
         <Background onClick={closeModal} ref={modalRef}>
           <animated.div style={animation}>
-            <ModalWrapper showModal={showModal}>
+            <ModalWrapper showModalJoin ={showModalJoin}>
               <ModalContent>
               <div>
                 Username
@@ -132,16 +135,34 @@ export const Modal = ({ showModal, setShowModal }) => {
                     </span>
                   </p>
                 </div>
+                Room Name
+                <div className="field">
+                  <p className="control has-icons-left has-icons-right">
+                    <TextBox
+                      className="input"
+                      type = "text"
+                      placeholder="Enter the Room Name"
+                      id = "roomName"
+                    />
+                    <span className="icon is-small is-left">
+                      <i className="fas fa-signature"></i>
+                    </span>
+                    <span className="icon is-small is-right">
+                      <i className="fas fa-check"></i>
+                    </span>
+                  </p>
+                </div>
+
                 <div className="has-text-centered">
                   <button className="button" onClick = {handleClick}>
-                    Host
+                    Join
                   </button>
                 </div>
               </div>
               </ModalContent>
               <CloseModalButton
                 aria-label='Close modal'
-                onClick={() => setShowModal(prev => !prev)}
+                onClick={() => setShowModalJoin(prev => !prev)}
               />
             </ModalWrapper>
           </animated.div>

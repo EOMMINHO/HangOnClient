@@ -11,6 +11,7 @@ import { useState } from 'react';
 import Navbar from '../NavBar/NavbarIndex';
 import HomePage from '../home';
 import { Modal } from './Modal';
+import { ModalJoin } from './ModalJoin';
 
 
 const Intro = () => {
@@ -19,6 +20,13 @@ const Intro = () => {
   const openModal = () => {
     setShowModal(prev => !prev);
   };
+
+  const [showModalJoin, setShowModalJoin] = useState(false);
+
+  const openModalJoin = () => {
+    setShowModalJoin(prev => !prev);
+  };
+
   return (
     <IntroContainer>
       <Navbar/>
@@ -28,8 +36,8 @@ const Intro = () => {
           <IntroP>Enjoy Your Party!</IntroP>
           <IntroBtn onClick = {openModal}>Host Room</IntroBtn>
           <Modal showModal ={showModal} setShowModal={setShowModal} />
-          <IntroBtn onClick = {openModal}>Join Room</IntroBtn>
-          <Modal showModal ={showModal} setShowModal={setShowModal} />
+          <IntroBtn onClick = {openModalJoin}>Join Room</IntroBtn>
+          <ModalJoin showModalJoin ={showModalJoin} setShowModalJoin={setShowModalJoin} />
         </IntroItems>
       </IntroContent>
     </IntroContainer>
