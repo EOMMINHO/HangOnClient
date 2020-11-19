@@ -16,7 +16,7 @@ const Background = styled.div`
 
 const ModalWrapper = styled.div`
   width: 600px;
-  height: 300px;
+  height: 270px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
   margin-left: 70%;
   background: #fff;
@@ -62,7 +62,6 @@ const TextBox = styled.input`
   height: 40px;
   font-size: 1.2rem;
   margin-bottom: 0.2rem;
-
 `;
 
 export const ModalJoin = ({ showModalJoin, setShowModalJoin }) => {

@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
-import ButtonDropdown from "./Main/ButtonDropdown";
-import VideoDropdown from "./Main/VideoDropdown";
-const Util = require("../utils/utils");
+import ButtonDropdown from "./ButtonDropdown";
+import { MainContainer } from "./MainElement";
+import Navbar from "../NavBar/NavbarIndex";
+import VideoDropdown from "./VideoDropdown";
+const Util = require("../../utils/utils");
 const delay = require("delay");
 
 class Room extends Component {
@@ -233,17 +235,17 @@ class Room extends Component {
 
   getClinkClass() {
     if (this.state.clinkInProgress) {
-      return "button is-loading is-medium is-white";
+      return "button is-loading is-large is-white";
     } else {
-      return "button is-medium is-white";
+      return "button is-large is-white";
     }
   }
 
   getClinkAgreeClass() {
     if (this.state.clinkInProgress && !this.state.clinked) {
-      return "button is-medium is-white";
+      return "button is-large is-white";
     } else {
-      return "button is-static is-medium is-white";
+      return "button is-static is-large is-white";
     }
   }
 
@@ -251,9 +253,9 @@ class Room extends Component {
     // Make button clickable only if the device has video/audio input,
     // and when video is turned off.
     if (this.state.videoAvailable) {
-      return "button is-medium is-white";
+      return "button";
     } else {
-      return "button is-static is-medium is-white";
+      return "button is-static";
     }
   }
 
@@ -261,9 +263,9 @@ class Room extends Component {
     // Make button clickable only if the device has audio input,
     // and when audio is turned off.
     if (this.state.audioAvailable) {
-      return "button is-medium is-white";
+      return "button";
     } else {
-      return "button is-static is-medium is-white";
+      return "button is-static";
     }
   }
 
@@ -307,12 +309,15 @@ class Room extends Component {
 
   render() {
     return (
-      <div className="container my-6">
-        <h1 className="has-text-centered">Room Name : {this.state.roomName}</h1>
-        <h1 className="has-text-centered">
+      <MainContainer>
+        <Navbar/>
+        <h1 className="has-text-centered" style={{ color: 'white' }}>
+          Room Name : {this.state.roomName}
+        </h1>
+        <h1 className="has-text-centered" style={{ color: 'white' }}>
           Player Name : {this.state.playerName}
         </h1>
-        <h1 className="has-text-centered">
+        <h1 className="has-text-centered" style={{ color: 'white' }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
         <div className="box has-text-centered mt-3">
@@ -329,29 +334,54 @@ class Room extends Component {
             description="Clink Agree"
           />
           <ButtonDropdown
-            buttonClass="button is-medium is-white"
+            buttonClass="button is-large is-white"
             handler={this.handleAttention}
-            fontawesome="fas fa-concierge-bell"
+            fontawesome="fas fa-bullhorn"
             description="Attention"
           />
           <ButtonDropdown
-            buttonClass="button is-medium is-white"
+            buttonClass="button is-large is-white"
             handler={this.handleAttentionAgree}
             fontawesome="fas fa-check-circle"
             description="Attention Agree"
           />
           <ButtonDropdown
-            buttonClass="button is-medium is-white"
+            buttonClass="button is-large is-white"
             handler={this.handleSeatSwap}
             fontawesome="fas fa-exchange-alt"
             description="Seat Swap"
           />
           <ButtonDropdown
-            buttonClass="button is-medium is-white"
+            buttonClass="button is-large is-white"
             handler={this.handleSeatShuffle}
             fontawesome="fas fa-random"
             description="Seat Shuffle"
           />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-comments"
+            description="Chat"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fab fa-youtube"
+            description="Share Video"
+          />
+          <ButtonDropdown
+            buttonClass={this.getVideoButtonClass()}
+            handler={this.handleVideo}
+            fontawesome="fas fa-video-slash"
+            description={this.getVideoInnerHTML()}
+          />
+          <ButtonDropdown
+            buttonClass={this.getAudioButtonClass()}
+            handler={this.handleAudio}
+            fontawesome="fas fa-microphone-slash"
+            description={this.getAudioInnerHTML()}
+          />
+
         </div>
 
         <div className="has-text-centered mt-2">
@@ -376,21 +406,9 @@ class Room extends Component {
             ref={this.localVideoRef}
             description={this.state.playerName}
           />
-          <ButtonDropdown
-            buttonClass={this.getVideoButtonClass()}
-            handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
-            description={this.getVideoInnerHTML()}
-          />
-          <ButtonDropdown
-            buttonClass={this.getAudioButtonClass()}
-            handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
-            description={this.getAudioInnerHTML()}
-          />
         </div>
         <div className="has-text-centered">{this.getVideos()}</div>
-      </div>
+      </MainContainer>
     );
   }
 }
