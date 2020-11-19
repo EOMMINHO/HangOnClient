@@ -310,17 +310,17 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
-        <Navbar/>
-        <h1 className="has-text-centered" style={{ color: 'white' }}>
+        <Navbar />
+        <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
         </h1>
-        <h1 className="has-text-centered" style={{ color: 'white' }}>
+        <h1 className="has-text-centered" style={{ color: "white" }}>
           Player Name : {this.state.playerName}
         </h1>
-        <h1 className="has-text-centered" style={{ color: 'white' }}>
+        <h1 className="has-text-centered" style={{ color: "white" }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
-        <div className="box has-text-centered mt-3">
+        <div className="box has-text-centered mt-3 mx-6">
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
             handler={this.handleClink}
@@ -381,32 +381,37 @@ class Room extends Component {
             fontawesome="fas fa-microphone-slash"
             description={this.getAudioInnerHTML()}
           />
-
         </div>
 
         <div className="has-text-centered mt-2">
-          <div className="control">
-            <textarea
-              className="textarea has-fixed-size"
-              readOnly
-              rows="10"
-              ref={this.chatBoardRef}
-            ></textarea>
+          <div className="columns">
+            <div className="column is-9">
+              <VideoDropdown
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            </div>
+            <div className="column is-2">
+              <div className="control">
+                <textarea
+                  className="textarea has-fixed-size"
+                  readOnly
+                  rows="10"
+                  ref={this.chatBoardRef}
+                ></textarea>
+              </div>
+              <input
+                className="input"
+                type="text"
+                placeholder="text"
+                ref={this.chatRef}
+                onKeyPress={(e) => this.handleChat(e)}
+              />
+            </div>
+            <div className="column is-1"></div>
           </div>
-          <input
-            className="input"
-            type="text"
-            placeholder="text"
-            ref={this.chatRef}
-            onKeyPress={(e) => this.handleChat(e)}
-          />
         </div>
-        <div className="has-text-centered mt-2">
-          <VideoDropdown
-            ref={this.localVideoRef}
-            description={this.state.playerName}
-          />
-        </div>
+
         <div className="has-text-centered">{this.getVideos()}</div>
       </MainContainer>
     );
