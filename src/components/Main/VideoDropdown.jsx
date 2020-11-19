@@ -6,7 +6,8 @@ class VideoDropdown extends Component {
       <div className="dropdown is-hoverable">
         <div className="dropdown-trigger">
           <video
-            ref={this.props.ref}
+            key={this.props.myKey ? this.props.myKey : null}
+            ref={this.props.myRef}
             width="300"
             height="150"
             poster="/video-not-working.png"
