@@ -4,6 +4,10 @@ import ButtonDropdown from "./ButtonDropdown";
 import { MainContainer } from "./MainElement";
 import Navbar from "../NavBar/NavbarIndex";
 import VideoDropdown from "./VideoDropdown";
+import ReactNotification from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+import { store } from "react-notifications-component";
+import "animate.css";
 const Util = require("../../utils/utils");
 const delay = require("delay");
 
@@ -78,6 +82,16 @@ class Room extends Component {
             this.chatBoardRef,
             this.stream
           );
+          store.addNotification({
+            title: "New member joined",
+            message: "Greetings!",
+            type: "info",
+            container: "top-right",
+            insert: "top",
+            animationIn: ["animate__animated animate__fadeIn"], // `animate.css v4` classes
+            animationOut: ["animate__animated animate__fadeOut"], // `animate.css v4` classe
+            dismiss: { duration: 2000 },
+          });
         }
         this.noob = false;
         this.setState({ participants: participants });
@@ -289,18 +303,11 @@ class Room extends Component {
     return Object.keys(this.state.participants).map((userName) => {
       if (userName !== this.state.playerName) {
         return (
-          <video
+          <VideoDropdown
             key={userName}
-            ref={this.videoRefs[userName]}
-            width="300"
-            height="150"
-            poster="/video-not-working.png"
-            autoPlay
-            style={{
-              WebkitTransform: "scaleX(-1)",
-              transform: "scaleX(-1)",
-            }}
-          ></video>
+            myRef={this.videoRefs[userName]}
+            description={userName}
+          />
         );
       }
       return null;
@@ -310,6 +317,7 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
+        <ReactNotification />
         <Navbar />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
