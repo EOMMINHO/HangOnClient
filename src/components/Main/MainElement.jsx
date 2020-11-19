@@ -1,14 +1,15 @@
 import styled from 'styled-components';
 import ImgBg from './Bar.png';
 import table from './table.png'
+import { MdClose } from 'react-icons/md';
+
 
 export const MainContainer = styled.div`
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${ImgBg});
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${ImgBg});
     height: 100vh;
     background-position: center;
     background-size: cover;
-    justify-content: center;
-    align-items: center;
+    
 `;
 
 export const Table = styled.div`
@@ -17,15 +18,17 @@ export const Table = styled.div`
     background: url(${table});
 `;
 
-export const menubar = styled.div`
-  width: 400px;
-  height: 270px;
-  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+export const MenuBar = styled.div`
+  width: 700px;
+  height: 80px;
+  position: center;
   background: #fff;
-  color: #000;
-  display: grid;
-  position: relative;
-  z-index: 10;
   border-radius: 10px;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  margin-top: 24.8%;
+  margin-left: 24.8%;
 `;
 

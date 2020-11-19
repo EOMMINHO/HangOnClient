@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
-import { MainContainer } from "./MainElement";
-import Navbar from "../NavBar/NavbarIndex";
+import { MainContainer, MenuClose, MenuContent, TextBox, MenuBar } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
@@ -318,7 +317,6 @@ class Room extends Component {
     return (
       <MainContainer>
         <ReactNotification />
-        <Navbar />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
         </h1>
@@ -328,7 +326,39 @@ class Room extends Component {
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
-        <div className="box has-text-centered mt-3 mx-6">
+
+        <div className="has-text-centered mt-2">
+          <div className="columns">
+            <div className="column is-9">
+              <VideoDropdown
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            </div>
+            <div className="column is-2">
+              <div className="control">
+                <textarea
+                  className="textarea has-fixed-size"
+                  readOnly
+                  rows="10"
+                  ref={this.chatBoardRef}
+                ></textarea>
+              </div>
+              <input
+                className="input"
+                type="text"
+                placeholder="text"
+                ref={this.chatRef}
+                onKeyPress={(e) => this.handleChat(e)}
+              />
+            </div>
+            <div className="column is-1"></div>
+          </div>
+        </div>
+
+        <div className="has-text-centered">{this.getVideos()}</div>
+
+        <MenuBar>
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
             handler={this.handleClink}
@@ -389,38 +419,7 @@ class Room extends Component {
             fontawesome="fas fa-microphone-slash"
             description={this.getAudioInnerHTML()}
           />
-        </div>
-
-        <div className="has-text-centered mt-2">
-          <div className="columns">
-            <div className="column is-9">
-              <VideoDropdown
-                ref={this.localVideoRef}
-                description={this.state.playerName}
-              />
-            </div>
-            <div className="column is-2">
-              <div className="control">
-                <textarea
-                  className="textarea has-fixed-size"
-                  readOnly
-                  rows="10"
-                  ref={this.chatBoardRef}
-                ></textarea>
-              </div>
-              <input
-                className="input"
-                type="text"
-                placeholder="text"
-                ref={this.chatRef}
-                onKeyPress={(e) => this.handleChat(e)}
-              />
-            </div>
-            <div className="column is-1"></div>
-          </div>
-        </div>
-
-        <div className="has-text-centered">{this.getVideos()}</div>
+        </MenuBar>
       </MainContainer>
     );
   }
