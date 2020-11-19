@@ -9,9 +9,11 @@ export const Nav = styled.nav`
   font-size: 3rem;
   color: #fff;
 `;
-export const NavLink = styled(Link)`
+export const NavLink = styled.button`
   color: #fff;
   font-size: 2.5rem;
+  background: transparent;
+  border: transparent;
   display: flex;
   align-items: center;
   text-decoration: none;

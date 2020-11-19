@@ -3,9 +3,13 @@ import { Nav, NavLink } from './NavbarElements';
 
 const Navbar = () => {
   
+  function handleClick () {
+    window.location.href = "/";
+  }
+
   return (
       <Nav>
-        <NavLink to = "/"> Hang On </NavLink>
+        <NavLink onClick = {handleClick}> Hang On </NavLink>
       </Nav>
   );
 };
