@@ -287,18 +287,11 @@ class Room extends Component {
     return Object.keys(this.state.participants).map((userName) => {
       if (userName !== this.state.playerName) {
         return (
-          <video
-            key={userName}
-            ref={this.videoRefs[userName]}
-            width="300"
-            height="150"
-            poster="/video-not-working.png"
-            autoPlay
-            style={{
-              WebkitTransform: "scaleX(-1)",
-              transform: "scaleX(-1)",
-            }}
-          ></video>
+          <VideoDropdown
+            myKey={userName}
+            myRef={this.videoRefs[userName]}
+            description={userName}
+          />
         );
       }
       return null;
@@ -373,7 +366,7 @@ class Room extends Component {
         </div>
         <div className="has-text-centered mt-2">
           <VideoDropdown
-            ref={this.localVideoRef}
+            myRef={this.localVideoRef}
             description={this.state.playerName}
           />
           <ButtonDropdown
