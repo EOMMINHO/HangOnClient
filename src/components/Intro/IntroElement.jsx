@@ -12,7 +12,7 @@ export const IntroContainer = styled.div`
 export const IntroContent = styled.div`
   height: calc(100vh - 80px);
   max-height: 100%;
-  padding: 0rem calc((100vw - 1300px) / 2);
+  margin-left: 5%;
 `;
 
 export const IntroItems = styled.div`
@@ -22,7 +22,6 @@ export const IntroItems = styled.div`
   align-items: flex-start;
   height: 100vh;
   max-height: 100%;
-  padding: 0 2rem;
   width: 650px;
   color: #fff;
   text-transform: uppercase;
