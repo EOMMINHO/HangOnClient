@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
+import VideoDropdown from "./VideoDropdown";
 const Util = require("../utils/utils");
 const delay = require("delay");
 
@@ -250,9 +251,9 @@ class Room extends Component {
     // Make button clickable only if the device has video/audio input,
     // and when video is turned off.
     if (this.state.videoAvailable) {
-      return "button";
+      return "button is-medium is-white";
     } else {
-      return "button is-static";
+      return "button is-static is-medium is-white";
     }
   }
 
@@ -260,9 +261,9 @@ class Room extends Component {
     // Make button clickable only if the device has audio input,
     // and when audio is turned off.
     if (this.state.audioAvailable) {
-      return "button";
+      return "button is-medium is-white";
     } else {
-      return "button is-static";
+      return "button is-static is-medium is-white";
     }
   }
 
@@ -371,30 +372,22 @@ class Room extends Component {
           />
         </div>
         <div className="has-text-centered mt-2">
-          <video
+          <VideoDropdown
             ref={this.localVideoRef}
-            width="300"
-            height="150"
-            poster="/video-not-working.png"
-            autoPlay
-            muted
-            style={{
-              WebkitTransform: "scaleX(-1)",
-              transform: "scaleX(-1)",
-            }}
-          ></video>
-          <button
-            className={this.getVideoButtonClass()}
-            onClick={this.handleVideo}
-          >
-            {this.getVideoInnerHTML()}
-          </button>
-          <button
-            className={this.getAudioButtonClass()}
-            onClick={this.handleAudio}
-          >
-            {this.getAudioInnerHTML()}
-          </button>
+            description={this.state.playerName}
+          />
+          <ButtonDropdown
+            buttonClass={this.getVideoButtonClass()}
+            handler={this.handleVideo}
+            fontawesome="fas fa-video-slash"
+            description={this.getVideoInnerHTML()}
+          />
+          <ButtonDropdown
+            buttonClass={this.getAudioButtonClass()}
+            handler={this.handleAudio}
+            fontawesome="fas fa-microphone-slash"
+            description={this.getAudioInnerHTML()}
+          />
         </div>
         <div className="has-text-centered">{this.getVideos()}</div>
       </div>
