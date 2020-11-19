@@ -25,10 +25,10 @@ export const MenuBar = styled.div`
   background: #fff;
   border-radius: 10px;
   position: fixed;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;  
-  margin-top: 24.8%;
   margin-left: 24.8%;
 `;
 
