@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
+import ButtonDropdown from "./ButtonDropdown";
 const Util = require("../utils/utils");
 const delay = require("delay");
 
@@ -231,17 +232,17 @@ class Room extends Component {
 
   getClinkClass() {
     if (this.state.clinkInProgress) {
-      return "button is-loading";
+      return "button is-loading is-medium is-white";
     } else {
-      return "button";
+      return "button is-medium is-white";
     }
   }
 
   getClinkAgreeClass() {
     if (this.state.clinkInProgress && !this.state.clinked) {
-      return "button";
+      return "button is-medium is-white";
     } else {
-      return "button is-static";
+      return "button is-static is-medium is-white";
     }
   }
 
@@ -313,37 +314,45 @@ class Room extends Component {
         <h1 className="has-text-centered">
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
-        <div className="has-text-centered mt-6">
-          <button className={this.getClinkClass()} onClick={this.handleClink}>
-            Clink
-          </button>
-          <button
-            className={this.getClinkAgreeClass()}
-            onClick={this.handleClinkAgree}
-          >
-            Clink Agree
-          </button>
+        <div className="box has-text-centered mt-3">
+          <ButtonDropdown
+            buttonClass={this.getClinkClass()}
+            handler={this.handleClink}
+            fontawesome="fas fa-glass-cheers"
+            description="Clink"
+          />
+          <ButtonDropdown
+            buttonClass={this.getClinkAgreeClass()}
+            handler={this.handleClinkAgree}
+            fontawesome="fas fa-check-circle"
+            description="Clink Agree"
+          />
+          <ButtonDropdown
+            buttonClass="button is-medium is-white"
+            handler={this.handleAttention}
+            fontawesome="fas fa-concierge-bell"
+            description="Attention"
+          />
+          <ButtonDropdown
+            buttonClass="button is-medium is-white"
+            handler={this.handleAttentionAgree}
+            fontawesome="fas fa-check-circle"
+            description="Attention Agree"
+          />
+          <ButtonDropdown
+            buttonClass="button is-medium is-white"
+            handler={this.handleSeatSwap}
+            fontawesome="fas fa-exchange-alt"
+            description="Seat Swap"
+          />
+          <ButtonDropdown
+            buttonClass="button is-medium is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-random"
+            description="Seat Shuffle"
+          />
         </div>
-        <div className="has-text-centered mt-2">
-          <button className="button" onClick={this.handleAttention}>
-            Attention
-          </button>
-        </div>
-        <div className="has-text-centered mt-2">
-          <button className="button" onClick={this.handleAttentionAgree}>
-            Attention Agree
-          </button>
-        </div>
-        <div className="has-text-centered mt-2">
-          <button className="button" onClick={this.handleSeatSwap}>
-            Seat Swap
-          </button>
-        </div>
-        <div className="has-text-centered mt-2">
-          <button className="button" onClick={this.handleSeatShuffle}>
-            Seat Shuffle
-          </button>
-        </div>
+
         <div className="has-text-centered mt-2">
           <div className="control">
             <textarea
