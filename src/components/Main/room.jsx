@@ -28,6 +28,7 @@ class Room extends Component {
     audioOn: false,
     videoAvailable: false,
     audioAvailable: false,
+    isCopied: false,
   };
 
   constructor() {
@@ -165,6 +166,7 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
   }
 
   handleClink() {
@@ -247,6 +249,11 @@ class Room extends Component {
     }
   }
 
+  async handleCopy() {
+    await navigator.clipboard.writeText(this.state.roomName);
+    this.setState({ isCopied: true });
+  }
+
   getClinkClass() {
     if (this.state.clinkInProgress) {
       return "button is-loading is-large is-white";
@@ -314,6 +321,14 @@ class Room extends Component {
     });
   }
 
+  getCopyClass() {
+    if (this.state.isCopied) {
+      return "fas fa-clipboard";
+    } else {
+      return "far fa-clipboard";
+    }
+  }
+
   render() {
     return (
       <MainContainer>
@@ -321,7 +336,14 @@ class Room extends Component {
         <Navbar />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
+          <span
+            className="icon is-small mx-2 has-text-info"
+            onClick={this.handleCopy}
+          >
+            <i className={this.getCopyClass()}></i>
+          </span>
         </h1>
+
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Player Name : {this.state.playerName}
         </h1>
