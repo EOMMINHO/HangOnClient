@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
-import { MainContainer, MenuClose, MenuContent, TextBox, MenuBar } from "./MainElement";
+import { MainContainer } from "./MainElement";
+import Navbar from "../NavBar/NavbarIndex";
 import VideoDropdown from "./VideoDropdown";
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
@@ -20,14 +21,16 @@ class Room extends Component {
     playerName: "",
     roomName: "",
     participants: {},
+    clink_participants: [],
     clinked: false,
     clinkInProgress: false,
+    attention_target: "",
+    attended: false,
     attentionInProgress: false,
     videoOn: false,
     audioOn: false,
     videoAvailable: false,
     audioAvailable: false,
-    isCopied: false,
   };
 
   constructor() {
@@ -107,17 +110,33 @@ class Room extends Component {
     });
     this.socket.on("clinkResponse", (isSuccess, playerName) => {
       if (isSuccess) {
+        if (playerName === this.state.playerName) {
+          this.setState({ clinked: true, modalActive: true });
+        }
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
+        this.setState({ clink_participants: [...this.state.clink_participants, playerName] });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
-      this.setState({ clinkInProgress: false, clinked: false });
+      this.setState({ clinkInProgress: false });
       console.log(`${playerName} has agreed to clink`);
+      if (playerName === this.state.playerName) {
+        this.setState({ clinked: true, modalActive: true });
+      }
+      this.setState({ clink_participants: [...this.state.clink_participants, playerName] })
     });
-    this.socket.on("attentionResponse", (isSuccess, participants) => {
+    this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ participants: participants });
+        this.setState({ attentionInProgress: true });
+        console.log(`${playerName} has requested to get attention`);
+        this.setState({ attention_target: playerName });
+      }
+    });
+    this.socket.on("attentionAgreeResponse", (isSuccess) => {
+      this.setState({ attentionInProgress: false });
+      if (isSuccess) {
+        this.setState({ attended: true });
       }
     });
     this.socket.on("attentionAgreeResponse", (participants) => {
@@ -165,7 +184,52 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
+    this.handleModalOutClick = this.handleModalOutClick.bind(this);
+  }
+
+  getModalClass() {
+    if (this.state.modalActive) {
+      return "modal is-active";
+    } else {
+      return "modal";
+    }
+  }
+
+  getModalContent() {
+    if (this.state.clinked) {
+      return (
+        <div>
+          <div className="field">
+            {this.getClinkVideos()}
+          </div>
+        </div>
+      );
+    }
+    else if (this.state.attended) {
+      return (
+        <div>
+          <div className="field">
+            {this.getAttentionVideo()}
+          </div>
+        </div>
+      );
+    }
+    else {
+      return null;
+    }
+  }
+
+  handleModalOutClick() {
+    this.setState({ modalActive: !this.state.modalActive });
+    if (this.state.clinked) {
+      this.setState({clink_participants: this.state.clink_participants.filter((user) => { 
+        return user !== this.state.playerName
+      })});
+      //const idx = this.state.clink_participants.indexOf(this.state.playerName);
+      //this.state.clink_participants.splice(idx, 1);
+    }
+    this.setState({ clinked: false });
+    //this.setState({ attended: false });
   }
 
   handleClink() {
@@ -248,15 +312,10 @@ class Room extends Component {
     }
   }
 
-  async handleCopy() {
-    await navigator.clipboard.writeText(this.state.roomName);
-    this.setState({ isCopied: true });
-  }
-
   getClinkClass() {
     if (this.state.clinkInProgress) {
       return "button is-loading is-large is-white";
-    } else {
+    } else if (this.state.clink_participants.length == 0) {
       return "button is-large is-white";
     }
   }
@@ -320,67 +379,57 @@ class Room extends Component {
     });
   }
 
-  getCopyClass() {
-    if (this.state.isCopied) {
-      return "fas fa-clipboard";
-    } else {
-      return "far fa-clipboard";
+  getClinkVideos() {
+    return Object.keys(this.state.clink_participants).map((userName) => {
+      if (userName !== this.state.playerName) {
+        return (
+          <clinkVideos name={userName} ref={this.videoRefs[userName]}></clinkVideos>
+        );
+      }
+      return null;
+    });
+  }
+
+  getAttentionVideo() {
+    if (this.state.attended) {
+      return (
+        <VideoDropdown
+          key={this.state.attention_target}
+          myRef={this.videoRefs[this.state.attention_target]}
+          description={this.state.attention_target}
+        />
+      );
     }
+    return null;
   }
 
   render() {
     return (
       <MainContainer>
+        <div className={this.getModalClass()}>
+          <div
+            className="modal-background"
+            // onClick={this.handleModalClick}
+          ></div>
+          <div className="modal-content box">{this.getModalContent()}</div>
+          <button
+            className="modal-close is-large"
+            aria-label="close"
+            onClick={this.handleModalOutClick}
+          ></button>
+        </div>
         <ReactNotification />
+        <Navbar />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
-          <span
-            className="icon is-small mx-2 has-text-info"
-            onClick={this.handleCopy}
-          >
-            <i className={this.getCopyClass()}></i>
-          </span>
         </h1>
-
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Player Name : {this.state.playerName}
         </h1>
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
-
-        <div className="has-text-centered mt-2">
-          <div className="columns">
-            <div className="column is-9">
-              <VideoDropdown
-                ref={this.localVideoRef}
-                description={this.state.playerName}
-              />
-            </div>
-            <div className="column is-2">
-              <div className="control">
-                <textarea
-                  className="textarea has-fixed-size"
-                  readOnly
-                  rows="10"
-                  ref={this.chatBoardRef}
-                ></textarea>
-              </div>
-              <input
-                className="input"
-                type="text"
-                placeholder="text"
-                ref={this.chatRef}
-                onKeyPress={(e) => this.handleChat(e)}
-              />
-            </div>
-            <div className="column is-1"></div>
-          </div>
-        </div>
-
-        <div className="has-text-centered">{this.getVideos()}</div>
-
-        <MenuBar>
+        <div className="box has-text-centered mt-3 mx-6">
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
             handler={this.handleClink}
@@ -441,10 +490,49 @@ class Room extends Component {
             fontawesome="fas fa-microphone-slash"
             description={this.getAudioInnerHTML()}
           />
-        </MenuBar>
+        </div>
+
+        <div className="has-text-centered mt-2">
+          <div className="columns">
+            <div className="column is-9">
+              <VideoDropdown
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            </div>
+            <div className="column is-2">
+              <div className="control">
+                <textarea
+                  className="textarea has-fixed-size"
+                  readOnly
+                  rows="10"
+                  ref={this.chatBoardRef}
+                ></textarea>
+              </div>
+              <input
+                className="input"
+                type="text"
+                placeholder="text"
+                ref={this.chatRef}
+                onKeyPress={(e) => this.handleChat(e)}
+              />
+            </div>
+            <div className="column is-1"></div>
+          </div>
+        </div>
+
+        <div className="has-text-centered">{this.getVideos()}</div>
       </MainContainer>
     );
   }
 }
+
+const clinkVideos = React.forwardRef((props, name, ref) => {
+  <VideoDropdown
+          key={name}
+          myRef={ref[name]}
+          description={name}
+          />
+  });
 
 export default Room;
