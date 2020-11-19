@@ -253,9 +253,9 @@ class Room extends Component {
     // Make button clickable only if the device has video/audio input,
     // and when video is turned off.
     if (this.state.videoAvailable) {
-      return "button";
+      return "button is-large is-white";
     } else {
-      return "button is-static";
+      return "button is-static is-large is-white";
     }
   }
 
@@ -263,9 +263,9 @@ class Room extends Component {
     // Make button clickable only if the device has audio input,
     // and when audio is turned off.
     if (this.state.audioAvailable) {
-      return "button";
+      return "button is-large is-white";
     } else {
-      return "button is-static";
+      return "button is-static is-large is-white";
     }
   }
 
