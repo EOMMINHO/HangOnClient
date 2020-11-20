@@ -131,19 +131,19 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
+        if (playerName === this.state.playerName) {
+          this.setState({ attended: true });
+        }
         this.setState({ attentionInProgress: true });
         console.log(`${playerName} has requested to get attention`);
         this.setState({ attention_target: playerName });
       }
     });
-    this.socket.on("attentionAgreeResponse", (isSuccess) => {
+    this.socket.on("attentionAgreeResponse", (playerName) => {
       this.setState({ attentionInProgress: false });
-      if (isSuccess) {
+      if (playerName === this.state.playerName) {
         this.setState({ attended: true });
       }
-    });
-    this.socket.on("attentionAgreeResponse", (participants) => {
-      this.setState({ participants: participants });
     });
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
@@ -208,15 +208,6 @@ class Room extends Component {
         </div>
       );
     }
-    else if (this.state.attended) {
-      return (
-        <div>
-          <div className="field">
-            {this.getAttentionVideo()}
-          </div>
-        </div>
-      );
-    }
     else {
       return null;
     }
@@ -232,7 +223,6 @@ class Room extends Component {
       //this.state.clink_participants.splice(idx, 1);
     }
     this.setState({ clinked: false });
-    //this.setState({ attended: false });
   }
 
   handleClink() {
@@ -331,6 +321,26 @@ class Room extends Component {
     }
   }
 
+  getAttentionClass() {
+    if (this.state.attentionInProgress && this.state.attention_target !== null) {
+      return "button is-loading is-large is-white";
+    }
+    else if (this.state.attended) {
+      return "button is-large is-white"
+    }
+    else {
+      return "button is-large is-white";
+    }
+  }
+
+  getAttentionAgreeClass() {
+    if (this.state.attentionInProgress && this.state.attention_target !== null) {
+      return "button is-large is-white";
+    } else {
+      return "button is-static is-large is-white";
+    }
+  }
+
   getVideoButtonClass() {
     // Make button clickable only if the device has video/audio input,
     // and when video is turned off.
@@ -409,29 +419,10 @@ class Room extends Component {
               </div>
             </div>
           </div>
-          //<clinkVideos name={userName} ref={this.videoRefs[userName]}></clinkVideos>
-          /*<VideoDropdown
-            key={userName}
-            myRef={this.clinkRefs[userName]}
-            description={userName}
-          />*/
         );
       }
       return null;
     });
-  }
-
-  getAttentionVideo() {
-    if (this.state.attended) {
-      return (
-        <VideoDropdown
-          key={this.state.attention_target}
-          myRef={this.videoRefs[this.state.attention_target]}
-          description={this.state.attention_target}
-        />
-      );
-    }
-    return null;
   }
 
   render() {
@@ -474,13 +465,13 @@ class Room extends Component {
             description="Clink Agree"
           />
           <ButtonDropdown
-            buttonClass="button is-large is-white"
+            buttonClass={this.getAttentionClass()}
             handler={this.handleAttention}
             fontawesome="fas fa-bullhorn"
             description="Attention"
           />
           <ButtonDropdown
-            buttonClass="button is-large is-white"
+            buttonClass={this.getAttentionAgreeClass()}
             handler={this.handleAttentionAgree}
             fontawesome="fas fa-check-circle"
             description="Attention Agree"
