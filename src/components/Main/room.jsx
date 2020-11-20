@@ -131,19 +131,16 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
+        this.setState({ attention_target: "" });
         if (playerName === this.state.playerName) {
           this.setState({ attended: true });
         }
         this.setState({ attentionInProgress: true });
         console.log(`${playerName} has requested to get attention`);
-        this.setState({ attention_target: playerName });
       }
     });
-    this.socket.on("attentionAgreeResponse", (playerName) => {
-      this.setState({ attentionInProgress: false });
-      if (playerName === this.state.playerName) {
-        this.setState({ attended: true });
-      }
+    this.socket.on("attentionOn", (playerName) => {
+      this.setState({ attention_target: playerName });
     });
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
@@ -235,8 +232,13 @@ class Room extends Component {
   }
 
   handleAttention() {
-    this.setState({ attentionInProgress: true });
-    this.socket.emit("attention", this.state.playerName, this.state.roomName);
+    if (this.state.attended) {
+      this.setState({ attention_target: "", attended: false });
+    } else {
+      this.setState({ attentionInProgress: true });
+      this.socket.emit("attention", this.state.playerName, this.state.roomName);
+    }
+    
   }
 
   handleAttentionAgree() {
@@ -322,11 +324,11 @@ class Room extends Component {
   }
 
   getAttentionClass() {
-    if (this.state.attentionInProgress && this.state.attention_target !== null) {
+    if (this.state.attentionInProgress && this.state.attended) {
       return "button is-loading is-large is-white";
     }
-    else if (this.state.attended) {
-      return "button is-large is-white"
+    else if (!this.state.attended) {
+      return "button is-large is-white" // TODO: 'canceling attention' indication
     }
     else {
       return "button is-large is-white";
@@ -334,7 +336,7 @@ class Room extends Component {
   }
 
   getAttentionAgreeClass() {
-    if (this.state.attentionInProgress && this.state.attention_target !== null) {
+    if (this.state.attentionInProgress && !this.state.attended) {
       return "button is-large is-white";
     } else {
       return "button is-static is-large is-white";
@@ -379,7 +381,16 @@ class Room extends Component {
 
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
-      if (userName !== this.state.playerName) {
+      if (this.state.attention_target !== "") {
+        return ( // TODO: attention target video featured
+          <VideoDropdown
+            key={userName}
+            myRef={this.videoRefs[userName]}
+            description={userName}
+          />
+        );
+      }
+      else if (userName !== this.state.playerName) {
         return (
           <VideoDropdown
             key={userName}
