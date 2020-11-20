@@ -16,6 +16,7 @@ class Room extends Component {
   noob = true; // noob need to send initiator to old users (RTC).
   peers = {};
   videoRefs = {};
+  clinkRefs = {};
   stream = null;
   state = {
     playerName: "",
@@ -71,6 +72,7 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
+            this.clinkRefs,
             this.chatBoardRef,
             this.stream
           );
@@ -82,6 +84,7 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
+            this.clinkRefs,
             this.chatBoardRef,
             this.stream
           );
@@ -313,9 +316,9 @@ class Room extends Component {
   }
 
   getClinkClass() {
-    if (this.state.clinkInProgress) {
+    if (this.state.clinkInProgress && this.state.clink_participants.length !== 0) {
       return "button is-loading is-large is-white";
-    } else if (this.state.clink_participants.length == 0) {
+    } else {
       return "button is-large is-white";
     }
   }
@@ -383,7 +386,35 @@ class Room extends Component {
     return Object.keys(this.state.clink_participants).map((userName) => {
       if (userName !== this.state.playerName) {
         return (
-          <clinkVideos name={userName} ref={this.videoRefs[userName]}></clinkVideos>
+          <div className="dropdown is-hoverable">
+            <div className="dropdown-trigger">
+              <video
+                ref={this.clinkRefs[userName]}
+                width="300"
+                height="150"
+                poster="/video-not-working.png"
+                autoPlay
+                muted
+                style={{
+                  WebkitTransform: "scaleX(-1)",
+                  transform: "scaleX(-1)",
+                }}
+              ></video>
+            </div>
+            <div className="dropdown-menu">
+              <div className="dropdown-content">
+                <div className="dropdown-item has-text-link has-text-weight-medium">
+                  {userName}
+                </div>
+              </div>
+            </div>
+          </div>
+          //<clinkVideos name={userName} ref={this.videoRefs[userName]}></clinkVideos>
+          /*<VideoDropdown
+            key={userName}
+            myRef={this.clinkRefs[userName]}
+            description={userName}
+          />*/
         );
       }
       return null;
