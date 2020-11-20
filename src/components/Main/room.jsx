@@ -7,8 +7,6 @@ import { MainContainer, Table, MenuBar } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { store } from "react-notifications-component";
-import "animate.css";
 const Util = require("../../utils/utils");
 const delay = require("delay");
 
