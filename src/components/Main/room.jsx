@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import { MainContainer, Table, MenuBar } from "./MainElement";
@@ -196,6 +197,7 @@ class Room extends Component {
     this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
+    this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
   }
 
   getModalClass() {
@@ -356,6 +358,8 @@ class Room extends Component {
       this.chatBoardRef.current.scrollTop = this.chatBoardRef.current.scrollHeight;
     }
   }
+
+  handleYoutubeVideo() {}
 
   getClinkClass() {
     if (
@@ -552,6 +556,14 @@ class Room extends Component {
                 ref={this.chatRef}
                 onKeyPress={(e) => this.handleChat(e)}
               />
+              <div className="my-6">
+                <ReactPlayer
+                  url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
+                  controls={true}
+                  width="320px"
+                  height="180px"
+                />
+              </div>
             </div>
             <div className="column is-1"></div>
           </div>
@@ -608,13 +620,13 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
+            handler={null}
             fontawesome="fas fa-comments"
             description="Chat"
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
+            handler={this.handleYoutubeVideo}
             fontawesome="fab fa-youtube"
             description="Share Video"
           />
