@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
+import Chat from "./Chat";
 import { MainContainer, Table, MenuBar } from "./MainElement";
-import Navbar from "../NavBar/NavbarIndex";
 import VideoDropdown from "./VideoDropdown";
-import ReactNotification from "react-notifications-component";
-import "react-notifications-component/dist/theme.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { store } from "react-notifications-component";
 import "animate.css";
 const Util = require("../../utils/utils");
@@ -34,6 +34,7 @@ class Room extends Component {
     audioOn: false,
     videoAvailable: false,
     audioAvailable: false,
+    chatOpen: true,
   };
 
   constructor() {
@@ -90,15 +91,14 @@ class Room extends Component {
             this.chatBoardRef,
             this.stream
           );
-          store.addNotification({
-            title: "New member joined",
-            message: "Greetings!",
-            type: "info",
-            container: "top-right",
-            insert: "top",
-            animationIn: ["animate__animated animate__fadeIn"], // `animate.css v4` classes
-            animationOut: ["animate__animated animate__fadeOut"], // `animate.css v4` classe
-            dismiss: { duration: 2000 },
+          toast.info("🚀 New Member Joined!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
           });
         }
         this.noob = false;
@@ -120,7 +120,9 @@ class Room extends Component {
         }
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
-        this.setState({ clink_participants: [...this.state.clink_participants, playerName] });
+        this.setState({
+          clink_participants: [...this.state.clink_participants, playerName],
+        });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
@@ -129,7 +131,9 @@ class Room extends Component {
       if (playerName === this.state.playerName) {
         this.setState({ clinked: true, modalActive: true });
       }
-      this.setState({ clink_participants: [...this.state.clink_participants, playerName] })
+      this.setState({
+        clink_participants: [...this.state.clink_participants, playerName],
+      });
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
@@ -143,7 +147,11 @@ class Room extends Component {
       this.setState({ participants: participants });
     });
     this.socket.on("attentionOn", (participants) => {
-      this.setState({ participants: participants, attentionInProgress: false, attended: true });
+      this.setState({
+        participants: participants,
+        attentionInProgress: false,
+        attended: true,
+      });
     });
     this.socket.on("seatSwapResponse", (participants) => {
       this.setState({ participants: participants });
@@ -193,6 +201,7 @@ class Room extends Component {
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
+    this.handleChatClose = this.handleChatClose.bind(this);
   }
 
   getModalClass() {
@@ -207,27 +216,21 @@ class Room extends Component {
     await navigator.clipboard.writeText(this.state.roomName);
     this.setState({ isCopied: true });
   }
-  
+
   getModalContent() {
     if (this.state.clinked) {
       return (
         <div>
-          <div className="field">
-            {this.getClinkVideos()}
-          </div>
+          <div className="field">{this.getClinkVideos()}</div>
         </div>
       );
-    }
-    else if (this.state.swapInProgress) {
+    } else if (this.state.swapInProgress) {
       return (
         <div>
-          <div className="field">
-            {this.getParticipantsList()}
-          </div>
+          <div className="field">{this.getParticipantsList()}</div>
         </div>
       );
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -238,7 +241,7 @@ class Room extends Component {
         return (
           <button
             className="button"
-            textvariable={userName} 
+            textvariable={userName}
             onClick={this.handleSwapClick(userName)}
           >
             {userName}
@@ -250,15 +253,22 @@ class Room extends Component {
   }
 
   handleSwapClick(swap_target) {
-    this.socket.emit("seatSwap", this.state.playerName, swap_target, this.state.roomName);
+    this.socket.emit(
+      "seatSwap",
+      this.state.playerName,
+      swap_target,
+      this.state.roomName
+    );
   }
 
   handleModalOutClick() {
     this.setState({ modalActive: false });
     if (this.state.clinked) {
-      this.setState({clink_participants: this.state.clink_participants.filter((user) => { 
-        return user !== this.state.playerName
-      })});
+      this.setState({
+        clink_participants: this.state.clink_participants.filter((user) => {
+          return user !== this.state.playerName;
+        }),
+      });
     }
     this.setState({ clinked: false, swapInProgress: false });
   }
@@ -279,7 +289,6 @@ class Room extends Component {
       this.setState({ attentionInProgress: true });
       this.socket.emit("attention", this.state.playerName, this.state.roomName);
     }
-    
   }
 
   handleAttentionAgree() {
@@ -348,10 +357,17 @@ class Room extends Component {
     }
   }
 
+  handleChatClose() {
+    this.setState({ chatOpen: !this.state.chatOpen });
+  }
+
   handleYoutubeVideo() {}
 
   getClinkClass() {
-    if (this.state.clinkInProgress && this.state.clink_participants.length !== 0) {
+    if (
+      this.state.clinkInProgress &&
+      this.state.clink_participants.length !== 0
+    ) {
       return "button is-loading is-large is-white";
     } else {
       return "button is-large is-white";
@@ -430,10 +446,10 @@ class Room extends Component {
             />
           );
         } else return null;
-      }
-      else if (userName !== this.state.playerName) {
+      } else if (userName !== this.state.playerName) {
         if (this.state.attention_target === userName) {
-          return ( // TODO: attention target video featured
+          return (
+            // TODO: attention target video featured
             <VideoDropdown
               key={userName}
               myRef={this.videoRefs[userName]}
@@ -449,14 +465,15 @@ class Room extends Component {
             />
           );
         }
-      } else return (
-        <div>
-          <VideoDropdown
-            ref={this.localVideoRef}
-            description={this.state.playerName}
-          />
-        </div>
-      );
+      } else
+        return (
+          <div>
+            <VideoDropdown
+              ref={this.localVideoRef}
+              description={this.state.playerName}
+            />
+          </div>
+        );
     });
   }
 
@@ -504,7 +521,7 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
-        <Table/>
+        <Table />
         <div className={this.getModalClass()}>
           <div
             className="modal-background"
@@ -517,40 +534,44 @@ class Room extends Component {
             onClick={this.handleModalOutClick}
           ></button>
         </div>
-        <ReactNotification />
-        <h1 className="has-text-centered" style={{ color: "white" }}>
-          Room Name : {this.state.roomName}
-          <span
-            className="icon is-small mx-2 has-text-info"
-            onClick={this.handleCopy}
-          >
-            <i className={this.getCopyClass()}></i>
-          </span>
-        </h1>
-        <h1 className="has-text-centered" style={{ color: "white" }}>
-          Player Name : {this.state.playerName}
-        </h1>
-        <h1 className="has-text-centered" style={{ color: "white" }}>
-          Participants: {JSON.stringify(this.state.participants)}
-        </h1>
-        
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <div>
+          <h1 className="has-text-centered" style={{ color: "white" }}>
+            Room Name : {this.state.roomName}
+            <span
+              className="icon is-small mx-2 has-text-info"
+              onClick={this.handleCopy}
+            >
+              <i className={this.getCopyClass()}></i>
+            </span>
+          </h1>
+          <h1 className="has-text-centered" style={{ color: "white" }}>
+            Player Name : {this.state.playerName}
+          </h1>
+          <h1 className="has-text-centered" style={{ color: "white" }}>
+            Participants: {JSON.stringify(this.state.participants)}
+          </h1>
+        </div>
+
         <div className="has-text-centered mt-2">
           <div className="columns">
-            <div className="column is-2">
-              <div className="control">
-                <textarea
-                  className="textarea has-fixed-size"
-                  readOnly
-                  rows="10"
-                  ref={this.chatBoardRef}
-                ></textarea>
-              </div>
-              <input
-                className="input"
-                type="text"
-                placeholder="text"
-                ref={this.chatRef}
-                onKeyPress={(e) => this.handleChat(e)}
+            <div className="column is-2 mx-4">
+              <Chat
+                chatBoardRef={this.chatBoardRef}
+                chatRef={this.chatRef}
+                handleChat={this.handleChat}
+                handleClose={this.handleChatClose}
+                open={this.state.chatOpen}
               />
               <div className="my-6">
                 <ReactPlayer
@@ -572,7 +593,7 @@ class Room extends Component {
             handler={this.handleVideo}
             fontawesome="fas fa-video-slash"
             description={this.getVideoInnerHTML()}
-          />  
+          />
           <ButtonDropdown
             buttonClass={this.getAudioButtonClass()}
             handler={this.handleAudio}
@@ -617,7 +638,7 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={null}
+            handler={this.handleChatClose}
             fontawesome="fas fa-comments"
             description="Chat"
           />
@@ -627,9 +648,7 @@ class Room extends Component {
             fontawesome="fab fa-youtube"
             description="Share Video"
           />
-          
         </MenuBar>
-
       </MainContainer>
     );
   }
