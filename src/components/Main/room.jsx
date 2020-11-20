@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
-import { MainContainer } from "./MainElement";
+import { MainContainer, Table, MenuBar } from "./MainElement";
 import Navbar from "../NavBar/NavbarIndex";
 import VideoDropdown from "./VideoDropdown";
 import ReactNotification from "react-notifications-component";
@@ -191,6 +191,8 @@ class Room extends Component {
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
+
   }
 
   getModalClass() {
@@ -201,6 +203,11 @@ class Room extends Component {
     }
   }
 
+  async handleCopy() {
+    await navigator.clipboard.writeText(this.state.roomName);
+    this.setState({ isCopied: true });
+  }
+  
   getModalContent() {
     if (this.state.clinked) {
       return (
@@ -472,9 +479,18 @@ class Room extends Component {
     });
   }
 
+  getCopyClass() {
+    if (this.state.isCopied) {
+      return "fas fa-clipboard";
+    } else {
+      return "far fa-clipboard";
+    }
+  }
+
   render() {
     return (
       <MainContainer>
+        <Table/>
         <div className={this.getModalClass()}>
           <div
             className="modal-background"
@@ -488,9 +504,14 @@ class Room extends Component {
           ></button>
         </div>
         <ReactNotification />
-        <Navbar />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
+          <span
+            className="icon is-small mx-2 has-text-info"
+            onClick={this.handleCopy}
+          >
+            <i className={this.getCopyClass()}></i>
+          </span>
         </h1>
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Player Name : {this.state.playerName}
@@ -498,69 +519,7 @@ class Room extends Component {
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
-        <div className="box has-text-centered mt-3 mx-6">
-          <ButtonDropdown
-            buttonClass={this.getClinkClass()}
-            handler={this.handleClink}
-            fontawesome="fas fa-glass-cheers"
-            description="Clink"
-          />
-          <ButtonDropdown
-            buttonClass={this.getClinkAgreeClass()}
-            handler={this.handleClinkAgree}
-            fontawesome="fas fa-check-circle"
-            description="Clink Agree"
-          />
-          <ButtonDropdown
-            buttonClass={this.getAttentionClass()}
-            handler={this.handleAttention}
-            fontawesome="fas fa-bullhorn"
-            description="Attention"
-          />
-          <ButtonDropdown
-            buttonClass={this.getAttentionAgreeClass()}
-            handler={this.handleAttentionAgree}
-            fontawesome="fas fa-check-circle"
-            description="Attention Agree"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatSwap}
-            fontawesome="fas fa-exchange-alt"
-            description="Seat Swap"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fas fa-random"
-            description="Seat Shuffle"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fas fa-comments"
-            description="Chat"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fab fa-youtube"
-            description="Share Video"
-          />
-          <ButtonDropdown
-            buttonClass={this.getVideoButtonClass()}
-            handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
-            description={this.getVideoInnerHTML()}
-          />
-          <ButtonDropdown
-            buttonClass={this.getAudioButtonClass()}
-            handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
-            description={this.getAudioInnerHTML()}
-          />
-        </div>
-
+        
         <div className="has-text-centered mt-2">
           <div className="columns">
             <div className="column is-9">
@@ -589,6 +548,70 @@ class Room extends Component {
             <div className="column is-1"></div>
           </div>
         </div>
+
+        <MenuBar>
+          <ButtonDropdown
+            buttonClass={this.getVideoButtonClass()}
+            handler={this.handleVideo}
+            fontawesome="fas fa-video-slash"
+            description={this.getVideoInnerHTML()}
+          />  
+          <ButtonDropdown
+            buttonClass={this.getAudioButtonClass()}
+            handler={this.handleAudio}
+            fontawesome="fas fa-microphone-slash"
+            description={this.getAudioInnerHTML()}
+          />
+          <ButtonDropdown
+            buttonClass={this.getClinkClass()}
+            handler={this.handleClink}
+            fontawesome="fas fa-glass-cheers"
+            description="Clink"
+          />
+          <ButtonDropdown
+            buttonClass={this.getClinkAgreeClass()}
+            handler={this.handleClinkAgree}
+            fontawesome="fas fa-check-circle"
+            description="Clink Agree"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleAttention}
+            fontawesome="fas fa-bullhorn"
+            description="Attention"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleAttentionAgree}
+            fontawesome="fas fa-check-circle"
+            description="Attention Agree"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatSwap}
+            fontawesome="fas fa-exchange-alt"
+            description="Seat Swap"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-random"
+            description="Seat Shuffle"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-comments"
+            description="Chat"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fab fa-youtube"
+            description="Share Video"
+          />
+          
+        </MenuBar>
 
         <div className="has-text-centered">{this.getVideos()}</div>
       </MainContainer>
