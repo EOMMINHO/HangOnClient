@@ -133,16 +133,17 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ attention_target: "" });
-        if (playerName === this.state.playerName) {
-          this.setState({ attended: true });
-        }
+        console.log(playerName);
+        this.setState({ attention_target: playerName });
         this.setState({ attentionInProgress: true });
         console.log(`${playerName} has requested to get attention`);
       }
     });
-    this.socket.on("attentionOn", (playerName) => {
-      this.setState({ attention_target: playerName });
+    this.socket.on("attentionAgreeResponse", (participants) => {
+      this.setState({ participants: participants });
+    });
+    this.socket.on("attentionOn", (participants) => {
+      this.setState({ participants: participants, attentionInProgress: false, attended: true });
     });
     this.socket.on("seatSwapResponse", (participants) => {
       this.setState({ participants: participants });
@@ -368,11 +369,7 @@ class Room extends Component {
   getAttentionClass() {
     if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
-    }
-    else if (this.state.attended) {
-      return "button is-large" // TODO: 'canceling attention' indication
-    }
-    else {
+    } else {
       return "button is-large is-white";
     }
   }
@@ -564,7 +561,8 @@ class Room extends Component {
                 />
               </div>
             </div>
-            <div className="column is-1"></div>
+            <div className="column is-9">{this.getVideos()}</div>
+            <div className="column is-2"></div>
           </div>
         </div>
 
@@ -632,7 +630,6 @@ class Room extends Component {
           
         </MenuBar>
 
-        <div className="has-text-centered">{this.getVideos()}</div>
       </MainContainer>
     );
   }
