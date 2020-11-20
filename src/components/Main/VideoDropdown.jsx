@@ -8,13 +8,11 @@ class VideoDropdown extends Component {
           <video
             ref={this.props.myRef}
             width="300"
-            height="150"
+            height="400"
             poster="/video-not-working.png"
             autoPlay
             muted
             style={{
-              WebkitTransform: "scaleX(-1)",
-              transform: "scaleX(-1)",
             }}
           ></video>
         </div>

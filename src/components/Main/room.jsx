@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
-import { MainContainer, MenuClose, MenuContent, TextBox, MenuBar } from "./MainElement";
+import { MainContainer, MenuClose, MenuContent, TextBox, MenuBar, Table } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
@@ -331,6 +331,7 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
+        <Table />
         <ReactNotification />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
@@ -378,9 +379,22 @@ class Room extends Component {
           </div>
         </div>
 
-        <div className="has-text-centered">{this.getVideos()}</div>
 
+        <div className="has-text-centered">{this.getVideos()}</div>
+        <div/>
         <MenuBar>
+          <ButtonDropdown
+            buttonClass={this.getVideoButtonClass()}
+            handler={this.handleVideo}
+            fontawesome="fas fa-video-slash"
+            description={this.getVideoInnerHTML()}
+          />  
+          <ButtonDropdown
+            buttonClass={this.getAudioButtonClass()}
+            handler={this.handleAudio}
+            fontawesome="fas fa-microphone-slash"
+            description={this.getAudioInnerHTML()}
+          />
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
             handler={this.handleClink}
@@ -429,18 +443,7 @@ class Room extends Component {
             fontawesome="fab fa-youtube"
             description="Share Video"
           />
-          <ButtonDropdown
-            buttonClass={this.getVideoButtonClass()}
-            handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
-            description={this.getVideoInnerHTML()}
-          />
-          <ButtonDropdown
-            buttonClass={this.getAudioButtonClass()}
-            handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
-            description={this.getAudioInnerHTML()}
-          />
+          
         </MenuBar>
       </MainContainer>
     );

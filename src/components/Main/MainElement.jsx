@@ -13,10 +13,19 @@ export const MainContainer = styled.div`
 `;
 
 export const Table = styled.div`
-    width: 380px;
-    height: 408px;
+    width: 600px;
+    height: 644.4px;
     background: url(${table});
+    background-size: cover;
+    position: fixed;
+    bottom: 11%;
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+    margin-left: 27%;
+
 `;
+
 
 export const MenuBar = styled.div`
   width: 700px;
