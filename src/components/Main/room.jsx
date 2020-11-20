@@ -564,13 +564,6 @@ class Room extends Component {
         <div className="has-text-centered mt-2">
           <div className="columns">
             <div className="column is-2 mx-4">
-              <Chat
-                chatBoardRef={this.chatBoardRef}
-                chatRef={this.chatRef}
-                handleChat={this.handleChat}
-                handleClose={this.handleChatClose}
-                open={this.state.chatOpen}
-              />
               <div className="my-6">
                 <ReactPlayer
                   url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
@@ -579,6 +572,13 @@ class Room extends Component {
                   height="180px"
                 />
               </div>
+              <Chat
+                chatBoardRef={this.chatBoardRef}
+                chatRef={this.chatRef}
+                handleChat={this.handleChat}
+                handleClose={this.handleChatClose}
+                open={this.state.chatOpen}
+              />
             </div>
             <div className="column is-9">{this.getVideos()}</div>
             <div className="column is-2"></div>

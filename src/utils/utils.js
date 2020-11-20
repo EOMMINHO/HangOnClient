@@ -39,9 +39,13 @@ function makeNewPeer(
     }
   });
   p.on("data", (data) => {
-    let newText = new TextDecoder("utf-8").decode(data);
-    chatBoardRef.current.value = chatBoardRef.current.value + `${newText}\n`;
-    chatBoardRef.current.scrollTop = chatBoardRef.current.scrollHeight;
+    try {
+      let newText = new TextDecoder("utf-8").decode(data);
+      chatBoardRef.current.value = chatBoardRef.current.value + `${newText}\n`;
+      chatBoardRef.current.scrollTop = chatBoardRef.current.scrollHeight;
+    } catch (error) {
+      console.log(error);
+    }
   });
   p.on("error", (err) => {
     console.log(err);
