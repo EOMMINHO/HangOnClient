@@ -120,7 +120,9 @@ class Room extends Component {
         }
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
-        this.setState({ clink_participants: [...this.state.clink_participants, playerName] });
+        this.setState({
+          clink_participants: [...this.state.clink_participants, playerName],
+        });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
@@ -129,7 +131,9 @@ class Room extends Component {
       if (playerName === this.state.playerName) {
         this.setState({ clinked: true, modalActive: true });
       }
-      this.setState({ clink_participants: [...this.state.clink_participants, playerName] })
+      this.setState({
+        clink_participants: [...this.state.clink_participants, playerName],
+      });
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
@@ -192,7 +196,6 @@ class Room extends Component {
     this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
-
   }
 
   getModalClass() {
@@ -207,27 +210,21 @@ class Room extends Component {
     await navigator.clipboard.writeText(this.state.roomName);
     this.setState({ isCopied: true });
   }
-  
+
   getModalContent() {
     if (this.state.clinked) {
       return (
         <div>
-          <div className="field">
-            {this.getClinkVideos()}
-          </div>
+          <div className="field">{this.getClinkVideos()}</div>
         </div>
       );
-    }
-    else if (this.state.swapInProgress) {
+    } else if (this.state.swapInProgress) {
       return (
         <div>
-          <div className="field">
-            {this.getParticipantsList()}
-          </div>
+          <div className="field">{this.getParticipantsList()}</div>
         </div>
       );
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -238,7 +235,7 @@ class Room extends Component {
         return (
           <button
             className="button"
-            textvariable={userName} 
+            textvariable={userName}
             onClick={this.handleSwapClick}
           >
             {userName}
@@ -251,16 +248,27 @@ class Room extends Component {
 
   handleSwapClick(props) {
     this.setState({ swap_target: props });
-    this.socket.emit("seatSwap", this.state.playerName, this.state.swap_target, this.state.roomName);
-    this.setState({ swap_target: "", modalActive: false, swapInProgress: false });
+    this.socket.emit(
+      "seatSwap",
+      this.state.playerName,
+      this.state.swap_target,
+      this.state.roomName
+    );
+    this.setState({
+      swap_target: "",
+      modalActive: false,
+      swapInProgress: false,
+    });
   }
 
   handleModalOutClick() {
     this.setState({ modalActive: false });
     if (this.state.clinked) {
-      this.setState({clink_participants: this.state.clink_participants.filter((user) => { 
-        return user !== this.state.playerName
-      })});
+      this.setState({
+        clink_participants: this.state.clink_participants.filter((user) => {
+          return user !== this.state.playerName;
+        }),
+      });
     }
     this.setState({ clinked: false, swapInProgress: false });
   }
@@ -281,7 +289,6 @@ class Room extends Component {
       this.setState({ attentionInProgress: true });
       this.socket.emit("attention", this.state.playerName, this.state.roomName);
     }
-    
   }
 
   handleAttentionAgree() {
@@ -351,7 +358,10 @@ class Room extends Component {
   }
 
   getClinkClass() {
-    if (this.state.clinkInProgress && this.state.clink_participants.length !== 0) {
+    if (
+      this.state.clinkInProgress &&
+      this.state.clink_participants.length !== 0
+    ) {
       return "button is-loading is-large is-white";
     } else {
       return "button is-large is-white";
@@ -369,11 +379,9 @@ class Room extends Component {
   getAttentionClass() {
     if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
-    }
-    else if (this.state.attended) {
-      return "button is-large" // TODO: 'canceling attention' indication
-    }
-    else {
+    } else if (this.state.attended) {
+      return "button is-large"; // TODO: 'canceling attention' indication
+    } else {
       return "button is-large is-white";
     }
   }
@@ -425,15 +433,15 @@ class Room extends Component {
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
       if (this.state.attention_target !== "") {
-        return ( // TODO: attention target video featured
+        return (
+          // TODO: attention target video featured
           <VideoDropdown
             key={userName}
             myRef={this.videoRefs[userName]}
             description={userName}
           />
         );
-      }
-      else if (userName !== this.state.playerName) {
+      } else if (userName !== this.state.playerName) {
         return (
           <VideoDropdown
             key={userName}
@@ -490,7 +498,7 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
-        <Table/>
+        <Table />
         <div className={this.getModalClass()}>
           <div
             className="modal-background"
@@ -519,7 +527,7 @@ class Room extends Component {
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
-        
+
         <div className="has-text-centered mt-2">
           <div className="columns">
             <div className="column is-9">
@@ -555,7 +563,7 @@ class Room extends Component {
             handler={this.handleVideo}
             fontawesome="fas fa-video-slash"
             description={this.getVideoInnerHTML()}
-          />  
+          />
           <ButtonDropdown
             buttonClass={this.getAudioButtonClass()}
             handler={this.handleAudio}
@@ -610,7 +618,6 @@ class Room extends Component {
             fontawesome="fab fa-youtube"
             description="Share Video"
           />
-          
         </MenuBar>
 
         <div className="has-text-centered">{this.getVideos()}</div>

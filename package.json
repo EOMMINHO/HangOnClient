@@ -9,6 +9,7 @@
     "animate.css": "^4.1.1",
     "bulma": "^0.9.1",
     "delay": "^4.4.0",
+    "joi": "^17.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.11.0",
