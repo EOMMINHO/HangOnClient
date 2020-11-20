@@ -9,6 +9,7 @@ function makeNewPeer(
   participants,
   myName,
   videoRefs,
+  clinkRefs,
   chatBoardRef,
   stream
 ) {
@@ -21,6 +22,7 @@ function makeNewPeer(
   // initiate video reference
   let videoRef = React.createRef();
   videoRefs[newUser] = videoRef;
+  clinkRefs[newUser] = videoRef;
   // make a connection
   let p = new Peer();
   p.on("signal", (data) => {
@@ -61,6 +63,7 @@ function makeNewPeers(
   participants,
   myName,
   videoRefs,
+  clinkRefs,
   chatBoardRef,
   stream
 ) {
@@ -72,6 +75,7 @@ function makeNewPeers(
     // initiate video reference
     let videoRef = React.createRef();
     videoRefs[userName] = videoRef;
+    clinkRefs[userName] = videoRef;
     // make peer connection
     let p = new Peer({ initiator: true });
     p.on("signal", (data) => {

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
-import { MainContainer, MenuClose, MenuContent, TextBox, MenuBar, Table } from "./MainElement";
+import { MainContainer } from "./MainElement";
+import Navbar from "../NavBar/NavbarIndex";
 import VideoDropdown from "./VideoDropdown";
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
@@ -15,19 +16,24 @@ class Room extends Component {
   noob = true; // noob need to send initiator to old users (RTC).
   peers = {};
   videoRefs = {};
+  clinkRefs = {};
   stream = null;
   state = {
     playerName: "",
     roomName: "",
     participants: {},
+    clink_participants: [],
     clinked: false,
     clinkInProgress: false,
+    attention_target: "",
+    attended: false,
     attentionInProgress: false,
+    swapInProgress: false,
+    swap_target: "",
     videoOn: false,
     audioOn: false,
     videoAvailable: false,
     audioAvailable: false,
-    isCopied: false,
   };
 
   constructor() {
@@ -68,6 +74,7 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
+            this.clinkRefs,
             this.chatBoardRef,
             this.stream
           );
@@ -79,6 +86,7 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
+            this.clinkRefs,
             this.chatBoardRef,
             this.stream
           );
@@ -107,20 +115,36 @@ class Room extends Component {
     });
     this.socket.on("clinkResponse", (isSuccess, playerName) => {
       if (isSuccess) {
+        if (playerName === this.state.playerName) {
+          this.setState({ clinked: true, modalActive: true });
+        }
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
+        this.setState({ clink_participants: [...this.state.clink_participants, playerName] });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
-      this.setState({ clinkInProgress: false, clinked: false });
+      this.setState({ clinkInProgress: false });
       console.log(`${playerName} has agreed to clink`);
+      if (playerName === this.state.playerName) {
+        this.setState({ clinked: true, modalActive: true });
+      }
+      this.setState({ clink_participants: [...this.state.clink_participants, playerName] })
     });
-    this.socket.on("attentionResponse", (isSuccess, participants) => {
+    this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ participants: participants });
+        this.setState({ attention_target: "" });
+        if (playerName === this.state.playerName) {
+          this.setState({ attended: true });
+        }
+        this.setState({ attentionInProgress: true });
+        console.log(`${playerName} has requested to get attention`);
       }
     });
-    this.socket.on("attentionAgreeResponse", (participants) => {
+    this.socket.on("attentionOn", (playerName) => {
+      this.setState({ attention_target: playerName });
+    });
+    this.socket.on("seatSwapResponse", (participants) => {
       this.setState({ participants: participants });
     });
     this.socket.on("seatShuffleResponse", (participants) => {
@@ -161,11 +185,77 @@ class Room extends Component {
     this.handleAttention = this.handleAttention.bind(this);
     this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
+    this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
+    this.handleModalOutClick = this.handleModalOutClick.bind(this);
+  }
+
+  getModalClass() {
+    if (this.state.modalActive) {
+      return "modal is-active";
+    } else {
+      return "modal";
+    }
+  }
+
+  getModalContent() {
+    if (this.state.clinked) {
+      return (
+        <div>
+          <div className="field">
+            {this.getClinkVideos()}
+          </div>
+        </div>
+      );
+    }
+    else if (this.state.swapInProgress) {
+      return (
+        <div>
+          <div className="field">
+            {this.getParticipantsList()}
+          </div>
+        </div>
+      );
+    }
+    else {
+      return null;
+    }
+  }
+
+  getParticipantsList() {
+    return Object.keys(this.state.participants).map((userName) => {
+      if (userName !== this.state.playerName) {
+        return (
+          <button
+            className="button"
+            textvariable={userName} 
+            onClick={this.handleSwapClick}
+          >
+            {userName}
+          </button>
+        );
+      }
+      return null;
+    });
+  }
+
+  handleSwapClick(props) {
+    this.setState({ swap_target: props });
+    this.socket.emit("seatSwap", this.state.playerName, this.state.swap_target, this.state.roomName);
+    this.setState({ swap_target: "", modalActive: false, swapInProgress: false });
+  }
+
+  handleModalOutClick() {
+    this.setState({ modalActive: false });
+    if (this.state.clinked) {
+      this.setState({clink_participants: this.state.clink_participants.filter((user) => { 
+        return user !== this.state.playerName
+      })});
+    }
+    this.setState({ clinked: false, swapInProgress: false });
   }
 
   handleClink() {
@@ -178,8 +268,13 @@ class Room extends Component {
   }
 
   handleAttention() {
-    this.setState({ attentionInProgress: true });
-    this.socket.emit("attention", this.state.playerName, this.state.roomName);
+    if (this.state.attended) {
+      this.setState({ attention_target: "", attended: false });
+    } else {
+      this.setState({ attentionInProgress: true });
+      this.socket.emit("attention", this.state.playerName, this.state.roomName);
+    }
+    
   }
 
   handleAttentionAgree() {
@@ -191,7 +286,7 @@ class Room extends Component {
   }
 
   handleSeatSwap() {
-    alert("currently unavailable");
+    this.setState({ modalActive: true, swapInProgress: true });
   }
 
   handleSeatShuffle() {
@@ -248,13 +343,8 @@ class Room extends Component {
     }
   }
 
-  async handleCopy() {
-    await navigator.clipboard.writeText(this.state.roomName);
-    this.setState({ isCopied: true });
-  }
-
   getClinkClass() {
-    if (this.state.clinkInProgress) {
+    if (this.state.clinkInProgress && this.state.clink_participants.length !== 0) {
       return "button is-loading is-large is-white";
     } else {
       return "button is-large is-white";
@@ -263,6 +353,26 @@ class Room extends Component {
 
   getClinkAgreeClass() {
     if (this.state.clinkInProgress && !this.state.clinked) {
+      return "button is-large is-white";
+    } else {
+      return "button is-static is-large is-white";
+    }
+  }
+
+  getAttentionClass() {
+    if (this.state.attentionInProgress) {
+      return "button is-loading is-large is-white";
+    }
+    else if (this.state.attended) {
+      return "button is-large" // TODO: 'canceling attention' indication
+    }
+    else {
+      return "button is-large is-white";
+    }
+  }
+
+  getAttentionAgreeClass() {
+    if (this.state.attentionInProgress && !this.state.attended) {
       return "button is-large is-white";
     } else {
       return "button is-static is-large is-white";
@@ -307,7 +417,16 @@ class Room extends Component {
 
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
-      if (userName !== this.state.playerName) {
+      if (this.state.attention_target !== "") {
+        return ( // TODO: attention target video featured
+          <VideoDropdown
+            key={userName}
+            myRef={this.videoRefs[userName]}
+            description={userName}
+          />
+        );
+      }
+      else if (userName !== this.state.playerName) {
         return (
           <VideoDropdown
             key={userName}
@@ -320,35 +439,127 @@ class Room extends Component {
     });
   }
 
-  getCopyClass() {
-    if (this.state.isCopied) {
-      return "fas fa-clipboard";
-    } else {
-      return "far fa-clipboard";
-    }
+  getClinkVideos() {
+    return Object.keys(this.state.clink_participants).map((userName) => {
+      if (userName !== this.state.playerName) {
+        return (
+          <div className="dropdown is-hoverable">
+            <div className="dropdown-trigger">
+              <video
+                ref={this.clinkRefs[userName]}
+                width="300"
+                height="150"
+                poster="/video-not-working.png"
+                autoPlay
+                muted
+                style={{
+                  WebkitTransform: "scaleX(-1)",
+                  transform: "scaleX(-1)",
+                }}
+              ></video>
+            </div>
+            <div className="dropdown-menu">
+              <div className="dropdown-content">
+                <div className="dropdown-item has-text-link has-text-weight-medium">
+                  {userName}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      return null;
+    });
   }
 
   render() {
     return (
       <MainContainer>
-        <Table />
+        <div className={this.getModalClass()}>
+          <div
+            className="modal-background"
+            // onClick={this.handleModalClick}
+          ></div>
+          <div className="modal-content box">{this.getModalContent()}</div>
+          <button
+            className="modal-close is-large"
+            aria-label="close"
+            onClick={this.handleModalOutClick}
+          ></button>
+        </div>
         <ReactNotification />
+        <Navbar />
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Room Name : {this.state.roomName}
-          <span
-            className="icon is-small mx-2 has-text-info"
-            onClick={this.handleCopy}
-          >
-            <i className={this.getCopyClass()}></i>
-          </span>
         </h1>
-
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Player Name : {this.state.playerName}
         </h1>
         <h1 className="has-text-centered" style={{ color: "white" }}>
           Participants: {JSON.stringify(this.state.participants)}
         </h1>
+        <div className="box has-text-centered mt-3 mx-6">
+          <ButtonDropdown
+            buttonClass={this.getClinkClass()}
+            handler={this.handleClink}
+            fontawesome="fas fa-glass-cheers"
+            description="Clink"
+          />
+          <ButtonDropdown
+            buttonClass={this.getClinkAgreeClass()}
+            handler={this.handleClinkAgree}
+            fontawesome="fas fa-check-circle"
+            description="Clink Agree"
+          />
+          <ButtonDropdown
+            buttonClass={this.getAttentionClass()}
+            handler={this.handleAttention}
+            fontawesome="fas fa-bullhorn"
+            description="Attention"
+          />
+          <ButtonDropdown
+            buttonClass={this.getAttentionAgreeClass()}
+            handler={this.handleAttentionAgree}
+            fontawesome="fas fa-check-circle"
+            description="Attention Agree"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatSwap}
+            fontawesome="fas fa-exchange-alt"
+            description="Seat Swap"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-random"
+            description="Seat Shuffle"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-comments"
+            description="Chat"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fab fa-youtube"
+            description="Share Video"
+          />
+          <ButtonDropdown
+            buttonClass={this.getVideoButtonClass()}
+            handler={this.handleVideo}
+            fontawesome="fas fa-video-slash"
+            description={this.getVideoInnerHTML()}
+          />
+          <ButtonDropdown
+            buttonClass={this.getAudioButtonClass()}
+            handler={this.handleAudio}
+            fontawesome="fas fa-microphone-slash"
+            description={this.getAudioInnerHTML()}
+          />
+        </div>
 
         <div className="has-text-centered mt-2">
           <div className="columns">
@@ -379,72 +590,7 @@ class Room extends Component {
           </div>
         </div>
 
-
         <div className="has-text-centered">{this.getVideos()}</div>
-        <div/>
-        <MenuBar>
-          <ButtonDropdown
-            buttonClass={this.getVideoButtonClass()}
-            handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
-            description={this.getVideoInnerHTML()}
-          />  
-          <ButtonDropdown
-            buttonClass={this.getAudioButtonClass()}
-            handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
-            description={this.getAudioInnerHTML()}
-          />
-          <ButtonDropdown
-            buttonClass={this.getClinkClass()}
-            handler={this.handleClink}
-            fontawesome="fas fa-glass-cheers"
-            description="Clink"
-          />
-          <ButtonDropdown
-            buttonClass={this.getClinkAgreeClass()}
-            handler={this.handleClinkAgree}
-            fontawesome="fas fa-check-circle"
-            description="Clink Agree"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleAttention}
-            fontawesome="fas fa-bullhorn"
-            description="Attention"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleAttentionAgree}
-            fontawesome="fas fa-check-circle"
-            description="Attention Agree"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatSwap}
-            fontawesome="fas fa-exchange-alt"
-            description="Seat Swap"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fas fa-random"
-            description="Seat Shuffle"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fas fa-comments"
-            description="Chat"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fab fa-youtube"
-            description="Share Video"
-          />
-          
-        </MenuBar>
       </MainContainer>
     );
   }
