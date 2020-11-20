@@ -28,6 +28,8 @@ class Room extends Component {
     attention_target: "",
     attended: false,
     attentionInProgress: false,
+    swapInProgress: false,
+    swap_target: "",
     videoOn: false,
     audioOn: false,
     videoAvailable: false,
@@ -142,6 +144,9 @@ class Room extends Component {
     this.socket.on("attentionOn", (playerName) => {
       this.setState({ attention_target: playerName });
     });
+    this.socket.on("seatSwapResponse", (participants) => {
+      this.setState({ participants: participants });
+    });
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
     });
@@ -180,6 +185,7 @@ class Room extends Component {
     this.handleAttention = this.handleAttention.bind(this);
     this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
+    this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
@@ -205,21 +211,51 @@ class Room extends Component {
         </div>
       );
     }
+    else if (this.state.swapInProgress) {
+      return (
+        <div>
+          <div className="field">
+            {this.getParticipantsList()}
+          </div>
+        </div>
+      );
+    }
     else {
       return null;
     }
   }
 
+  getParticipantsList() {
+    return Object.keys(this.state.participants).map((userName) => {
+      if (userName !== this.state.playerName) {
+        return (
+          <button
+            className="button"
+            textvariable={userName} 
+            onClick={this.handleSwapClick}
+          >
+            {userName}
+          </button>
+        );
+      }
+      return null;
+    });
+  }
+
+  handleSwapClick(props) {
+    this.setState({ swap_target: props });
+    this.socket.emit("seatSwap", this.state.playerName, this.state.swap_target, this.state.roomName);
+    this.setState({ swap_target: "", modalActive: false, swapInProgress: false });
+  }
+
   handleModalOutClick() {
-    this.setState({ modalActive: !this.state.modalActive });
+    this.setState({ modalActive: false });
     if (this.state.clinked) {
       this.setState({clink_participants: this.state.clink_participants.filter((user) => { 
         return user !== this.state.playerName
       })});
-      //const idx = this.state.clink_participants.indexOf(this.state.playerName);
-      //this.state.clink_participants.splice(idx, 1);
     }
-    this.setState({ clinked: false });
+    this.setState({ clinked: false, swapInProgress: false });
   }
 
   handleClink() {
@@ -250,7 +286,7 @@ class Room extends Component {
   }
 
   handleSeatSwap() {
-    alert("currently unavailable");
+    this.setState({ modalActive: true, swapInProgress: true });
   }
 
   handleSeatShuffle() {
@@ -324,11 +360,11 @@ class Room extends Component {
   }
 
   getAttentionClass() {
-    if (this.state.attentionInProgress && this.state.attended) {
+    if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
     }
-    else if (!this.state.attended) {
-      return "button is-large is-white" // TODO: 'canceling attention' indication
+    else if (this.state.attended) {
+      return "button is-large" // TODO: 'canceling attention' indication
     }
     else {
       return "button is-large is-white";
@@ -559,13 +595,5 @@ class Room extends Component {
     );
   }
 }
-
-const clinkVideos = React.forwardRef((props, name, ref) => {
-  <VideoDropdown
-          key={name}
-          myRef={ref[name]}
-          description={name}
-          />
-  });
 
 export default Room;
