@@ -32,7 +32,7 @@ class Room extends Component {
     audioOn: false,
     videoAvailable: false,
     audioAvailable: false,
-    chatOpen: true,
+    chatOpen: false,
   };
 
   constructor() {
