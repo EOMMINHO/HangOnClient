@@ -3,6 +3,7 @@ import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
+import CopyText from "./CopyText";
 import { MainContainer, Table, MenuBar } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
@@ -360,7 +361,9 @@ class Room extends Component {
     this.setState({ chatOpen: !this.state.chatOpen });
   }
 
-  handleYoutubeVideo() {}
+  handleYoutubeVideo() {
+    alert("Not developed yet");
+  }
 
   getClinkClass() {
     if (
@@ -384,11 +387,9 @@ class Room extends Component {
   getAttentionClass() {
     if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
-    }
-    else if (this.state.playerName === this.state.attention_target) {
+    } else if (this.state.playerName === this.state.attention_target) {
       return "button is-large is-black";
-    }
-    else {
+    } else {
       return "button is-large is-white";
     }
   }
@@ -457,38 +458,42 @@ class Room extends Component {
             ></button>
           </div>
         );
-      }
-      else if (!this.state.participants[userName].clinked) {
+      } else if (!this.state.participants[userName].clinked) {
         if (this.state.attention_target === userName) {
-          if (userName === this.state.playerName) return (
-            // TODO: attention target video featured
-            <VideoDropdown
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          );
-          else return (
-            // TODO: attention target video featured
-            <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
-            />
-          );
+          if (userName === this.state.playerName)
+            return (
+              // TODO: attention target video featured
+              <VideoDropdown
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            );
+          else
+            return (
+              // TODO: attention target video featured
+              <VideoDropdown
+                key={userName}
+                myRef={this.videoRefs[userName]}
+                description={userName}
+              />
+            );
         } else {
-          if (userName === this.state.playerName) return (
-            <VideoDropdown
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          );
-          else return (
-            <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
-            />
-          );
+          if (userName === this.state.playerName)
+            return (
+              <VideoDropdown
+                key={userName}
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            );
+          else
+            return (
+              <VideoDropdown
+                key={userName}
+                myRef={this.videoRefs[userName]}
+                description={userName}
+              />
+            );
         }
       } else {
         return null;
@@ -498,28 +503,22 @@ class Room extends Component {
 
   getClinkVideos() {
     return Object.keys(this.state.clink_participants).map((userName) => {
-      if (userName === this.state.playerName) return (
-        <VideoDropdown
-          ref={this.localVideoRef}
-          description={this.state.playerName}
-        />
-      );
-      else return (
-        <VideoDropdown
-          key={userName}
-          myRef={this.videoRefs[userName]}
-          description={userName}
-        />
-      );
+      if (userName === this.state.playerName)
+        return (
+          <VideoDropdown
+            ref={this.localVideoRef}
+            description={this.state.playerName}
+          />
+        );
+      else
+        return (
+          <VideoDropdown
+            key={userName}
+            myRef={this.videoRefs[userName]}
+            description={userName}
+          />
+        );
     });
-  }
-
-  getCopyClass() {
-    if (this.state.isCopied) {
-      return "fas fa-clipboard";
-    } else {
-      return "far fa-clipboard";
-    }
   }
 
   toastIfVisible(newText) {
@@ -552,15 +551,10 @@ class Room extends Component {
           pauseOnHover
         />
         <div>
-          <h1 className="has-text-centered" style={{ color: "white" }}>
-            Room Name : {this.state.roomName}
-            <span
-              className="icon is-small mx-2 has-text-info"
-              onClick={this.handleCopy}
-            >
-              <i className={this.getCopyClass()}></i>
-            </span>
-          </h1>
+          <CopyText
+            roomName={this.state.roomName}
+            handleCopy={this.handleCopy}
+          />
           <h1 className="has-text-centered" style={{ color: "white" }}>
             Player Name : {this.state.playerName}
           </h1>
@@ -589,7 +583,7 @@ class Room extends Component {
               />
             </div>
             <div className="column is-9">{this.getVideos()}</div>
-            <div className="column is-2"></div>
+            <div className="column is-1"></div>
           </div>
         </div>
 
