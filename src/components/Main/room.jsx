@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
+import Debug from "../Debug/Debug";
 import { MainContainer, Table, MenuBar } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
@@ -565,53 +566,49 @@ class Room extends Component {
           pauseOnHover
         />
         <div>
-          <h1
-            className="has-text-centered is-size-2"
-            style={{ color: "white" }}
-          >
-            {!this.state.full_screen ? (
+          {!this.state.full_screen ? (
+            <h1
+              className="has-text-centered is-size-2"
+              style={{ color: "white" }}
+            >
               "Use Full Screen Mode to Begin With"
-            ) : (
-              <div>
-                <div>
-                  <CopyText
-                    roomName={this.state.roomName}
-                    handleCopy={this.handleCopy}
-                  />
-                  <h1 className="has-text-centered has-text-white is-size-6">
-                    Player Name : {this.state.playerName}
-                  </h1>
-                  <h1 className="has-text-centered has-text-white is-size-6">
-                    Participants: {JSON.stringify(this.state.participants)}
-                  </h1>
-                </div>
-                <Table />
-                <div className="has-text-centered mt-2">
-                  <div className="columns">
-                    <div className="column is-2 mx-4">
-                      <div className="my-6">
-                        <ReactPlayer
-                          url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
-                          controls={true}
-                          width="320px"
-                          height="180px"
-                        />
-                      </div>
-                      <Chat
-                        chatBoardRef={this.chatBoardRef}
-                        chatRef={this.chatRef}
-                        handleChat={this.handleChat}
-                        handleClose={this.handleChatClose}
-                        open={this.state.chatOpen}
+            </h1>
+          ) : (
+            <div>
+              <CopyText
+                roomName={this.state.roomName}
+                handleCopy={this.handleCopy}
+              />
+              <Debug
+                playerName={this.state.playerName}
+                participants={this.state.participants}
+              />
+              <Table />
+              <div className="has-text-centered mt-2">
+                <div className="columns">
+                  <div className="column is-2 mx-4">
+                    <div className="my-6">
+                      <ReactPlayer
+                        url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
+                        controls={true}
+                        width="320px"
+                        height="180px"
                       />
                     </div>
-                    <div className="column is-9">{this.getVideos()}</div>
-                    <div className="column is-2"></div>
+                    <Chat
+                      chatBoardRef={this.chatBoardRef}
+                      chatRef={this.chatRef}
+                      handleChat={this.handleChat}
+                      handleClose={this.handleChatClose}
+                      open={this.state.chatOpen}
+                    />
                   </div>
+                  <div className="column is-9">{this.getVideos()}</div>
+                  <div className="column is-2"></div>
                 </div>
               </div>
-            )}
-          </h1>
+            </div>
+          )}
         </div>
 
         <MenuBar>
