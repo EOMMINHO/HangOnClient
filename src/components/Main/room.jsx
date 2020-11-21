@@ -201,9 +201,7 @@ class Room extends Component {
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
-    this.handleChatClose = this.handleChatClose.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
   }
@@ -214,11 +212,6 @@ class Room extends Component {
     } else {
       return "modal";
     }
-  }
-
-  async handleCopy() {
-    await navigator.clipboard.writeText(this.state.roomName);
-    this.setState({ isCopied: true });
   }
 
   getModalContent() {
@@ -361,10 +354,6 @@ class Room extends Component {
     }
   }
 
-  handleChatClose() {
-    this.setState({ chatOpen: !this.state.chatOpen });
-  }
-
   handleYoutubeVideo() {
     alert("Not developed yet");
   }
@@ -411,42 +400,6 @@ class Room extends Component {
       return "button is-static is-large is-white";
     } else {
       return "button is-large is-white";
-    }
-  }
-
-  getVideoButtonClass() {
-    // Make button clickable only if the device has video/audio input,
-    // and when video is turned off.
-    if (this.state.videoAvailable) {
-      return "button is-large is-white";
-    } else {
-      return "button is-static is-large is-white";
-    }
-  }
-
-  getAudioButtonClass() {
-    // Make button clickable only if the device has audio input,
-    // and when audio is turned off.
-    if (this.state.audioAvailable) {
-      return "button is-large is-white";
-    } else {
-      return "button is-static is-large is-white";
-    }
-  }
-
-  getVideoInnerHTML() {
-    if (this.state.videoOn) {
-      return "Video Off";
-    } else {
-      return "Video On";
-    }
-  }
-
-  getAudioInnerHTML() {
-    if (this.state.audioOn) {
-      return "Audio Off";
-    } else {
-      return "Audio On";
     }
   }
 
@@ -575,10 +528,7 @@ class Room extends Component {
             </h1>
           ) : (
             <div>
-              <CopyText
-                roomName={this.state.roomName}
-                handleCopy={this.handleCopy}
-              />
+              <CopyText roomName={this.state.roomName} />
               <Debug
                 playerName={this.state.playerName}
                 participants={this.state.participants}
@@ -613,16 +563,24 @@ class Room extends Component {
 
         <MenuBar>
           <ButtonDropdown
-            buttonClass={this.getVideoButtonClass()}
+            buttonClass={
+              this.state.videoAvailable
+                ? "button is-large is-white"
+                : "button is-static is-large is-white"
+            }
             handler={this.handleVideo}
             fontawesome="fas fa-video-slash"
-            description={this.getVideoInnerHTML()}
+            description={this.state.videoOn ? "Video Off" : "Video On"}
           />
           <ButtonDropdown
-            buttonClass={this.getAudioButtonClass()}
+            buttonClass={
+              this.state.audioAvailable
+                ? "button is-large is-white"
+                : "button is-static is-large is-white"
+            }
             handler={this.handleAudio}
             fontawesome="fas fa-microphone-slash"
-            description={this.getAudioInnerHTML()}
+            description={this.state.audioOn ? "Audio Off" : "Audio On"}
           />
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
@@ -662,7 +620,9 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={this.handleChatClose}
+            handler={() => {
+              this.setState({ chatOpen: !this.state.chatOpen });
+            }}
             fontawesome="fas fa-comments"
             description="Chat"
           />
