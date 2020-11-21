@@ -15,7 +15,6 @@ class Room extends Component {
   noob = true; // noob need to send initiator to old users (RTC).
   peers = {};
   videoRefs = {};
-  clinkRefs = {};
   stream = null;
   state = {
     playerName: "",
@@ -73,7 +72,6 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
-            this.clinkRefs,
             this.chatBoardRef,
             this.stream
           );
@@ -85,7 +83,6 @@ class Room extends Component {
             participants,
             this.state.playerName,
             this.videoRefs,
-            this.clinkRefs,
             this.chatBoardRef,
             this.stream
           );
@@ -279,7 +276,7 @@ class Room extends Component {
   }
 
   handleAttention() {
-    if (this.state.attended) {
+    if (this.state.playerName === this.state.attention_target) {
       this.setState({ attention_target: "", attended: false });
     } else {
       this.setState({ attentionInProgress: true });
@@ -381,7 +378,11 @@ class Room extends Component {
   getAttentionClass() {
     if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
-    } else {
+    }
+    else if (this.state.playerName === this.state.attention_target) {
+      return "button is-large is-black";
+    }
+    else {
       return "button is-large is-white";
     }
   }
@@ -433,18 +434,31 @@ class Room extends Component {
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
       if (this.state.clinked) {
-        if (this.state.participants[userName].clinked) {
-          return (
+        return (
+          <div className={this.getModalClass()}>
+            <div
+              className="modal-background"
+              // onClick={this.handleModalClick}
+            ></div>
+            <div className="modal-content box">{this.getModalContent()}</div>
+            <button
+              className="modal-close is-large"
+              aria-label="close"
+              onClick={this.handleModalOutClick}
+            ></button>
+          </div>
+        );
+      }
+      else if (!this.state.participants[userName].clinked) {
+        if (this.state.attention_target === userName) {
+          if (userName === this.state.playerName) return (
+            // TODO: attention target video featured
             <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
+              ref={this.localVideoRef}
+              description={this.state.playerName}
             />
           );
-        } else return null;
-      } else if (!this.state.participants[userName].clinked) {
-        if (this.state.attention_target === userName) {
-          return (
+          else return (
             // TODO: attention target video featured
             <VideoDropdown
               key={userName}
@@ -453,7 +467,13 @@ class Room extends Component {
             />
           );
         } else {
-          return (
+          if (userName === this.state.playerName) return (
+            <VideoDropdown
+              ref={this.localVideoRef}
+              description={this.state.playerName}
+            />
+          );
+          else return (
             <VideoDropdown
               key={userName}
               myRef={this.videoRefs[userName]}
@@ -467,34 +487,19 @@ class Room extends Component {
 
   getClinkVideos() {
     return Object.keys(this.state.clink_participants).map((userName) => {
-      if (userName !== this.state.playerName) {
-        return (
-          <div className="dropdown is-hoverable">
-            <div className="dropdown-trigger">
-              <video
-                ref={this.clinkRefs[userName]}
-                width="300"
-                height="150"
-                poster="/video-not-working.png"
-                autoPlay
-                muted
-                style={{
-                  WebkitTransform: "scaleX(-1)",
-                  transform: "scaleX(-1)",
-                }}
-              ></video>
-            </div>
-            <div className="dropdown-menu">
-              <div className="dropdown-content">
-                <div className="dropdown-item has-text-link has-text-weight-medium">
-                  {userName}
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      }
-      return null;
+      if (userName === this.state.playerName) return (
+        <VideoDropdown
+          ref={this.localVideoRef}
+          description={this.state.playerName}
+        />
+      );
+      else return (
+        <VideoDropdown
+          key={userName}
+          myRef={this.videoRefs[userName]}
+          description={userName}
+        />
+      );
     });
   }
 
@@ -510,18 +515,6 @@ class Room extends Component {
     return (
       <MainContainer>
         <Table />
-        <div className={this.getModalClass()}>
-          <div
-            className="modal-background"
-            // onClick={this.handleModalClick}
-          ></div>
-          <div className="modal-content box">{this.getModalContent()}</div>
-          <button
-            className="modal-close is-large"
-            aria-label="close"
-            onClick={this.handleModalOutClick}
-          ></button>
-        </div>
         <ToastContainer
           position="top-right"
           autoClose={5000}
