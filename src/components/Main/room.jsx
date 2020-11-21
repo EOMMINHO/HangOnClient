@@ -135,7 +135,10 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ attention_target: playerName, attentionInProgress: true });
+        this.setState({
+          attention_target: playerName,
+          attentionInProgress: true,
+        });
         console.log(`${playerName} has requested to get attention`);
       }
     });
@@ -387,7 +390,10 @@ class Room extends Component {
   }
 
   getAttentionAgreeClass() {
-    if (this.state.attentionInProgress && this.state.attention_target === this.state.playerName) {
+    if (
+      this.state.attentionInProgress &&
+      this.state.attention_target === this.state.playerName
+    ) {
       return "button is-static is-large is-white";
     } else {
       return "button is-large is-white";
@@ -461,6 +467,8 @@ class Room extends Component {
             />
           );
         }
+      } else {
+        return null;
       }
     });
   }
