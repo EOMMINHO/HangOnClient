@@ -10,7 +10,8 @@ function makeNewPeer(
   myName,
   videoRefs,
   chatBoardRef,
-  stream
+  stream,
+  toastHandler
 ) {
   // find a new peer
   let oldPeers = Object.keys(peers);
@@ -41,6 +42,7 @@ function makeNewPeer(
       let newText = new TextDecoder("utf-8").decode(data);
       chatBoardRef.current.value = chatBoardRef.current.value + `${newText}\n`;
       chatBoardRef.current.scrollTop = chatBoardRef.current.scrollHeight;
+      toastHandler(newText);
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +68,8 @@ function makeNewPeers(
   myName,
   videoRefs,
   chatBoardRef,
-  stream
+  stream,
+  toastHandler
 ) {
   // find receivers
   let newPeers = Object.keys(participants);
@@ -101,6 +104,7 @@ function makeNewPeers(
       let newText = new TextDecoder("utf-8").decode(data);
       chatBoardRef.current.value = chatBoardRef.current.value + `${newText}\n`;
       chatBoardRef.current.scrollTop = chatBoardRef.current.scrollHeight;
+      toastHandler(newText);
     });
     p.on("error", (err) => {
       console.log(err);

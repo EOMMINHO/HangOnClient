@@ -73,7 +73,8 @@ class Room extends Component {
             this.state.playerName,
             this.videoRefs,
             this.chatBoardRef,
-            this.stream
+            this.stream,
+            this.toastIfVisible
           );
         } else {
           Util.makeNewPeer(
@@ -84,7 +85,8 @@ class Room extends Component {
             this.state.playerName,
             this.videoRefs,
             this.chatBoardRef,
-            this.stream
+            this.stream,
+            this.toastIfVisible
           );
           toast.info("🚀 New Member Joined!", {
             position: "top-right",
@@ -132,7 +134,10 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ attention_target: playerName, attentionInProgress: true });
+        this.setState({
+          attention_target: playerName,
+          attentionInProgress: true,
+        });
         console.log(`${playerName} has requested to get attention`);
       }
     });
@@ -195,6 +200,7 @@ class Room extends Component {
     this.handleCopy = this.handleCopy.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
+    this.toastIfVisible = this.toastIfVisible.bind(this);
   }
 
   getModalClass() {
@@ -388,7 +394,10 @@ class Room extends Component {
   }
 
   getAttentionAgreeClass() {
-    if (this.state.attentionInProgress && this.state.attention_target === this.state.playerName) {
+    if (
+      this.state.attentionInProgress &&
+      this.state.attention_target === this.state.playerName
+    ) {
       return "button is-static is-large is-white";
     } else {
       return "button is-large is-white";
@@ -481,6 +490,8 @@ class Room extends Component {
             />
           );
         }
+      } else {
+        return null;
       }
     });
   }
@@ -508,6 +519,20 @@ class Room extends Component {
       return "fas fa-clipboard";
     } else {
       return "far fa-clipboard";
+    }
+  }
+
+  toastIfVisible(newText) {
+    if (!this.state.chatOpen) {
+      toast.success(newText, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   }
 
