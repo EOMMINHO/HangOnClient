@@ -75,7 +75,8 @@ class Room extends Component {
             this.videoRefs,
             this.clinkRefs,
             this.chatBoardRef,
-            this.stream
+            this.stream,
+            this.toastIfVisible
           );
         } else {
           Util.makeNewPeer(
@@ -87,7 +88,8 @@ class Room extends Component {
             this.videoRefs,
             this.clinkRefs,
             this.chatBoardRef,
-            this.stream
+            this.stream,
+            this.toastIfVisible
           );
           toast.info("🚀 New Member Joined!", {
             position: "top-right",
@@ -201,6 +203,7 @@ class Room extends Component {
     this.handleCopy = this.handleCopy.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
+    this.toastIfVisible = this.toastIfVisible.bind(this);
   }
 
   getModalClass() {
@@ -511,6 +514,20 @@ class Room extends Component {
       return "fas fa-clipboard";
     } else {
       return "far fa-clipboard";
+    }
+  }
+
+  toastIfVisible(newText) {
+    if (!this.state.chatOpen) {
+      toast.success(newText, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   }
 

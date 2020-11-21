@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Draggable from "react-draggable";
+import "react-toastify/dist/ReactToastify.css";
 
 class Chat extends Component {
   getVisibility() {
