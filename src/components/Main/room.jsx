@@ -135,9 +135,7 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        console.log(playerName);
-        this.setState({ attention_target: playerName });
-        this.setState({ attentionInProgress: true });
+        this.setState({ attention_target: playerName, attentionInProgress: true });
         console.log(`${playerName} has requested to get attention`);
       }
     });
@@ -389,10 +387,10 @@ class Room extends Component {
   }
 
   getAttentionAgreeClass() {
-    if (this.state.attentionInProgress && !this.state.attended) {
-      return "button is-large is-white";
-    } else {
+    if (this.state.attentionInProgress && this.state.attention_target === this.state.playerName) {
       return "button is-static is-large is-white";
+    } else {
+      return "button is-large is-white";
     }
   }
 
@@ -444,7 +442,7 @@ class Room extends Component {
             />
           );
         } else return null;
-      } else if (userName !== this.state.playerName) {
+      } else if (!this.state.participants[userName].clinked) {
         if (this.state.attention_target === userName) {
           return (
             // TODO: attention target video featured
@@ -463,15 +461,7 @@ class Room extends Component {
             />
           );
         }
-      } else
-        return (
-          <div>
-            <VideoDropdown
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          </div>
-        );
+      }
     });
   }
 
@@ -611,13 +601,13 @@ class Room extends Component {
             description="Clink Agree"
           />
           <ButtonDropdown
-            buttonClass="button is-large is-white"
+            buttonClass={this.getAttentionClass()}
             handler={this.handleAttention}
             fontawesome="fas fa-bullhorn"
             description="Attention"
           />
           <ButtonDropdown
-            buttonClass="button is-large is-white"
+            buttonClass={this.getAttentionAgreeClass()}
             handler={this.handleAttentionAgree}
             fontawesome="fas fa-check-circle"
             description="Attention Agree"
