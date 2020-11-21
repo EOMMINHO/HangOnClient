@@ -20,8 +20,8 @@ class CopyText extends Component {
 
   render() {
     return (
-      <div className="has-text-centered has-text-white has-text-weight-medium">
-        <span>Room Name : {this.props.roomName}</span>
+      <div className="has-text-centered has-text-white has-text-weight-medium is-size-4">
+        <span className="mx-3">Room Name : {this.props.roomName}</span>
         <span
           className="icon is-small mx-2 has-text-info"
           onClick={() => this.handleCopy(this.props.roomName)}

@@ -578,10 +578,10 @@ class Room extends Component {
                     roomName={this.state.roomName}
                     handleCopy={this.handleCopy}
                   />
-                  <h1 className="has-text-centered" style={{ color: "white" }}>
+                  <h1 className="has-text-centered has-text-white is-size-6">
                     Player Name : {this.state.playerName}
                   </h1>
-                  <h1 className="has-text-centered" style={{ color: "white" }}>
+                  <h1 className="has-text-centered has-text-white is-size-6">
                     Participants: {JSON.stringify(this.state.participants)}
                   </h1>
                 </div>
