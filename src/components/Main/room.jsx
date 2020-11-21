@@ -8,6 +8,7 @@ import { MainContainer, Table, MenuBar } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const Util = require("../../utils/utils");
 const delay = require("delay");
 
@@ -33,6 +34,7 @@ class Room extends Component {
     videoAvailable: false,
     audioAvailable: false,
     chatOpen: false,
+    full_screen: false,
   };
 
   constructor() {
@@ -202,6 +204,7 @@ class Room extends Component {
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
+    this.handleFullScreen = this.handleFullScreen.bind(this);
   }
 
   getModalClass() {
@@ -363,6 +366,11 @@ class Room extends Component {
 
   handleYoutubeVideo() {
     alert("Not developed yet");
+  }
+
+  handleFullScreen() {
+    this.setState({ full_screen: true });
+    this.fullscreen();
   }
 
   getClinkClass() {
@@ -535,10 +543,16 @@ class Room extends Component {
     }
   }
 
+  fullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    }
+  }
+
   render() {
     return (
       <MainContainer>
-        <Table />
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -551,40 +565,53 @@ class Room extends Component {
           pauseOnHover
         />
         <div>
-          <CopyText
-            roomName={this.state.roomName}
-            handleCopy={this.handleCopy}
-          />
-          <h1 className="has-text-centered" style={{ color: "white" }}>
-            Player Name : {this.state.playerName}
-          </h1>
-          <h1 className="has-text-centered" style={{ color: "white" }}>
-            Participants: {JSON.stringify(this.state.participants)}
-          </h1>
-        </div>
-
-        <div className="has-text-centered mt-2">
-          <div className="columns">
-            <div className="column is-2 mx-4">
-              <div className="my-6">
-                <ReactPlayer
-                  url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
-                  controls={true}
-                  width="320px"
-                  height="180px"
-                />
+          <h1
+            className="has-text-centered is-size-2"
+            style={{ color: "white" }}
+          >
+            {!this.state.full_screen ? (
+              "Use Full Screen Mode to Begin With"
+            ) : (
+              <div>
+                <div>
+                  <CopyText
+                    roomName={this.state.roomName}
+                    handleCopy={this.handleCopy}
+                  />
+                  <h1 className="has-text-centered" style={{ color: "white" }}>
+                    Player Name : {this.state.playerName}
+                  </h1>
+                  <h1 className="has-text-centered" style={{ color: "white" }}>
+                    Participants: {JSON.stringify(this.state.participants)}
+                  </h1>
+                </div>
+                <Table />
+                <div className="has-text-centered mt-2">
+                  <div className="columns">
+                    <div className="column is-2 mx-4">
+                      <div className="my-6">
+                        <ReactPlayer
+                          url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
+                          controls={true}
+                          width="320px"
+                          height="180px"
+                        />
+                      </div>
+                      <Chat
+                        chatBoardRef={this.chatBoardRef}
+                        chatRef={this.chatRef}
+                        handleChat={this.handleChat}
+                        handleClose={this.handleChatClose}
+                        open={this.state.chatOpen}
+                      />
+                    </div>
+                    <div className="column is-9">{this.getVideos()}</div>
+                    <div className="column is-2"></div>
+                  </div>
+                </div>
               </div>
-              <Chat
-                chatBoardRef={this.chatBoardRef}
-                chatRef={this.chatRef}
-                handleChat={this.handleChat}
-                handleClose={this.handleChatClose}
-                open={this.state.chatOpen}
-              />
-            </div>
-            <div className="column is-9">{this.getVideos()}</div>
-            <div className="column is-1"></div>
-          </div>
+            )}
+          </h1>
         </div>
 
         <MenuBar>
@@ -647,6 +674,12 @@ class Room extends Component {
             handler={this.handleYoutubeVideo}
             fontawesome="fab fa-youtube"
             description="Share Video"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleFullScreen}
+            fontawesome="fas fa-expand"
+            description="Full Screen"
           />
         </MenuBar>
       </MainContainer>
