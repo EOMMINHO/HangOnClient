@@ -6,8 +6,8 @@ class VideoDropdown extends Component {
       <div
         className={
           this.props.isUp
-            ? "dropdown is-up is-hoverable"
-            : "dropdown is-hoverable"
+            ? "dropdown is-hoverable"
+            : "dropdown is-up is-hoverable"
         }
       >
         <div className="dropdown-trigger">
