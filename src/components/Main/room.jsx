@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import { getNamebyNumber } from "../../utils/utils";
+import ScrollLock from "react-scrolllock";
 
 const Util = require("../../utils/utils");
 const delay = require("delay");
@@ -46,6 +47,7 @@ class Room extends Component {
     youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
     youtubeLinkInput: null,
     items: [],
+    lockScroll: false,
   };
 
   constructor() {
@@ -783,139 +785,141 @@ class Room extends Component {
 
   render() {
     return (
-      <MainContainer>
-        <div className={this.getModalClass()}>
-          <div
-            className="modal-background"
-            // onClick={this.handleModalClick}
-          ></div>
-          <div className="modal-content box">{this.getModalContent()}</div>
-          <button
-            className="modal-close is-large"
-            aria-label="close"
-            onClick={this.handleModalOutClick}
-          ></button>
-        </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <div>
+      <ScrollLock>
+        <MainContainer>
+          <div className={this.getModalClass()}>
+            <div
+              className="modal-background"
+              // onClick={this.handleModalClick}
+            ></div>
+            <div className="modal-content box">{this.getModalContent()}</div>
+            <button
+              className="modal-close is-large"
+              aria-label="close"
+              onClick={this.handleModalOutClick}
+            ></button>
+          </div>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <div>
-            <CopyText roomName={this.state.roomName} />
-            <Debug
-              playerName={this.state.playerName}
-              participants={this.state.participants}
-            />
-            <Youtube>{this.getYoutubeVideo()}</Youtube>
-            <div>{this.settable()}</div>
-            <div className="has-text-centered mt-2" position="absolute">
-              <div className="columns">
-                <div className="column is-3 mx-4">
-                  <Chat
-                    chatBoardRef={this.chatBoardRef}
-                    chatRef={this.chatRef}
-                    handleChat={this.handleChat}
-                    handleClose={this.handleChatClose}
-                    open={this.state.chatOpen}
-                    playerName={this.state.playerName}
-                    peers={this.peers}
-                  />
+            <div>
+              <CopyText roomName={this.state.roomName} />
+              <Debug
+                playerName={this.state.playerName}
+                participants={this.state.participants}
+              />
+              <Youtube>{this.getYoutubeVideo()}</Youtube>
+              <div>{this.settable()}</div>
+              <div className="has-text-centered mt-2" position="absolute">
+                <div className="columns">
+                  <div className="column is-3 mx-4">
+                    <Chat
+                      chatBoardRef={this.chatBoardRef}
+                      chatRef={this.chatRef}
+                      handleChat={this.handleChat}
+                      handleClose={this.handleChatClose}
+                      open={this.state.chatOpen}
+                      playerName={this.state.playerName}
+                      peers={this.peers}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            bottom: "-50%",
-            right: "25%",
-            marginLeft: "-350px",
-          }}
-        >
-          <MenuBar>
-            <ButtonDropdown
-              buttonClass={
-                this.state.videoAvailable
-                  ? "button is-large is-white"
-                  : "button is-static is-large is-white"
-              }
-              handler={this.handleVideo}
-              fontawesome="fas fa-video-slash"
-              description={this.state.videoOn ? "Video Off" : "Video On"}
-            />
-            <ButtonDropdown
-              buttonClass={
-                this.state.audioAvailable
-                  ? "button is-large is-white"
-                  : "button is-static is-large is-white"
-              }
-              handler={this.handleAudio}
-              fontawesome="fas fa-microphone-slash"
-              description={this.state.audioOn ? "Audio Off" : "Audio On"}
-            />
-            <ButtonDropdown
-              buttonClass={this.getClinkClass()}
-              handler={this.handleClink}
-              fontawesome="fas fa-glass-cheers"
-              description="Clink"
-            />
-            <ButtonDropdown
-              buttonClass={this.getAttentionClass()}
-              handler={this.handleAttention}
-              fontawesome="fas fa-bullhorn"
-              description="Attention"
-            />
-            <ButtonDropdown
-              buttonClass="button is-large is-white"
-              handler={this.handleSeatSwap}
-              fontawesome="fas fa-exchange-alt"
-              description="Seat Swap"
-            />
-            <ButtonDropdown
-              buttonClass="button is-large is-white"
-              handler={this.handleSeatShuffle}
-              fontawesome="fas fa-random"
-              description="Seat Shuffle"
-            />
-            <ButtonDropdown
-              buttonClass={
-                this.state.chatOpen
-                  ? "button is-large is-black"
-                  : "button is-large is-white"
-              }
-              handler={() => {
-                this.setState({ chatOpen: !this.state.chatOpen });
-              }}
-              fontawesome="fas fa-comments"
-              description="Chat"
-            />
-            <ButtonDropdown
-              buttonClass={this.getYoutubeVideoClass()}
-              handler={this.handleYoutubeVideo}
-              fontawesome="fab fa-youtube"
-              description="Share Video"
-            />
-            <ButtonDropdown
-              buttonClass="button is-large is-white"
-              handler={this.handleFullScreen}
-              fontawesome="fas fa-expand"
-              description="Full Screen"
-            />
-          </MenuBar>
-        </div>
-      </MainContainer>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              bottom: "-50%",
+              right: "25%",
+              marginLeft: "-350px",
+            }}
+          >
+            <MenuBar>
+              <ButtonDropdown
+                buttonClass={
+                  this.state.videoAvailable
+                    ? "button is-large is-white"
+                    : "button is-static is-large is-white"
+                }
+                handler={this.handleVideo}
+                fontawesome="fas fa-video-slash"
+                description={this.state.videoOn ? "Video Off" : "Video On"}
+              />
+              <ButtonDropdown
+                buttonClass={
+                  this.state.audioAvailable
+                    ? "button is-large is-white"
+                    : "button is-static is-large is-white"
+                }
+                handler={this.handleAudio}
+                fontawesome="fas fa-microphone-slash"
+                description={this.state.audioOn ? "Audio Off" : "Audio On"}
+              />
+              <ButtonDropdown
+                buttonClass={this.getClinkClass()}
+                handler={this.handleClink}
+                fontawesome="fas fa-glass-cheers"
+                description="Clink"
+              />
+              <ButtonDropdown
+                buttonClass={this.getAttentionClass()}
+                handler={this.handleAttention}
+                fontawesome="fas fa-bullhorn"
+                description="Attention"
+              />
+              <ButtonDropdown
+                buttonClass="button is-large is-white"
+                handler={this.handleSeatSwap}
+                fontawesome="fas fa-exchange-alt"
+                description="Seat Swap"
+              />
+              <ButtonDropdown
+                buttonClass="button is-large is-white"
+                handler={this.handleSeatShuffle}
+                fontawesome="fas fa-random"
+                description="Seat Shuffle"
+              />
+              <ButtonDropdown
+                buttonClass={
+                  this.state.chatOpen
+                    ? "button is-large is-black"
+                    : "button is-large is-white"
+                }
+                handler={() => {
+                  this.setState({ chatOpen: !this.state.chatOpen });
+                }}
+                fontawesome="fas fa-comments"
+                description="Chat"
+              />
+              <ButtonDropdown
+                buttonClass={this.getYoutubeVideoClass()}
+                handler={this.handleYoutubeVideo}
+                fontawesome="fab fa-youtube"
+                description="Share Video"
+              />
+              <ButtonDropdown
+                buttonClass="button is-large is-white"
+                handler={this.handleFullScreen}
+                fontawesome="fas fa-expand"
+                description="Full Screen"
+              />
+            </MenuBar>
+          </div>
+        </MainContainer>
+      </ScrollLock>
     );
   }
 }
