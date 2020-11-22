@@ -5,14 +5,23 @@ import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
-import { MainContainer, Table, MenuBar } from "./MainElement";
+import { MainContainer, MenuBar, Item } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Carousel from 'react-elastic-carousel';
 
 const Util = require("../../utils/utils");
 const delay = require("delay");
-
+const breakPoints = [
+    { width: 1, itemsToShow: 1 },
+    { width: 1320, itemsToShow: 2 },
+  ];
+const breakPoints2 = [
+  { width: 1, itemsToShow: 1 },
+  { width: 1320, itemsToShow: 2 },
+];
+  
 class Room extends Component {
   socket;
   noob = true; // noob need to send initiator to old users (RTC).
@@ -39,6 +48,7 @@ class Room extends Component {
     YoutubeInProgress: false,
     youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
     youtubeLinkInput: null,
+    items: []
   };
 
   constructor() {
@@ -232,6 +242,8 @@ class Room extends Component {
     this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
+    this.handleChatClose = this.handleChatClose.bind(this);
+
   }
 
   getModalClass() {
@@ -242,6 +254,10 @@ class Room extends Component {
     }
   }
 
+  handleChatClose() {
+    this.setState({ chatOpen: !this.state.chatOpen });
+  }
+  
   getModalContent() {
     if (this.state.clinked) {
       return (
@@ -577,7 +593,44 @@ class Room extends Component {
     }
   }
 
+  settable(){
+    if (Object.keys(this.state.participants).length < 5){
+      return(
+        <div style={{display: 'flex',  justifyContent:'center'}}>
+          <Item>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+              </div>
+            </div>
+          </Item>
+        </div>
+      )
+    }
+    else{
+      return(
+        <Carousel breakPoints = {breakPoints}>
+          <Item>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+              </div>
+            </div>
+          </Item>
+          <Item>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+              </div>
+            </div>
+          </Item>
+        </Carousel>
+      )
+    }
+  }
+
   render() {
+    
     return (
       <MainContainer>
         <div className={this.getModalClass()}>
@@ -603,25 +656,17 @@ class Room extends Component {
           draggable
           pauseOnHover
         />
-        <div>
-          {!this.state.full_screen ? (
-            <h1
-              className="has-text-centered is-size-2"
-              style={{ color: "white" }}
-            >
-              "Use Full Screen Mode to Begin With"
-            </h1>
-          ) : (
+        <div>    
             <div>
               <CopyText roomName={this.state.roomName} />
               <Debug
                 playerName={this.state.playerName}
                 participants={this.state.participants}
-              />
-              <Table />
+              /> 
+              <div >{this.settable()}</div>             
               <div className="has-text-centered mt-2">
                 <div className="columns">
-                  <div className="column is-2 mx-4">
+                  <div className="column is-3 mx-4">
                     <div className="my-6">
                       {this.getYoutubeVideo()}
                     </div>
@@ -633,14 +678,12 @@ class Room extends Component {
                       open={this.state.chatOpen}
                     />
                   </div>
-                  <div className="column is-9">{this.getVideos()}</div>
-                  <div className="column is-2"></div>
                 </div>
               </div>
             </div>
-          )}
-        </div>
 
+        </div>
+            
         <MenuBar>
           <ButtonDropdown
             buttonClass={

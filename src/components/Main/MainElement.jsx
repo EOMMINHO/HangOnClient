@@ -1,27 +1,27 @@
-import styled from "styled-components";
-import ImgBg from "./Bar.png";
-import table from "./table.png";
-import { MdClose } from "react-icons/md";
+import styled from 'styled-components';
+import ImgBg from './Bar.png';
+import table from './table.png'
+import { MdClose } from 'react-icons/md';
+
 
 export const MainContainer = styled.div`
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url(${ImgBg});
-  height: 100vh;
-  background-position: center;
-  background-size: cover;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${ImgBg});
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    
 `;
 
-export const Table = styled.div`
-  width: 600px;
-  height: 644.4px;
-  background: url(${table});
-  background-size: cover;
-  position: fixed;
-  bottom: 11%;
+export const Item = styled.div`
   display: flex;
+  background: url(${table});
+  background-repeat: no-repeat;
+  background-position: center;
   justify-content: center;
   align-items: center;
-  margin-left: 29%;
+  height: 650px;
+  width: 660px;
+  
 `;
 
 export const MenuBar = styled.div`
@@ -34,6 +34,7 @@ export const MenuBar = styled.div`
   bottom: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-left: 24.8%;
+  align-items: center;  
+  margin-left: 25.6%;
 `;
+
