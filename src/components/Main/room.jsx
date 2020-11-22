@@ -591,8 +591,10 @@ class Room extends Component {
       ) {
         return (
           <VideoDropdown
+            key={this.state.playerName}
             myRef={this.localVideoRef}
             description={this.state.playerName}
+            isUp={i % 2}
           />
         );
       } else {
@@ -601,6 +603,7 @@ class Room extends Component {
             key={getNamebyNumber(this.state.participants, i)}
             myRef={this.videoRefs[getNamebyNumber(this.state.participants, i)]}
             description={getNamebyNumber(this.state.participants, i)}
+            isUp={i % 2}
           />
         );
       }
@@ -627,7 +630,7 @@ class Room extends Component {
                       width: "50%",
                       position: "absolute",
                       marginLeft: "16%",
-                      marginTop: "6%"
+                      marginTop: "6%",
                     }}
                   >
                     {this.get_video(1)}
@@ -637,7 +640,7 @@ class Room extends Component {
                       width: "50%",
                       position: "absolute",
                       marginLeft: "50%",
-                      marginTop: "6%"
+                      marginTop: "6%",
                     }}
                   >
                     {this.get_video(3)}
@@ -674,47 +677,47 @@ class Room extends Component {
       return (
         <Carousel breakPoints={breakPoints}>
           <Item>
-            <table style= {{width: '100%' , height:'100%' }}>
+            <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "1.5%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
                   >
                     {this.get_video(1)}
                   </td>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "23%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
                   >
                     {this.get_video(3)}
                   </td>
                 </tr>
                 <tr>
-                  <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "1.5%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "1.5%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(2)}
                   </td>
-                  <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "23%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "23%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(4)}
@@ -724,54 +727,54 @@ class Room extends Component {
             </table>
           </Item>
           <Item>
-          <table style= {{width: '100%' , height:'100%' }}>
-            <tbody>
+            <table style={{ width: "100%", height: "100%" }}>
+              <tbody>
                 <tr>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "1.5%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
-                  >                    
+                  >
                     {this.get_video(5)}
                   </td>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "23%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
-                  >                    
+                  >
                     {this.get_video(7)}
                   </td>
                 </tr>
                 <tr>
-                <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "1.5%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "1.5%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(6)}
                   </td>
-                  <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "23%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "23%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(8)}
                   </td>
                 </tr>
               </tbody>
-            </table>           
+            </table>
           </Item>
         </Carousel>
       );
@@ -813,7 +816,7 @@ class Room extends Component {
             />
             <Youtube>{this.getYoutubeVideo()}</Youtube>
             <div>{this.settable()}</div>
-            <div className="has-text-centered mt-2" position = "absolute">
+            <div className="has-text-centered mt-2" position="absolute">
               <div className="columns">
                 <div className="column is-3 mx-4">
                   <Chat
