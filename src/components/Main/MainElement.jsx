@@ -38,6 +38,8 @@ export const MenuBar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;  
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 export const Youtube = styled.div`

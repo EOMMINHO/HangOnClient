@@ -835,87 +835,76 @@ class Room extends Component {
             </div>
           </div>
 
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              bottom: "-50%",
-              right: "25%",
-              marginLeft: "-350px",
-            }}
-          >
-            <MenuBar>
-              <ButtonDropdown
-                buttonClass={
-                  this.state.videoAvailable
-                    ? "button is-large is-white"
-                    : "button is-static is-large is-white"
-                }
-                handler={this.handleVideo}
-                fontawesome="fas fa-video-slash"
-                description={this.state.videoOn ? "Video Off" : "Video On"}
-              />
-              <ButtonDropdown
-                buttonClass={
-                  this.state.audioAvailable
-                    ? "button is-large is-white"
-                    : "button is-static is-large is-white"
-                }
-                handler={this.handleAudio}
-                fontawesome="fas fa-microphone-slash"
-                description={this.state.audioOn ? "Audio Off" : "Audio On"}
-              />
-              <ButtonDropdown
-                buttonClass={this.getClinkClass()}
-                handler={this.handleClink}
-                fontawesome="fas fa-glass-cheers"
-                description="Clink"
-              />
-              <ButtonDropdown
-                buttonClass={this.getAttentionClass()}
-                handler={this.handleAttention}
-                fontawesome="fas fa-bullhorn"
-                description="Attention"
-              />
-              <ButtonDropdown
-                buttonClass="button is-large is-white"
-                handler={this.handleSeatSwap}
-                fontawesome="fas fa-exchange-alt"
-                description="Seat Swap"
-              />
-              <ButtonDropdown
-                buttonClass="button is-large is-white"
-                handler={this.handleSeatShuffle}
-                fontawesome="fas fa-random"
-                description="Seat Shuffle"
-              />
-              <ButtonDropdown
-                buttonClass={
-                  this.state.chatOpen
-                    ? "button is-large is-black"
-                    : "button is-large is-white"
-                }
-                handler={() => {
-                  this.setState({ chatOpen: !this.state.chatOpen });
-                }}
-                fontawesome="fas fa-comments"
-                description="Chat"
-              />
-              <ButtonDropdown
-                buttonClass={this.getYoutubeVideoClass()}
-                handler={this.handleYoutubeVideo}
-                fontawesome="fab fa-youtube"
-                description="Share Video"
-              />
-              <ButtonDropdown
-                buttonClass="button is-large is-white"
-                handler={this.handleFullScreen}
-                fontawesome="fas fa-expand"
-                description="Full Screen"
-              />
-            </MenuBar>
-          </div>
+          <MenuBar>
+            <ButtonDropdown
+              buttonClass={
+                this.state.videoAvailable
+                  ? "button is-large is-white"
+                  : "button is-static is-large is-white"
+              }
+              handler={this.handleVideo}
+              fontawesome="fas fa-video-slash"
+              description={this.state.videoOn ? "Video Off" : "Video On"}
+            />
+            <ButtonDropdown
+              buttonClass={
+                this.state.audioAvailable
+                  ? "button is-large is-white"
+                  : "button is-static is-large is-white"
+              }
+              handler={this.handleAudio}
+              fontawesome="fas fa-microphone-slash"
+              description={this.state.audioOn ? "Audio Off" : "Audio On"}
+            />
+            <ButtonDropdown
+              buttonClass={this.getClinkClass()}
+              handler={this.handleClink}
+              fontawesome="fas fa-glass-cheers"
+              description="Clink"
+            />
+            <ButtonDropdown
+              buttonClass={this.getAttentionClass()}
+              handler={this.handleAttention}
+              fontawesome="fas fa-bullhorn"
+              description="Attention"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={this.handleSeatSwap}
+              fontawesome="fas fa-exchange-alt"
+              description="Seat Swap"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={this.handleSeatShuffle}
+              fontawesome="fas fa-random"
+              description="Seat Shuffle"
+            />
+            <ButtonDropdown
+              buttonClass={
+                this.state.chatOpen
+                  ? "button is-large is-black"
+                  : "button is-large is-white"
+              }
+              handler={() => {
+                this.setState({ chatOpen: !this.state.chatOpen });
+              }}
+              fontawesome="fas fa-comments"
+              description="Chat"
+            />
+            <ButtonDropdown
+              buttonClass={this.getYoutubeVideoClass()}
+              handler={this.handleYoutubeVideo}
+              fontawesome="fab fa-youtube"
+              description="Share Video"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={this.handleFullScreen}
+              fontawesome="fas fa-expand"
+              description="Full Screen"
+            />
+          </MenuBar>
         </MainContainer>
       </ScrollLock>
     );
