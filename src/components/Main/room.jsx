@@ -732,7 +732,7 @@ class Room extends Component {
                       width:"50%", 
                       position: "fixed", 
                       marginLeft: "1.5%",
-                      marginTop: "9%" 
+                      marginTop: "3.7%" 
                     }}
                   >                    
                     {this.get_video(5)}
@@ -742,7 +742,7 @@ class Room extends Component {
                       width:"50%", 
                       position: "fixed", 
                       marginLeft: "23%",
-                      marginTop: "9%" 
+                      marginTop: "3.7%" 
                     }}
                   >                    
                     {this.get_video(7)}
