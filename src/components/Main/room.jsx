@@ -5,7 +5,7 @@ import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
-import { MainContainer, MenuBar, Item } from "./MainElement";
+import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -414,30 +414,29 @@ class Room extends Component {
   }
 
   getYoutubeVideo() {
-    if (this.state.YoutubeInProgress) {
-      return (
+    if (this.state.YoutubeInProgress) var classname = "top-left"; else var classname = "is-invisible";
+    return (
+      <div className={classname}>
         <div>
-          <div>
-            <ReactPlayer
-              url={this.state.youtubeLink}
-              controls={true}
-              width="320px"
-              height="180px"
-            />
-          </div>
-          <div>
-            <input
-              className="input"
-              placeholder="Youtube Link"
-              onChange={this.handleLinkInput}
-            />
-            <button className="button" onClick={this.handleYoutubeLink}>
-              Share
-            </button>
-          </div>
+          <ReactPlayer
+            url={this.state.youtubeLink}
+            controls={true}
+            width="320px"
+            height="180px"
+          />
         </div>
-      );
-    } else return null;
+        <div>
+          <input
+            className="input"
+            placeholder="Youtube Link"
+            onChange={this.handleLinkInput}
+          />
+          <button className="button" onClick={this.handleYoutubeLink}>
+            Share
+          </button>
+        </div>
+      </div>
+    );
   }
 
   handleFullScreen() {
@@ -670,13 +669,17 @@ class Room extends Component {
         <div>    
             <div>
               <CopyText roomName={this.state.roomName} />
+              <Debug
+                playerName={this.state.playerName}
+                participants={this.state.participants}
+              /> 
+              <Youtube>
+                {this.getYoutubeVideo()}
+              </Youtube>
               <div >{this.settable()}</div>             
               <div className="has-text-centered mt-2">
                 <div className="columns">
                   <div className="column is-3 mx-4">
-                    <div className="my-6">
-                      {this.getYoutubeVideo()}
-                    </div>
                     <Chat
                       chatBoardRef={this.chatBoardRef}
                       chatRef={this.chatRef}
