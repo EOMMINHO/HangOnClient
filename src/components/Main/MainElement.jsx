@@ -23,7 +23,7 @@ export const Item = styled.div`
   align-items: center;
   height: 700px;
   width: 900px;
-  margin-bottom: 1.4%;
+  margin: auto;
   
 `;
 
