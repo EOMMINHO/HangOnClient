@@ -234,6 +234,8 @@ class Room extends Component {
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
+    this.handleChatClose = this.handleChatClose.bind(this);
+
   }
 
   getModalClass() {
@@ -244,6 +246,10 @@ class Room extends Component {
     }
   }
 
+  handleChatClose() {
+    this.setState({ chatOpen: !this.state.chatOpen });
+  }
+  
   getModalContent() {
     if (this.state.clinked) {
       return (
