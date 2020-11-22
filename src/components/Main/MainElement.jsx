@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import ImgBg from './Bar.png';
-import table from './table.png'
+import table from './table.png';
+import { Container, Row, Col } from 'react-awesome-styled-grid';
 import { MdClose } from 'react-icons/md';
 
 
@@ -17,10 +18,12 @@ export const Item = styled.div`
   background: url(${table});
   background-repeat: no-repeat;
   background-position: center;
-  justify-content: center;
+  justify-content: flex;
+  position: relative
   align-items: center;
-  height: 650px;
+  height: 675px;
   width: 660px;
+  margin-bottom: 2%;
   
 `;
 

@@ -365,7 +365,10 @@ class Room extends Component {
     } else {
       this.setState({ videoOn: true });
       this.stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: { 
+          width: { min: 1024, ideal: 1280, max: 1920 },
+          height: { min: 576, ideal: 720, max: 1080 }
+        },
         audio: this.state.audioOn,
       });
       this.localVideoRef.current.srcObject = this.stream;
@@ -596,13 +599,21 @@ class Room extends Component {
   settable(){
     if (Object.keys(this.state.participants).length < 5){
       return(
-        <div style={{display: 'flex',  justifyContent:'center'}}>
+        <div style={{
+          position: 'fixed', left: '50%', top: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}>
           <Item>
-            <div className="has-text-centered mt-2">
-              <div className="columns">
-                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
-              </div>
-            </div>
+          <table style= {{width: '100%' , height:'100%' }}>
+            <tr>
+              <td style= {{ width:'50%', justifycontent: 'center'}}>{this.getVideos()}</td>
+              <td style= {{ width:'50%', position: 'absolute', marginLeft : '4.5%'}}>{this.getVideos()}</td>
+            </tr>
+            <tr>
+              <td style={{ width:'50%', position: 'absolute', bottom : '0'}}>{this.getVideos()}</td>
+              <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '54.5%'}}>{this.getVideos()}</td>
+            </tr>
+          </table>
           </Item>
         </div>
       )
@@ -659,10 +670,6 @@ class Room extends Component {
         <div>    
             <div>
               <CopyText roomName={this.state.roomName} />
-              <Debug
-                playerName={this.state.playerName}
-                participants={this.state.participants}
-              /> 
               <div >{this.settable()}</div>             
               <div className="has-text-centered mt-2">
                 <div className="columns">
