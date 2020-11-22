@@ -813,7 +813,7 @@ class Room extends Component {
             />
             <Youtube>{this.getYoutubeVideo()}</Youtube>
             <div>{this.settable()}</div>
-            <div className="has-text-centered mt-2">
+            <div className="has-text-centered mt-2" position = "absolute">
               <div className="columns">
                 <div className="column is-3 mx-4">
                   <Chat

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class VideoDropdown extends Component {
   render() {
     return (
-      <div className="dropdown is-hoverable">
+      <div className="dropdown is-up is-hoverable">
         <div className="dropdown-trigger">
           <video
             key={this.props.myKey ? this.props.myKey : null}
