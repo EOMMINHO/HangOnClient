@@ -629,12 +629,12 @@ class Room extends Component {
                   {this.get_video(1)}
                 </td>
                 <td style= {{ width:'50%', position: 'absolute', marginLeft : '50%'}}>
-                  {this.get_video(2)}
+                  {this.get_video(3)}
                 </td>
               </tr>
               <tr>
                 <td style={{ width:'50%', position: 'absolute', marginLeft: '16%', bottom : '0'}}>
-                  {this.get_video(3)}
+                  {this.get_video(2)}
                 </td>
                 <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '50%'}}>
                   {this.get_video(4)}
@@ -650,18 +650,48 @@ class Room extends Component {
       return(
         <Carousel breakPoints = {breakPoints}>
           <Item>
-            <div className="has-text-centered mt-2">
-              <div className="columns">
-                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
-              </div>
-            </div>
+            <table style= {{width: '100%' , height:'100%' }}>
+              <tbody>
+                <tr>
+                  <td style= {{ width:'50%', position: 'fixed', marginLeft: '1.5%' }}>
+                    {this.get_video(1)}
+                  </td>
+                  <td style= {{ width:'50%', position: 'fixed', marginLeft: '23%' }}>
+                    {this.get_video(3)}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width:'50%', position: 'fixed', marginLeft: '1.5%', marginTop: '13%' }}>
+                    {this.get_video(2)}
+                  </td>
+                  <td style={{ width:'50%', position: 'fixed', marginLeft: '23%', marginTop: '13%' }}>
+                    {this.get_video(4)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </Item>
           <Item>
-            <div className="has-text-centered mt-2">
-              <div className="columns">
-                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
-              </div>
-            </div>
+          <table style= {{width: '100%' , height:'100%' }}>
+            <tbody>
+                <tr>
+                  <td style= {{ width:'50%', position: 'fixed', marginLeft: '1.5%' }}>
+                    {this.get_video(5)}
+                  </td>
+                  <td style= {{ width:'50%', position: 'fixed', marginLeft: '23%' }}>
+                    {this.get_video(7)}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width:'50%', position: 'fixed', marginLeft: '1.5%', marginTop: '13%' }}>
+                    {this.get_video(6)}
+                  </td>
+                  <td style={{ width:'50%', position: 'fixed', marginLeft: '23%', marginTop: '13%' }}>
+                    {this.get_video(8)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>           
           </Item>
         </Carousel>
       )
@@ -697,10 +727,7 @@ class Room extends Component {
         <div>    
             <div>
               <CopyText roomName={this.state.roomName} />
-              <Debug
-                playerName={this.state.playerName}
-                participants={this.state.participants}
-              /> 
+              
               <Youtube>
                 {this.getYoutubeVideo()}
               </Youtube>
