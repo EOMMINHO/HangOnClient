@@ -21,9 +21,9 @@ export const Item = styled.div`
   justify-content: flex;
   position: relative
   align-items: center;
-  height: 675px;
+  height: 700px;
   width: 660px;
-  margin-bottom: 2%;
+  margin-bottom: 1.4%;
   
 `;
 

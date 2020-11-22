@@ -17,10 +17,6 @@ const breakPoints = [
     { width: 1, itemsToShow: 1 },
     { width: 1320, itemsToShow: 2 },
   ];
-const breakPoints2 = [
-  { width: 1, itemsToShow: 1 },
-  { width: 1320, itemsToShow: 2 },
-];
   
 class Room extends Component {
   socket;
@@ -535,7 +531,7 @@ class Room extends Component {
             return (
               <VideoDropdown
                 key={userName}
-                ref={this.localVideoRef}
+                myRef={this.localVideoRef}
                 description={this.state.playerName}
               />
             );
@@ -606,11 +602,11 @@ class Room extends Component {
           <table style= {{width: '100%' , height:'100%' }}>
             <tr>
               <td style= {{ width:'50%', justifycontent: 'center'}}>{this.getVideos()}</td>
-              <td style= {{ width:'50%', position: 'absolute', marginLeft : '4.5%'}}>{this.getVideos()}</td>
+              <td style= {{ width:'50%', position: 'absolute', marginLeft : '4.5%'}}></td>
             </tr>
             <tr>
-              <td style={{ width:'50%', position: 'absolute', bottom : '0'}}>{this.getVideos()}</td>
-              <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '54.5%'}}>{this.getVideos()}</td>
+              <td style={{ width:'50%', position: 'absolute', bottom : '0'}}></td>
+              <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '54.5%'}}></td>
             </tr>
           </table>
           </Item>
