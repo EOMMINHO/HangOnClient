@@ -364,7 +364,10 @@ class Room extends Component {
     } else {
       this.setState({ videoOn: true });
       this.stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          width: { min: 1024, ideal: 1280, max: 1920 },
+          height: { min: 576, ideal: 720, max: 1080 },
+        },
         audio: this.state.audioOn,
       });
       this.localVideoRef.current.srcObject = this.stream;
@@ -621,7 +624,7 @@ class Room extends Component {
                     style={{
                       width: "50%",
                       position: "absolute",
-                      marginLeft: "15%",
+                      marginLeft: "16%",
                     }}
                   >
                     {this.get_video(1)}
@@ -641,7 +644,7 @@ class Room extends Component {
                     style={{
                       width: "50%",
                       position: "absolute",
-                      marginLeft: "15%",
+                      marginLeft: "16%",
                       bottom: "0",
                     }}
                   >
@@ -742,84 +745,95 @@ class Room extends Component {
           </div>
         </div>
 
-        <MenuBar>
-          <ButtonDropdown
-            buttonClass={
-              this.state.videoAvailable
-                ? "button is-large is-white"
-                : "button is-static is-large is-white"
-            }
-            handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
-            description={this.state.videoOn ? "Video Off" : "Video On"}
-          />
-          <ButtonDropdown
-            buttonClass={
-              this.state.audioAvailable
-                ? "button is-large is-white"
-                : "button is-static is-large is-white"
-            }
-            handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
-            description={this.state.audioOn ? "Audio Off" : "Audio On"}
-          />
-          <ButtonDropdown
-            buttonClass={this.getClinkClass()}
-            handler={this.handleClink}
-            fontawesome="fas fa-glass-cheers"
-            description="Clink"
-          />
-          <ButtonDropdown
-            buttonClass={this.getClinkAgreeClass()}
-            handler={this.handleClinkAgree}
-            fontawesome="fas fa-check-circle"
-            description="Clink Agree"
-          />
-          <ButtonDropdown
-            buttonClass={this.getAttentionClass()}
-            handler={this.handleAttention}
-            fontawesome="fas fa-bullhorn"
-            description="Attention"
-          />
-          <ButtonDropdown
-            buttonClass={this.getAttentionAgreeClass()}
-            handler={this.handleAttentionAgree}
-            fontawesome="fas fa-check-circle"
-            description="Attention Agree"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatSwap}
-            fontawesome="fas fa-exchange-alt"
-            description="Seat Swap"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
-            fontawesome="fas fa-random"
-            description="Seat Shuffle"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={() => {
-              this.setState({ chatOpen: !this.state.chatOpen });
-            }}
-            fontawesome="fas fa-comments"
-            description="Chat"
-          />
-          <ButtonDropdown
-            buttonClass={this.getYoutubeVideoClass()}
-            handler={this.handleYoutubeVideo}
-            fontawesome="fab fa-youtube"
-            description="Share Video"
-          />
-          <ButtonDropdown
-            buttonClass="button is-large is-white"
-            handler={this.handleFullScreen}
-            fontawesome="fas fa-expand"
-            description="Full Screen"
-          />
-        </MenuBar>
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            bottom: "-50%",
+            right: "25%",
+            marginLeft: "-350px",
+          }}
+        >
+          <MenuBar>
+            <ButtonDropdown
+              buttonClass={
+                this.state.videoAvailable
+                  ? "button is-large is-white"
+                  : "button is-static is-large is-white"
+              }
+              handler={this.handleVideo}
+              fontawesome="fas fa-video-slash"
+              description={this.state.videoOn ? "Video Off" : "Video On"}
+            />
+            <ButtonDropdown
+              buttonClass={
+                this.state.audioAvailable
+                  ? "button is-large is-white"
+                  : "button is-static is-large is-white"
+              }
+              handler={this.handleAudio}
+              fontawesome="fas fa-microphone-slash"
+              description={this.state.audioOn ? "Audio Off" : "Audio On"}
+            />
+            <ButtonDropdown
+              buttonClass={this.getClinkClass()}
+              handler={this.handleClink}
+              fontawesome="fas fa-glass-cheers"
+              description="Clink"
+            />
+            <ButtonDropdown
+              buttonClass={this.getClinkAgreeClass()}
+              handler={this.handleClinkAgree}
+              fontawesome="fas fa-check-circle"
+              description="Clink Agree"
+            />
+            <ButtonDropdown
+              buttonClass={this.getAttentionClass()}
+              handler={this.handleAttention}
+              fontawesome="fas fa-bullhorn"
+              description="Attention"
+            />
+            <ButtonDropdown
+              buttonClass={this.getAttentionAgreeClass()}
+              handler={this.handleAttentionAgree}
+              fontawesome="fas fa-check-circle"
+              description="Attention Agree"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={this.handleSeatSwap}
+              fontawesome="fas fa-exchange-alt"
+              description="Seat Swap"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={this.handleSeatShuffle}
+              fontawesome="fas fa-random"
+              description="Seat Shuffle"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={() => {
+                this.setState({ chatOpen: !this.state.chatOpen });
+              }}
+              fontawesome="fas fa-comments"
+              description="Chat"
+            />
+            <ButtonDropdown
+              buttonClass={this.getYoutubeVideoClass()}
+              handler={this.handleYoutubeVideo}
+              fontawesome="fab fa-youtube"
+              description="Share Video"
+            />
+            <ButtonDropdown
+              buttonClass="button is-large is-white"
+              handler={this.handleFullScreen}
+              fontawesome="fas fa-expand"
+              description="Full Screen"
+            />
+          </MenuBar>
+        </div>
       </MainContainer>
     );
   }

@@ -23,7 +23,7 @@ export const Item = styled.div`
   align-items: center;
   height: 700px;
   width: 900px;
-  margin: auto;
+  margin-bottom: 1.4%;
   
 `;
 
@@ -38,7 +38,6 @@ export const MenuBar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;  
-  margin-left: 25.6%;
 `;
 
 export const Youtube = styled.div`
