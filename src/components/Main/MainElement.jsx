@@ -13,19 +13,29 @@ export const MainContainer = styled.div`
 `;
 
 export const Table = styled.div`
-    width: 600px;
-    height: 644.4px;
+    width: 584px;
+    height: 324px;
     background: url(${table});
     background-size: cover;
     position: fixed;
-    bottom: 11%;
+    bottom: 30%;
     display: flex;
     justify-content: center;
     align-items: center;  
-    margin-left: 29%;
-
+    margin-left: 28.9%;
 `;
 
+export const Item = styled.div`
+  display: flex;
+  background: url(${table});
+  background-repeat: no-repeat;
+  background-position: center;
+  justify-content: center;
+  align-items: center;
+  height: 650px;
+  width: 660px;
+  
+`;
 
 export const MenuBar = styled.div`
   width: 700px;

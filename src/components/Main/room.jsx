@@ -3,13 +3,18 @@ import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
-import { MainContainer, Table, MenuBar } from "./MainElement";
+import { MainContainer, Table, MenuBar, Item } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Carousel from 'react-elastic-carousel';
 
 const Util = require("../../utils/utils");
 const delay = require("delay");
+const breakPoints = [
+  { width: 1, itemsToShow: 1 },
+  { width: 1320, itemsToShow: 2 },
+];
 
 class Room extends Component {
   socket;
@@ -34,6 +39,7 @@ class Room extends Component {
     audioAvailable: false,
     chatOpen: false,
     full_screen: false,
+    tables: []
   };
 
   constructor() {
@@ -552,6 +558,8 @@ class Room extends Component {
     }
   }
 
+
+
   render() {
     return (
       <MainContainer >
@@ -567,8 +575,7 @@ class Room extends Component {
           pauseOnHover
         />
         <div>
-          <h1 className="has-text-centered is-size-2" style={{ color: "white"}}>
-            {!this.state.full_screen ? ("Use Full Screen Mode to Begin With"): (
+          <h1 className="has-text-centered is-size-2" style={{ color: "white"}} >
             <div>
               <h1 className="has-text-centered is-size-5" style={{ color: "white" }}>
                 Room Name : {this.state.roomName}
@@ -581,33 +588,24 @@ class Room extends Component {
                 <br/>
                 Player Name : {this.state.playerName}
                 <br/>
-                Participants: {JSON.stringify(this.state.participants)}
+                Participants: {JSON.stringify(this.state.participants)} 
               </h1>
-              <Table/>
-              <div className="has-text-centered mt-2">
-                <div className="columns">
-                  <div className="column is-2 mx-4">
-                    <div className="my-6">
-                      <ReactPlayer
-                        url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
-                        controls={true}
-                        width="320px"
-                        height="180px"
-                      />
+
+              <Carousel breakPoints={breakPoints}>
+                  <Item>
+                    <div className="has-text-centered mt-2">
+                          <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
                     </div>
-                    <Chat
-                      chatBoardRef={this.chatBoardRef}
-                      chatRef={this.chatRef}
-                      handleChat={this.handleChat}
-                      handleClose={this.handleChatClose}
-                      open={this.state.chatOpen}
-                    />
-                  </div>
-                  <div className="column is-9">{this.getVideos()}</div>
-                  <div className="column is-2"></div>
-                </div>
-              </div>
-            </div>)}
+                  </Item>
+                  <Item>Two</Item>
+                  <Item>Three</Item>
+                  <Item>Four</Item>
+                  <Item>Five</Item>
+                  <Item>Six</Item>
+                  <Item>Seven</Item>
+                  <Item>Eight</Item>
+                </Carousel>
+            </div>
           </h1>
         </div>
 
