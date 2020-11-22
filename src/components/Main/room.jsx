@@ -411,30 +411,29 @@ class Room extends Component {
   }
 
   getYoutubeVideo() {
-    if (this.state.YoutubeInProgress) {
-      return (
+    if (this.state.YoutubeInProgress) var classname = "top-left"; else var classname = "is-invisible";
+    return (
+      <div className={classname}>
         <div>
-          <div>
-            <ReactPlayer
-              url={this.state.youtubeLink}
-              controls={true}
-              width="320px"
-              height="180px"
-            />
-          </div>
-          <div>
-            <input
-              className="input"
-              placeholder="Youtube Link"
-              onChange={this.handleLinkInput}
-            />
-            <button className="button" onClick={this.handleYoutubeLink}>
-              Share
-            </button>
-          </div>
+          <ReactPlayer
+            url={this.state.youtubeLink}
+            controls={true}
+            width="320px"
+            height="180px"
+          />
         </div>
-      );
-    } else return null;
+        <div>
+          <input
+            className="input"
+            placeholder="Youtube Link"
+            onChange={this.handleLinkInput}
+          />
+          <button className="button" onClick={this.handleYoutubeLink}>
+            Share
+          </button>
+        </div>
+      </div>
+    );
   }
 
   handleFullScreen() {
