@@ -35,6 +35,6 @@ export const MenuBar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;  
-  margin-left: 24.8%;
+  margin-left: 25.6%;
 `;
 

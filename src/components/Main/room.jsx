@@ -17,6 +17,10 @@ const breakPoints = [
     { width: 1, itemsToShow: 1 },
     { width: 1320, itemsToShow: 2 },
   ];
+const breakPoints2 = [
+  { width: 1, itemsToShow: 1 },
+  { width: 1320, itemsToShow: 2 },
+];
   
 class Room extends Component {
   socket;
@@ -41,6 +45,7 @@ class Room extends Component {
     audioAvailable: false,
     chatOpen: false,
     full_screen: false,
+    items: []
   };
 
   constructor() {
@@ -531,7 +536,44 @@ class Room extends Component {
     }
   }
 
+  settable(){
+    if (Object.keys(this.state.participants).length < 5){
+      return(
+        <div style={{display: 'flex',  justifyContent:'center'}}>
+          <Item>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+              </div>
+            </div>
+          </Item>
+        </div>
+      )
+    }
+    else{
+      return(
+        <Carousel breakPoints = {breakPoints}>
+          <Item>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+              </div>
+            </div>
+          </Item>
+          <Item>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+              </div>
+            </div>
+          </Item>
+        </Carousel>
+      )
+    }
+  }
+
   render() {
+    
     return (
       <MainContainer>
         <div className={this.getModalClass()}>
@@ -563,21 +605,8 @@ class Room extends Component {
               <Debug
                 playerName={this.state.playerName}
                 participants={this.state.participants}
-              />
-              <Carousel breakPoints={breakPoints}>
-                <Item>
-                <div className="has-text-centered mt-2">
-                        <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
-                </div>
-                </Item>
-                <Item>Two</Item>
-                <Item>Three</Item>
-                <Item>Four</Item>
-                <Item>Five</Item>
-                <Item>Six</Item>
-                <Item>Seven</Item>
-                <Item>Eight</Item>
-            </Carousel>
+              /> 
+              <div >{this.settable()}</div>             
               <div className="has-text-centered mt-2">
                 <div className="columns">
                   <div className="column is-3 mx-4">
@@ -597,13 +626,12 @@ class Room extends Component {
                       open={this.state.chatOpen}
                     />
                   </div>
-                  <div className="column is-9">{this.getVideos()}</div>
-                  <div className="column is-2"></div>
                 </div>
               </div>
             </div>
-        </div>
 
+        </div>
+            
         <MenuBar>
           <ButtonDropdown
             buttonClass={
