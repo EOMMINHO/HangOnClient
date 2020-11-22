@@ -348,7 +348,8 @@ class Room extends Component {
   }
 
   handleSeatSwap() {
-    this.setState({ modalActive: true, swapInProgress: true });
+    return alert("not yet developed");
+    //this.setState({ modalActive: true, swapInProgress: true });
   }
 
   handleSeatShuffle() {
@@ -399,8 +400,9 @@ class Room extends Component {
   }
 
   getYoutubeVideo() {
-    if (this.state.YoutubeInProgress) var classname = "top-left";
-    else var classname = "is-invisible";
+    let classname;
+    if (this.state.YoutubeInProgress) classname = "top-left";
+    else classname = "is-invisible";
     return (
       <div className={classname}>
         <div>
@@ -783,22 +785,10 @@ class Room extends Component {
               description="Clink"
             />
             <ButtonDropdown
-              buttonClass={this.getClinkAgreeClass()}
-              handler={this.handleClinkAgree}
-              fontawesome="fas fa-check-circle"
-              description="Clink Agree"
-            />
-            <ButtonDropdown
               buttonClass={this.getAttentionClass()}
               handler={this.handleAttention}
               fontawesome="fas fa-bullhorn"
               description="Attention"
-            />
-            <ButtonDropdown
-              buttonClass={this.getAttentionAgreeClass()}
-              handler={this.handleAttentionAgree}
-              fontawesome="fas fa-check-circle"
-              description="Attention Agree"
             />
             <ButtonDropdown
               buttonClass="button is-large is-white"
@@ -813,7 +803,11 @@ class Room extends Component {
               description="Seat Shuffle"
             />
             <ButtonDropdown
-              buttonClass="button is-large is-white"
+              buttonClass={
+                this.state.chatOpen
+                  ? "button is-large is-black"
+                  : "button is-large is-white"
+              }
               handler={() => {
                 this.setState({ chatOpen: !this.state.chatOpen });
               }}
