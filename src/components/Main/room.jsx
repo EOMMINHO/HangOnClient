@@ -362,7 +362,10 @@ class Room extends Component {
     } else {
       this.setState({ videoOn: true });
       this.stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          width: { min: 1024, ideal: 1280, max: 1920 },
+          height: { min: 576, ideal: 720, max: 1080 }
+        },
         audio: this.state.audioOn,
       });
       this.localVideoRef.current.srcObject = this.stream;
@@ -622,7 +625,7 @@ class Room extends Component {
           <table style= {{width: '100%' , height:'100%' }}>
             <tbody>
               <tr>
-                <td style= {{ width:'50%', position: 'absolute',marginLeft: '15%'}}>
+                <td style= {{ width:'50%', position: 'absolute',marginLeft: '16%'}}>
                   {this.get_video(1)}
                 </td>
                 <td style= {{ width:'50%', position: 'absolute', marginLeft : '50%'}}>
@@ -630,7 +633,7 @@ class Room extends Component {
                 </td>
               </tr>
               <tr>
-                <td style={{ width:'50%', position: 'absolute', marginLeft: '15%', bottom : '0'}}>
+                <td style={{ width:'50%', position: 'absolute', marginLeft: '16%', bottom : '0'}}>
                   {this.get_video(3)}
                 </td>
                 <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '50%'}}>
@@ -719,6 +722,10 @@ class Room extends Component {
 
         </div>
             
+        <div style={{
+          position: 'absolute', left: '50%', top: '50%', bottom: '-50%', right: '25%',
+          marginLeft: '-350px'
+        }}>
         <MenuBar>
           <ButtonDropdown
             buttonClass={
@@ -797,6 +804,7 @@ class Room extends Component {
             description="Full Screen"
           />
         </MenuBar>
+        </div>
       </MainContainer>
     );
   }
