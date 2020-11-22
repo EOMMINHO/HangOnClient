@@ -38,3 +38,7 @@ export const MenuBar = styled.div`
   margin-left: 25.6%;
 `;
 
+export const Youtube = styled.div`
+  position: absolute;
+  align-items: left;
+`;

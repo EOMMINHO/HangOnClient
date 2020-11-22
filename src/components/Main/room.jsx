@@ -5,7 +5,7 @@ import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
-import { MainContainer, MenuBar, Item } from "./MainElement";
+import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -662,13 +662,13 @@ class Room extends Component {
                 playerName={this.state.playerName}
                 participants={this.state.participants}
               /> 
+              <Youtube>
+                {this.getYoutubeVideo()}
+              </Youtube>
               <div >{this.settable()}</div>             
               <div className="has-text-centered mt-2">
                 <div className="columns">
                   <div className="column is-3 mx-4">
-                    <div className="my-6">
-                      {this.getYoutubeVideo()}
-                    </div>
                     <Chat
                       chatBoardRef={this.chatBoardRef}
                       chatRef={this.chatRef}
