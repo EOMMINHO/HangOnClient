@@ -9,16 +9,16 @@ import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Carousel from 'react-elastic-carousel';
-import {getNamebyNumber} from "../../utils/utils"
+import Carousel from "react-elastic-carousel";
+import { getNamebyNumber } from "../../utils/utils";
 
 const Util = require("../../utils/utils");
 const delay = require("delay");
 const breakPoints = [
-    { width: 1, itemsToShow: 1 },
-    { width: 1320, itemsToShow: 2 },
-  ];
-  
+  { width: 1, itemsToShow: 1 },
+  { width: 1320, itemsToShow: 2 },
+];
+
 class Room extends Component {
   socket;
   noob = true; // noob need to send initiator to old users (RTC).
@@ -45,7 +45,7 @@ class Room extends Component {
     YoutubeInProgress: false,
     youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
     youtubeLinkInput: null,
-    items: []
+    items: [],
   };
 
   constructor() {
@@ -232,7 +232,6 @@ class Room extends Component {
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
-    this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
     this.handleLinkInput = this.handleLinkInput.bind(this);
@@ -240,7 +239,6 @@ class Room extends Component {
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
-
   }
 
   getModalClass() {
@@ -254,7 +252,7 @@ class Room extends Component {
   handleChatClose() {
     this.setState({ chatOpen: !this.state.chatOpen });
   }
-  
+
   getModalContent() {
     if (this.state.clinked) {
       return (
@@ -304,7 +302,11 @@ class Room extends Component {
   }
 
   handleYoutubeLink() {
-    this.socket.emit("youtube link", this.state.youtubeLinkInput, this.state.roomName);
+    this.socket.emit(
+      "youtube link",
+      this.state.youtubeLinkInput,
+      this.state.roomName
+    );
   }
 
   handleModalOutClick() {
@@ -389,26 +391,13 @@ class Room extends Component {
     }
   }
 
-  handleChat(e) {
-    if (e.key === "Enter" && this.chatRef.current.value !== "") {
-      // send to peers
-      let newmsg = this.state.playerName + ": " + this.chatRef.current.value;
-      Object.values(this.peers).forEach((p) => {
-        p.send(newmsg);
-      });
-      this.chatRef.current.value = "";
-      this.chatBoardRef.current.value =
-        this.chatBoardRef.current.value + `${newmsg}\n`;
-      this.chatBoardRef.current.scrollTop = this.chatBoardRef.current.scrollHeight;
-    }
-  }
-
   handleYoutubeVideo() {
     this.setState({ YoutubeInProgress: !this.state.YoutubeInProgress });
   }
 
   getYoutubeVideo() {
-    if (this.state.YoutubeInProgress) var classname = "top-left"; else var classname = "is-invisible";
+    if (this.state.YoutubeInProgress) var classname = "top-left";
+    else var classname = "is-invisible";
     return (
       <div className={classname}>
         <div>
@@ -489,7 +478,8 @@ class Room extends Component {
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
       if (this.state.clinked) {
-        if (userName === this.state.playerName) // TODO: clink visualization
+        if (userName === this.state.playerName)
+          // TODO: clink visualization
           return (
             <VideoDropdown
               key={userName}
@@ -589,79 +579,113 @@ class Room extends Component {
     }
   }
 
-  get_video(i){
-    if (Object.keys(this.state.participants).length >= i){
-      if (getNamebyNumber(this.state.participants, i) === this.state.playerName){
-        return(
+  get_video(i) {
+    if (Object.keys(this.state.participants).length >= i) {
+      if (
+        getNamebyNumber(this.state.participants, i) === this.state.playerName
+      ) {
+        return (
           <VideoDropdown
             myRef={this.localVideoRef}
             description={this.state.playerName}
           />
-        )
-      }
-      else{
-        return(
+        );
+      } else {
+        return (
           <VideoDropdown
             key={getNamebyNumber(this.state.participants, i)}
             myRef={this.videoRefs[getNamebyNumber(this.state.participants, i)]}
             description={getNamebyNumber(this.state.participants, i)}
           />
-        )
+        );
       }
     }
   }
 
-  settable(){
-    if (Object.keys(this.state.participants).length < 5){
-      return(
-        <div style={{
-          position: 'fixed', left: '50%', top: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}>
+  settable() {
+    if (Object.keys(this.state.participants).length < 5) {
+      return (
+        <div
+          style={{
+            position: "fixed",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
           <Item>
-          <table style= {{width: '100%' , height:'100%' }}>
-            <tbody>
-              <tr>
-                <td style= {{ width:'50%', position: 'absolute',marginLeft: '15%'}}>
-                  {this.get_video(1)}
-                </td>
-                <td style= {{ width:'50%', position: 'absolute', marginLeft : '50%'}}>
-                  {this.get_video(2)}
-                </td>
-              </tr>
-              <tr>
-                <td style={{ width:'50%', position: 'absolute', marginLeft: '15%', bottom : '0'}}>
-                  {this.get_video(3)}
-                </td>
-                <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '50%'}}>
-                  {this.get_video(4)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <table style={{ width: "100%", height: "100%" }}>
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "absolute",
+                      marginLeft: "15%",
+                    }}
+                  >
+                    {this.get_video(1)}
+                  </td>
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "absolute",
+                      marginLeft: "50%",
+                    }}
+                  >
+                    {this.get_video(2)}
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "absolute",
+                      marginLeft: "15%",
+                      bottom: "0",
+                    }}
+                  >
+                    {this.get_video(3)}
+                  </td>
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "absolute",
+                      bottom: "0",
+                      marginLeft: "50%",
+                    }}
+                  >
+                    {this.get_video(4)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </Item>
         </div>
-      )
-    }
-    else{
-      return(
-        <Carousel breakPoints = {breakPoints}>
+      );
+    } else {
+      return (
+        <Carousel breakPoints={breakPoints}>
           <Item>
             <div className="has-text-centered mt-2">
               <div className="columns">
-                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+                <div className="column is-9 is-one-fifth">
+                  {this.getVideos()}
+                </div>
               </div>
             </div>
           </Item>
           <Item>
             <div className="has-text-centered mt-2">
               <div className="columns">
-                <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+                <div className="column is-9 is-one-fifth">
+                  {this.getVideos()}
+                </div>
               </div>
             </div>
           </Item>
         </Carousel>
-      )
+      );
     }
   }
 
@@ -691,34 +715,33 @@ class Room extends Component {
           draggable
           pauseOnHover
         />
-        <div>    
-            <div>
-              <CopyText roomName={this.state.roomName} />
-              <Debug
-                playerName={this.state.playerName}
-                participants={this.state.participants}
-              /> 
-              <Youtube>
-                {this.getYoutubeVideo()}
-              </Youtube>
-              <div >{this.settable()}</div>             
-              <div className="has-text-centered mt-2">
-                <div className="columns">
-                  <div className="column is-3 mx-4">
-                    <Chat
-                      chatBoardRef={this.chatBoardRef}
-                      chatRef={this.chatRef}
-                      handleChat={this.handleChat}
-                      handleClose={this.handleChatClose}
-                      open={this.state.chatOpen}
-                    />
-                  </div>
+        <div>
+          <div>
+            <CopyText roomName={this.state.roomName} />
+            <Debug
+              playerName={this.state.playerName}
+              participants={this.state.participants}
+            />
+            <Youtube>{this.getYoutubeVideo()}</Youtube>
+            <div>{this.settable()}</div>
+            <div className="has-text-centered mt-2">
+              <div className="columns">
+                <div className="column is-3 mx-4">
+                  <Chat
+                    chatBoardRef={this.chatBoardRef}
+                    chatRef={this.chatRef}
+                    handleChat={this.handleChat}
+                    handleClose={this.handleChatClose}
+                    open={this.state.chatOpen}
+                    playerName={this.state.playerName}
+                    peers={this.peers}
+                  />
                 </div>
               </div>
             </div>
-
+          </div>
         </div>
-            
+
         <MenuBar>
           <ButtonDropdown
             buttonClass={
