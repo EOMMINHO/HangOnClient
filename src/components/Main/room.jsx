@@ -445,37 +445,10 @@ class Room extends Component {
     }
   }
 
-  getClinkAgreeClass() {
-    if (this.state.clinkInProgress && !this.state.clinked) {
-      return "button is-large is-white";
-    } else {
-      return "button is-static is-large is-white";
-    }
-  }
-
   getAttentionClass() {
     if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
     } else if (this.state.playerName === this.state.attention_target) {
-      return "button is-large is-black";
-    } else {
-      return "button is-large is-white";
-    }
-  }
-
-  getAttentionAgreeClass() {
-    if (
-      this.state.attentionInProgress &&
-      this.state.attention_target === this.state.playerName
-    ) {
-      return "button is-static is-large is-white";
-    } else {
-      return "button is-large is-white";
-    }
-  }
-
-  getYoutubeVideoClass() {
-    if (this.state.YoutubeInProgress) {
       return "button is-large is-black";
     } else {
       return "button is-large is-white";
@@ -895,7 +868,11 @@ class Room extends Component {
               description="Chat"
             />
             <ButtonDropdown
-              buttonClass={this.getYoutubeVideoClass()}
+              buttonClass={
+                this.state.YoutubeInProgress
+                  ? "button is-large is-black"
+                  : "button is-large is-white"
+              }
               handler={this.handleYoutubeVideo}
               fontawesome="fab fa-youtube"
               description="Share Video"
