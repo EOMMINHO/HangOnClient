@@ -608,6 +608,25 @@ class Room extends Component {
             </div>
           </h1>
         </div>
+        <div className="column is-3 mx-4">
+                    <div className="my-6">
+                      <ReactPlayer
+                        url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
+                        controls={true}
+                        width="320px"
+                        height="180px"
+                      />
+                    </div>
+                    <Chat
+                      chatBoardRef={this.chatBoardRef}
+                      chatRef={this.chatRef}
+                      handleChat={this.handleChat}
+                      handleClose={this.handleChatClose}
+                      open={this.state.chatOpen}
+                    />
+                  </div>
+
+        
 
         <MenuBar>
           <ButtonDropdown
