@@ -3,7 +3,9 @@ import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
-import { MainContainer, Table, MenuBar, Item } from "./MainElement";
+import CopyText from "./CopyText";
+import Debug from "../Debug/Debug";
+import { MainContainer, MenuBar, Item } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,10 +14,10 @@ import Carousel from 'react-elastic-carousel';
 const Util = require("../../utils/utils");
 const delay = require("delay");
 const breakPoints = [
-  { width: 1, itemsToShow: 1 },
-  { width: 1320, itemsToShow: 2 },
-];
-
+    { width: 1, itemsToShow: 1 },
+    { width: 1320, itemsToShow: 2 },
+  ];
+  
 class Room extends Component {
   socket;
   noob = true; // noob need to send initiator to old users (RTC).
@@ -39,7 +41,6 @@ class Room extends Component {
     audioAvailable: false,
     chatOpen: false,
     full_screen: false,
-    tables: []
   };
 
   constructor() {
@@ -128,6 +129,15 @@ class Room extends Component {
         this.setState({
           clink_participants: [...this.state.clink_participants, playerName],
         });
+        toast.info(`🚀 ${playerName} has requested to clink!`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
@@ -147,6 +157,15 @@ class Room extends Component {
           attentionInProgress: true,
         });
         console.log(`${playerName} has requested to get attention`);
+        toast.info(`🚀 ${playerName} has requested to get attention!`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     });
     this.socket.on("attentionAgreeResponse", (participants) => {
@@ -200,14 +219,14 @@ class Room extends Component {
     this.handleAttention = this.handleAttention.bind(this);
     this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
+    this.getParticipantsList = this.getParticipantsList.bind(this);
+    this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
-    this.handleChatClose = this.handleChatClose.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
   }
@@ -218,11 +237,6 @@ class Room extends Component {
     } else {
       return "modal";
     }
-  }
-
-  async handleCopy() {
-    await navigator.clipboard.writeText(this.state.roomName);
-    this.setState({ isCopied: true });
   }
 
   getModalContent() {
@@ -365,14 +379,12 @@ class Room extends Component {
     }
   }
 
-  handleChatClose() {
-    this.setState({ chatOpen: !this.state.chatOpen });
+  handleYoutubeVideo() {
+    alert("Not developed yet");
   }
 
-  handleYoutubeVideo() {}
-
-  handleFullScreen(){
-    this.setState({full_screen: true})
+  handleFullScreen() {
+    this.setState({ full_screen: true });
     this.fullscreen();
   }
 
@@ -398,11 +410,9 @@ class Room extends Component {
   getAttentionClass() {
     if (this.state.attentionInProgress) {
       return "button is-loading is-large is-white";
-    }
-    else if (this.state.playerName === this.state.attention_target) {
+    } else if (this.state.playerName === this.state.attention_target) {
       return "button is-large is-black";
-    }
-    else {
+    } else {
       return "button is-large is-white";
     }
   }
@@ -418,92 +428,61 @@ class Room extends Component {
     }
   }
 
-  getVideoButtonClass() {
-    // Make button clickable only if the device has video/audio input,
-    // and when video is turned off.
-    if (this.state.videoAvailable) {
-      return "button is-large is-white";
-    } else {
-      return "button is-static is-large is-white";
-    }
-  }
-
-  getAudioButtonClass() {
-    // Make button clickable only if the device has audio input,
-    // and when audio is turned off.
-    if (this.state.audioAvailable) {
-      return "button is-large is-white";
-    } else {
-      return "button is-static is-large is-white";
-    }
-  }
-
-  getVideoInnerHTML() {
-    if (this.state.videoOn) {
-      return "Video Off";
-    } else {
-      return "Video On";
-    }
-  }
-
-  getAudioInnerHTML() {
-    if (this.state.audioOn) {
-      return "Audio Off";
-    } else {
-      return "Audio On";
-    }
-  }
-
-  
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
       if (this.state.clinked) {
-        return (
-          <div className={this.getModalClass()}>
-            <div
-              className="modal-background"
-              // onClick={this.handleModalClick}
-            ></div>
-            <div className="modal-content box">{this.getModalContent()}</div>
-            <button
-              className="modal-close is-large"
-              aria-label="close"
-              onClick={this.handleModalOutClick}
-            ></button>
-          </div>
-        );
-      }
-      else if (!this.state.participants[userName].clinked) {
+        if (userName === this.state.playerName) // TODO: clink visualization
+          return (
+            <VideoDropdown
+              key={userName}
+              ref={this.localVideoRef}
+              description={this.state.playerName}
+            />
+          );
+        else
+          return (
+            <VideoDropdown
+              key={userName}
+              myRef={this.videoRefs[userName]}
+              description={userName}
+            />
+          );
+      } else if (!this.state.participants[userName].clinked) {
         if (this.state.attention_target === userName) {
-          if (userName === this.state.playerName) return (
-            // TODO: attention target video featured
-            <VideoDropdown
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          );
-          else return (
-            // TODO: attention target video featured
-            <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
-            />
-          );
+          if (userName === this.state.playerName)
+            return (
+              // TODO: attention target video featured
+              <VideoDropdown
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            );
+          else
+            return (
+              // TODO: attention target video featured
+              <VideoDropdown
+                key={userName}
+                myRef={this.videoRefs[userName]}
+                description={userName}
+              />
+            );
         } else {
-          if (userName === this.state.playerName) return (
-            <VideoDropdown
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          );
-          else return (
-            <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
-            />
-          );
+          if (userName === this.state.playerName)
+            return (
+              <VideoDropdown
+                key={userName}
+                ref={this.localVideoRef}
+                description={this.state.playerName}
+              />
+            );
+          else
+            return (
+              <VideoDropdown
+                key={userName}
+                myRef={this.videoRefs[userName]}
+                description={userName}
+              />
+            );
         }
       } else {
         return null;
@@ -513,28 +492,22 @@ class Room extends Component {
 
   getClinkVideos() {
     return Object.keys(this.state.clink_participants).map((userName) => {
-      if (userName === this.state.playerName) return (
-        <VideoDropdown
-          ref={this.localVideoRef}
-          description={this.state.playerName}
-        />
-      );
-      else return (
-        <VideoDropdown
-          key={userName}
-          myRef={this.videoRefs[userName]}
-          description={userName}
-        />
-      );
+      if (userName === this.state.playerName)
+        return (
+          <VideoDropdown
+            ref={this.localVideoRef}
+            description={this.state.playerName}
+          />
+        );
+      else
+        return (
+          <VideoDropdown
+            key={userName}
+            myRef={this.videoRefs[userName]}
+            description={userName}
+          />
+        );
     });
-  }
-
-  getCopyClass() {
-    if (this.state.isCopied) {
-      return "fas fa-clipboard";
-    } else {
-      return "far fa-clipboard";
-    }
   }
 
   toastIfVisible(newText) {
@@ -550,19 +523,29 @@ class Room extends Component {
       });
     }
   }
- 
-  fullscreen(){
+
+  fullscreen() {
     const elem = document.documentElement;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     }
   }
 
-
-
   render() {
     return (
-      <MainContainer >
+      <MainContainer>
+        <div className={this.getModalClass()}>
+          <div
+            className="modal-background"
+            // onClick={this.handleModalClick}
+          ></div>
+          <div className="modal-content box">{this.getModalContent()}</div>
+          <button
+            className="modal-close is-large"
+            aria-label="close"
+            onClick={this.handleModalOutClick}
+          ></button>
+        </div>
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -574,41 +557,30 @@ class Room extends Component {
           draggable
           pauseOnHover
         />
-        <div>
-          <h1 className="has-text-centered is-size-2" style={{ color: "white"}} >
+        <div>    
             <div>
-              <h1 className="has-text-centered is-size-5" style={{ color: "white" }}>
-                Room Name : {this.state.roomName}
-                <span
-                  className="icon is-small mx-2 has-text-info"
-                  onClick={this.handleCopy}
-                >
-                  <i className={this.getCopyClass()}></i>
-                </span>
-                <br/>
-                Player Name : {this.state.playerName}
-                <br/>
-                Participants: {JSON.stringify(this.state.participants)} 
-              </h1>
-
+              <CopyText roomName={this.state.roomName} />
+              <Debug
+                playerName={this.state.playerName}
+                participants={this.state.participants}
+              />
               <Carousel breakPoints={breakPoints}>
-                  <Item>
-                    <div className="has-text-centered mt-2">
-                          <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
-                    </div>
-                  </Item>
-                  <Item>Two</Item>
-                  <Item>Three</Item>
-                  <Item>Four</Item>
-                  <Item>Five</Item>
-                  <Item>Six</Item>
-                  <Item>Seven</Item>
-                  <Item>Eight</Item>
-                </Carousel>
-            </div>
-          </h1>
-        </div>
-        <div className="column is-3 mx-4">
+                <Item>
+                <div className="has-text-centered mt-2">
+                        <div className="column is-9 is-one-fifth">{this.getVideos()}</div>
+                </div>
+                </Item>
+                <Item>Two</Item>
+                <Item>Three</Item>
+                <Item>Four</Item>
+                <Item>Five</Item>
+                <Item>Six</Item>
+                <Item>Seven</Item>
+                <Item>Eight</Item>
+            </Carousel>
+              <div className="has-text-centered mt-2">
+                <div className="columns">
+                  <div className="column is-3 mx-4">
                     <div className="my-6">
                       <ReactPlayer
                         url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
@@ -625,21 +597,33 @@ class Room extends Component {
                       open={this.state.chatOpen}
                     />
                   </div>
-
-        
+                  <div className="column is-9">{this.getVideos()}</div>
+                  <div className="column is-2"></div>
+                </div>
+              </div>
+            </div>
+        </div>
 
         <MenuBar>
           <ButtonDropdown
-            buttonClass={this.getVideoButtonClass()}
+            buttonClass={
+              this.state.videoAvailable
+                ? "button is-large is-white"
+                : "button is-static is-large is-white"
+            }
             handler={this.handleVideo}
             fontawesome="fas fa-video-slash"
-            description={this.getVideoInnerHTML()}
+            description={this.state.videoOn ? "Video Off" : "Video On"}
           />
           <ButtonDropdown
-            buttonClass={this.getAudioButtonClass()}
+            buttonClass={
+              this.state.audioAvailable
+                ? "button is-large is-white"
+                : "button is-static is-large is-white"
+            }
             handler={this.handleAudio}
             fontawesome="fas fa-microphone-slash"
-            description={this.getAudioInnerHTML()}
+            description={this.state.audioOn ? "Audio Off" : "Audio On"}
           />
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
@@ -679,7 +663,9 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={this.handleChatClose}
+            handler={() => {
+              this.setState({ chatOpen: !this.state.chatOpen });
+            }}
             fontawesome="fas fa-comments"
             description="Chat"
           />

@@ -12,19 +12,6 @@ export const MainContainer = styled.div`
     
 `;
 
-export const Table = styled.div`
-    width: 584px;
-    height: 324px;
-    background: url(${table});
-    background-size: cover;
-    position: fixed;
-    bottom: 30%;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-    margin-left: 28.9%;
-`;
-
 export const Item = styled.div`
   display: flex;
   background: url(${table});
