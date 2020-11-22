@@ -36,6 +36,9 @@ class Room extends Component {
     audioAvailable: false,
     chatOpen: false,
     full_screen: false,
+    YoutubeInProgress: false,
+    youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
+    youtubeLinkInput: null,
   };
 
   constructor() {
@@ -179,6 +182,9 @@ class Room extends Component {
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
     });
+    this.socket.on("youtube link", (youtubelink) => {
+      this.setState({ youtubeLink: youtubelink });
+    });
     // P2P for video conference
     this.socket.on("RTC_answer", async (offerer, receiver, data) => {
       // if receiver is me, signal it to offerer.
@@ -222,6 +228,8 @@ class Room extends Component {
     this.handleChat = this.handleChat.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
     this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
+    this.handleLinkInput = this.handleLinkInput.bind(this);
+    this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
   }
@@ -276,6 +284,14 @@ class Room extends Component {
       swap_target,
       this.state.roomName
     );
+  }
+
+  handleLinkInput(event) {
+    this.setState({ youtubeLinkInput: event.target.value });
+  }
+
+  handleYoutubeLink() {
+    this.socket.emit("youtube link", this.state.youtubeLinkInput, this.state.roomName);
   }
 
   handleModalOutClick() {
@@ -375,7 +391,34 @@ class Room extends Component {
   }
 
   handleYoutubeVideo() {
-    alert("Not developed yet");
+    this.setState({ YoutubeInProgress: !this.state.YoutubeInProgress });
+  }
+
+  getYoutubeVideo() {
+    if (this.state.YoutubeInProgress) {
+      return (
+        <div>
+          <div>
+            <ReactPlayer
+              url={this.state.youtubeLink}
+              controls={true}
+              width="320px"
+              height="180px"
+            />
+          </div>
+          <div>
+            <input
+              className="input"
+              placeholder="Youtube Link"
+              onChange={this.handleLinkInput}
+            />
+            <button className="button" onClick={this.handleYoutubeLink}>
+              Share
+            </button>
+          </div>
+        </div>
+      );
+    } else return null;
   }
 
   handleFullScreen() {
@@ -418,6 +461,14 @@ class Room extends Component {
       this.state.attention_target === this.state.playerName
     ) {
       return "button is-static is-large is-white";
+    } else {
+      return "button is-large is-white";
+    }
+  }
+
+  getYoutubeVideoClass() {
+    if (this.state.YoutubeInProgress) {
+      return "button is-large is-black";
     } else {
       return "button is-large is-white";
     }
@@ -572,12 +623,7 @@ class Room extends Component {
                 <div className="columns">
                   <div className="column is-2 mx-4">
                     <div className="my-6">
-                      <ReactPlayer
-                        url="https://www.youtube.com/watch?v=UkSr9Lw5Gm8"
-                        controls={true}
-                        width="320px"
-                        height="180px"
-                      />
+                      {this.getYoutubeVideo()}
                     </div>
                     <Chat
                       chatBoardRef={this.chatBoardRef}
@@ -661,7 +707,7 @@ class Room extends Component {
             description="Chat"
           />
           <ButtonDropdown
-            buttonClass="button is-large is-white"
+            buttonClass={this.getYoutubeVideoClass()}
             handler={this.handleYoutubeVideo}
             fontawesome="fab fa-youtube"
             description="Share Video"
