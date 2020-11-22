@@ -608,7 +608,7 @@ class Room extends Component {
   }
 
   settable() {
-    if (Object.keys(this.state.participants).length > 5) {
+    if (Object.keys(this.state.participants).length < 5) {
       return (
         <div
           style={{
