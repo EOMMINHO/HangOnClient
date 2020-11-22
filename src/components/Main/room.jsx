@@ -10,6 +10,7 @@ import VideoDropdown from "./VideoDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from 'react-elastic-carousel';
+import {getNamebyNumber} from "../../utils/utils"
 
 const Util = require("../../utils/utils");
 const delay = require("delay");
@@ -361,10 +362,7 @@ class Room extends Component {
     } else {
       this.setState({ videoOn: true });
       this.stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          width: { min: 1024, ideal: 1280, max: 1920 },
-          height: { min: 576, ideal: 720, max: 1080 }
-        },
+        video: true,
         audio: this.state.audioOn,
       });
       this.localVideoRef.current.srcObject = this.stream;
@@ -591,6 +589,28 @@ class Room extends Component {
     }
   }
 
+  get_video(i){
+    if (Object.keys(this.state.participants).length >= i){
+      if (getNamebyNumber(this.state.participants, i) === this.state.playerName){
+        return(
+          <VideoDropdown
+            myRef={this.localVideoRef}
+            description={this.state.playerName}
+          />
+        )
+      }
+      else{
+        return(
+          <VideoDropdown
+            key={getNamebyNumber(this.state.participants, i)}
+            myRef={this.videoRefs[getNamebyNumber(this.state.participants, i)]}
+            description={getNamebyNumber(this.state.participants, i)}
+          />
+        )
+      }
+    }
+  }
+
   settable(){
     if (Object.keys(this.state.participants).length < 5){
       return(
@@ -601,12 +621,20 @@ class Room extends Component {
           <Item>
           <table style= {{width: '100%' , height:'100%' }}>
             <tr>
-              <td style= {{ width:'50%', justifycontent: 'center'}}>{this.getVideos()}</td>
-              <td style= {{ width:'50%', position: 'absolute', marginLeft : '4.5%'}}></td>
+              <td style= {{ width:'50%', position: 'absolute',marginLeft: '15%'}}>
+                {this.get_video(1)}
+              </td>
+              <td style= {{ width:'50%', position: 'absolute', marginLeft : '4.5%'}}>
+                {this.get_video(2)}
+              </td>
             </tr>
             <tr>
-              <td style={{ width:'50%', position: 'absolute', bottom : '0'}}></td>
-              <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '54.5%'}}></td>
+              <td style={{ width:'50%', position: 'absolute', bottom : '0'}}>
+                {this.get_video(3)}
+              </td>
+              <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '54.5%'}}>
+                {this.get_video(4)}
+              </td>
             </tr>
           </table>
           </Item>
@@ -636,7 +664,6 @@ class Room extends Component {
   }
 
   render() {
-    
     return (
       <MainContainer>
         <div className={this.getModalClass()}>

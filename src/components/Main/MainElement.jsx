@@ -22,7 +22,7 @@ export const Item = styled.div`
   position: relative
   align-items: center;
   height: 700px;
-  width: 660px;
+  width: 900px;
   margin-bottom: 1.4%;
   
 `;
