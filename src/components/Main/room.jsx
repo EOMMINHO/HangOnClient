@@ -124,6 +124,15 @@ class Room extends Component {
         this.setState({
           clink_participants: [...this.state.clink_participants, playerName],
         });
+        toast.info(`🚀 ${playerName} has requested to clink!`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
@@ -143,6 +152,15 @@ class Room extends Component {
           attentionInProgress: true,
         });
         console.log(`${playerName} has requested to get attention`);
+        toast.info(`🚀 ${playerName} has requested to get attention!`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     });
     this.socket.on("attentionAgreeResponse", (participants) => {
@@ -196,6 +214,8 @@ class Room extends Component {
     this.handleAttention = this.handleAttention.bind(this);
     this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
+    this.getParticipantsList = this.getParticipantsList.bind(this);
+    this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
@@ -406,20 +426,22 @@ class Room extends Component {
   getVideos() {
     return Object.keys(this.state.participants).map((userName) => {
       if (this.state.clinked) {
-        return (
-          <div className={this.getModalClass()}>
-            <div
-              className="modal-background"
-              // onClick={this.handleModalClick}
-            ></div>
-            <div className="modal-content box">{this.getModalContent()}</div>
-            <button
-              className="modal-close is-large"
-              aria-label="close"
-              onClick={this.handleModalOutClick}
-            ></button>
-          </div>
-        );
+        if (userName === this.state.playerName) // TODO: clink visualization
+          return (
+            <VideoDropdown
+              key={userName}
+              ref={this.localVideoRef}
+              description={this.state.playerName}
+            />
+          );
+        else
+          return (
+            <VideoDropdown
+              key={userName}
+              myRef={this.videoRefs[userName]}
+              description={userName}
+            />
+          );
       } else if (!this.state.participants[userName].clinked) {
         if (this.state.attention_target === userName) {
           if (userName === this.state.playerName)
@@ -507,6 +529,18 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
+        <div className={this.getModalClass()}>
+          <div
+            className="modal-background"
+            // onClick={this.handleModalClick}
+          ></div>
+          <div className="modal-content box">{this.getModalContent()}</div>
+          <button
+            className="modal-close is-large"
+            aria-label="close"
+            onClick={this.handleModalOutClick}
+          ></button>
+        </div>
         <ToastContainer
           position="top-right"
           autoClose={5000}
