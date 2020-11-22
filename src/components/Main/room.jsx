@@ -620,22 +620,24 @@ class Room extends Component {
         }}>
           <Item>
           <table style= {{width: '100%' , height:'100%' }}>
-            <tr>
-              <td style= {{ width:'50%', position: 'absolute',marginLeft: '15%'}}>
-                {this.get_video(1)}
-              </td>
-              <td style= {{ width:'50%', position: 'absolute', marginLeft : '4.5%'}}>
-                {this.get_video(2)}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ width:'50%', position: 'absolute', bottom : '0'}}>
-                {this.get_video(3)}
-              </td>
-              <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '54.5%'}}>
-                {this.get_video(4)}
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td style= {{ width:'50%', position: 'absolute',marginLeft: '15%'}}>
+                  {this.get_video(1)}
+                </td>
+                <td style= {{ width:'50%', position: 'absolute', marginLeft : '50%'}}>
+                  {this.get_video(2)}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width:'50%', position: 'absolute', marginLeft: '15%', bottom : '0'}}>
+                  {this.get_video(3)}
+                </td>
+                <td style={{ width:'50%', position: 'absolute', bottom : '0', marginLeft : '50%'}}>
+                  {this.get_video(4)}
+                </td>
+              </tr>
+            </tbody>
           </table>
           </Item>
         </div>
