@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
@@ -48,7 +49,6 @@ class Room extends Component {
     chatOpen: false,
     youtubeOpen: false,
     full_screen: false,
-    YoutubeInProgress: false,
     youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
     youtubeLinkInput: null,
     items: [],
@@ -248,6 +248,9 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
+    this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
+    this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
+    this.handleLinkInput = this.handleLinkInput.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
@@ -298,6 +301,14 @@ class Room extends Component {
       this.state.roomName
     );
     this.setState({ modalActive: false, swapInProgress: false });
+  }
+
+  handleLinkInput(event) {
+    this.setState({ youtubeLinkInput: event.target.value });
+  }
+
+  handleYoutubeLink() {
+    this.socket.emit("youtube link", this.state.youtubeLinkInput, this.state.roomName);
   }
 
   handleModalOutClick() {
@@ -365,6 +376,37 @@ class Room extends Component {
         p.addStream(this.stream);
       });
     }
+  }
+
+  handleYoutubeVideo() {
+    this.setState({ youtubeOpen: !this.state.youtubeOpen });
+  }
+
+  getYoutubeVideo() {
+    if (this.state.youtubeOpen) var classname = "box"; else var classname = "is-invisible";
+    return (
+      <div className={classname}>
+        <div>
+          <ReactPlayer
+            url={this.state.youtubeLink}
+            controls={true}
+            width="320px"
+            height="180px"
+          />
+        </div>
+        <div>
+          <input
+            style={{width: 260, height: 20}}
+            className="input"
+            placeholder="Youtube Link"
+            onChange={this.handleLinkInput}
+          />
+          <button style={{width: 60, height: 20}} className="button has-text-centered" onClick={this.handleYoutubeLink}>
+            Share
+          </button>
+        </div>
+      </div>
+    );
   }
 
   handleFullScreen() {
@@ -737,7 +779,7 @@ class Room extends Component {
               />
               <Draggable>
                 <Youtube>
-                  <YoutubePlayer visible={this.state.youtubeOpen} />
+                  {this.getYoutubeVideo()}
                 </Youtube>
               </Draggable>
               <div>{this.settable()}</div>
@@ -858,9 +900,7 @@ class Room extends Component {
                   ? "button is-large is-black"
                   : "button is-large is-white"
               }
-              handler={() => {
-                this.setState({ youtubeOpen: !this.state.youtubeOpen });
-              }}
+              handler={this.handleYoutubeVideo}
               fontawesome="fab fa-youtube"
               description="Share Video"
             />
