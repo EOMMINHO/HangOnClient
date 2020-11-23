@@ -7,7 +7,7 @@ import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
 import VideoDropdown from "./VideoDropdown";
 import YoutubePlayer from "./YoutubePlayer";
-import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
+import { MainContainer, MenuBar, Item, Youtube, Button } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
@@ -786,14 +786,16 @@ class Room extends Component {
               <div style={{
                 position: 'absolute',
                 left: '220%',
-                top: '-50%',
+                top: '-55%',
               }}>
-                <ButtonDropdown
-                  buttonClass= "button is-large is-transparent"
-                  handler={this.handleAttention}
-                  fontawesome="far fa-times-circle"
-                  description="Close"
-                />
+                <Button
+                  className= "button is-large"
+                  onClick={this.handleAttention}
+                >
+                  <span className="icon is-large is-white">
+                    <i className={"fas fa-times-circle"}></i>
+                  </span>
+                </Button>
               </div>
                 
             </Spotlight>

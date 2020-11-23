@@ -47,3 +47,8 @@ export const Youtube = styled.div`
   position: absolute;
   align-items: left;
 `;
+
+export const Button = styled.button`
+  background-color: transparent;
+  border-color: transparent;
+`;
