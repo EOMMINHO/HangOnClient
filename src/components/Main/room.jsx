@@ -238,6 +238,7 @@ class Room extends Component {
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
+    this.handleAttention = this.handleAttention.bind(this);
   }
 
   getModalContent() {
@@ -284,6 +285,10 @@ class Room extends Component {
       });
     }
     this.setState({ clinked: false, swapInProgress: false });
+  }
+
+  handleAttention() {
+    this.socket.emit("attention", this.state.playerName, this.state.roomName);
   }
 
   async handleVideo() {
