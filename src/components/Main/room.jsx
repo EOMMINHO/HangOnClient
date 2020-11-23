@@ -48,7 +48,8 @@ class Room extends Component {
     chatOpen: false,
     youtubeOpen: false,
     full_screen: false,
-    youtubeLink: "https://www.youtube.com/watch?v=k7YzgZf-V5U&t=230s&ab_channel=%EC%86%8C%EB%A6%AC%EC%97%B0%EA%B5%AC%EC%86%8C-S.LAB",
+    youtubeLink:
+      "https://www.youtube.com/watch?v=k7YzgZf-V5U&t=230s&ab_channel=%EC%86%8C%EB%A6%AC%EC%97%B0%EA%B5%AC%EC%86%8C-S.LAB",
     youtubeLinkInput: null,
     items: [],
     lockScroll: false,
@@ -157,16 +158,6 @@ class Room extends Component {
         this.clinkSoud.play();
       }
     });
-    this.socket.on("clinkAgreeResponse", (playerName) => {
-      this.setState({ clinkInProgress: false });
-      console.log(`${playerName} has agreed to clink`);
-      if (playerName === this.state.playerName) {
-        this.setState({ clinked: true, modalActive: true });
-      }
-      this.setState({
-        clink_participants: [...this.state.clink_participants, playerName],
-      });
-    });
     this.socket.on(
       "attentionResponse",
       (isSuccess, playerName, participants) => {
@@ -174,12 +165,12 @@ class Room extends Component {
           if (this.state.attentionInProgress === true) {
             this.setState({
               attentionInProgress: false,
-              participants: participants
+              participants: participants,
             });
           } else {
             this.setState({
               attentionInProgress: true,
-              participants: participants
+              participants: participants,
             });
             console.log(`${playerName} has requested to get attention`);
             toast.info(`🚀 ${playerName} has requested to get attention!`, {
@@ -193,18 +184,14 @@ class Room extends Component {
             });
           }
         } else {
-            this.setState({
-              attentionInProgress: false,
-              participants: participants
-            });
-          
+          this.setState({
+            attentionInProgress: false,
+            participants: participants,
+          });
         }
         this.setState({ participants: participants });
       }
     );
-    this.socket.on("attentionAgreeResponse", (participants) => {
-      this.setState({ participants: participants });
-    });
     this.socket.on("attentionOn", (participants) => {
       this.setState({
         participants: participants,
@@ -472,12 +459,12 @@ class Room extends Component {
     }
   }
 
-  getattentionid(){
+  getattentionid() {
     Object.keys(this.state.participants).map((userName) => {
       if (this.state.participants[userName].attention) {
-        return (this.state.participants[userName].seatNumber);
+        return this.state.participants[userName].seatNumber;
       }
-  })
+    });
   }
 
   get_video(i) {
@@ -512,14 +499,15 @@ class Room extends Component {
 
   settable() {
     if (Object.keys(this.state.participants).length < 5) {
-      if (this.state.clinkInProgress){
-        if(this.state.attentionInProgress){
-          if(
+      if (this.state.clinkInProgress) {
+        if (this.state.attentionInProgress) {
+          if (
             Object.keys(this.state.participants).map((userName) => {
               if (this.state.participants[userName].attention) {
-                return (this.state.participants[userName].seatNumber);
+                return this.state.participants[userName].seatNumber;
               }
-            })[0] == 1)
+            })[0] == 1
+          )
             return (
               <div
                 style={{
@@ -539,9 +527,7 @@ class Room extends Component {
                           marginLeft="16%"
                           marginTop="6%"
                           contents={this.get_video(1)}
-
-                        >
-                        </td>
+                        ></td>
                         <td
                           style={{
                             width: "50%",
@@ -577,293 +563,330 @@ class Room extends Component {
                       </tr>
                     </tbody>
                   </table>
-                  <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
                     {this.get_video(1)}
                   </div>
                 </Item>
               </div>
             );
-            
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[1] == 2)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[1] == 2
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(2)}
-                    </div>
-                  </Item>
-                </div>
-              );
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[1] == 2)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(3)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        >
+                          {this.get_video(4)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(2)}
+                  </div>
+                </Item>
+              </div>
+            );
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[1] == 2
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(2)}
-                    </div>
-                  </Item>
-                </div>
-              );
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[2] == 3)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(3)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        >
+                          {this.get_video(4)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(2)}
+                  </div>
+                </Item>
+              </div>
+            );
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[2] == 3
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                        {this.get_video(2)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(3)}
-                    </div>
-                  </Item>
-                </div>
-              );
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[3] == 4)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        ></td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        >
+                          {this.get_video(2)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        >
+                          {this.get_video(4)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(3)}
+                  </div>
+                </Item>
+              </div>
+            );
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[3] == 4
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                        {this.get_video(2)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(4)}
-                    </div>
-                  </Item>
-                </div>
-              );
-          }
-        else
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(3)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        >
+                          {this.get_video(2)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        ></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(4)}
+                  </div>
+                </Item>
+              </div>
+            );
+        } else
           return (
             <div
               style={{
@@ -913,15 +936,15 @@ class Room extends Component {
               </Item>
             </div>
           );
-      }
-      else{
-        if(this.state.attentionInProgress){
-          if(
+      } else {
+        if (this.state.attentionInProgress) {
+          if (
             Object.keys(this.state.participants).map((userName) => {
               if (this.state.participants[userName].attention) {
-                return (this.state.participants[userName].seatNumber);
+                return this.state.participants[userName].seatNumber;
               }
-            })[0] == 1)
+            })[0] == 1
+          )
             return (
               <div
                 style={{
@@ -941,9 +964,7 @@ class Room extends Component {
                           marginLeft="16%"
                           marginTop="6%"
                           contents={this.get_video(1)}
-
-                        >
-                        </td>
+                        ></td>
                         <td
                           style={{
                             width: "50%",
@@ -979,293 +1000,330 @@ class Room extends Component {
                       </tr>
                     </tbody>
                   </table>
-                  <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
                     {this.get_video(1)}
                   </div>
                 </Item>
               </div>
             );
-            
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[1] == 2)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[1] == 2
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(2)}
-                    </div>
-                  </Item>
-                </div>
-              );
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[1] == 2)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(3)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        >
+                          {this.get_video(4)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(2)}
+                  </div>
+                </Item>
+              </div>
+            );
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[1] == 2
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(2)}
-                    </div>
-                  </Item>
-                </div>
-              );
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[2] == 3)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(3)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        ></td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        >
+                          {this.get_video(4)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(2)}
+                  </div>
+                </Item>
+              </div>
+            );
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[2] == 3
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                        {this.get_video(2)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(3)}
-                    </div>
-                  </Item>
-                </div>
-              );
-            if(
-              Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[3] == 4)
-              return (
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Item>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        ></td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        >
+                          {this.get_video(2)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        >
+                          {this.get_video(4)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(3)}
+                  </div>
+                </Item>
+              </div>
+            );
+          if (
+            Object.keys(this.state.participants).map((userName) => {
+              if (this.state.participants[userName].attention) {
+                return this.state.participants[userName].seatNumber;
+              }
+            })[3] == 4
+          )
+            return (
+              <div
+                style={{
+                  position: "fixed",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <Item>
                   <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                        {this.get_video(2)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
-                      {this.get_video(4)}
-                    </div>
-                  </Item>
-                </div>
-              );
-        }
-        else
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(1)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "50%",
+                            marginTop: "6%",
+                          }}
+                        >
+                          {this.get_video(3)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            marginLeft: "16%",
+                            bottom: "8.8%",
+                          }}
+                        >
+                          {this.get_video(2)}
+                        </td>
+                        <td
+                          style={{
+                            width: "50%",
+                            position: "absolute",
+                            bottom: "8.8%",
+                            marginLeft: "50%",
+                          }}
+                        ></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      marginLeft: "-150px",
+                      marginTop: "-85px",
+                    }}
+                  >
+                    {this.get_video(4)}
+                  </div>
+                </Item>
+              </div>
+            );
+        } else
           return (
             <div
               style={{
@@ -1520,178 +1578,184 @@ class Room extends Component {
 
   render() {
     return (
-        <MainContainer>
-          <div className={this.getModalClass()}>
-            <div className="modal-background"></div>
-            <div className="modal-content box">{this.getModalContent()}</div>
-            <button
-              className="modal-close is-large"
-              aria-label="close"
-              onClick={this.handleModalOutClick}
-            ></button>
-          </div>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
+      <MainContainer>
+        <div className={this.getModalClass()}>
+          <div className="modal-background"></div>
+          <div className="modal-content box">{this.getModalContent()}</div>
+          <button
+            className="modal-close is-large"
+            aria-label="close"
+            onClick={this.handleModalOutClick}
+          ></button>
+        </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <div>
           <div>
-            <div>
-              <CopyText roomName= {this.state.roomName}/>
-              <CopyText roomName = {JSON.stringify(Object.keys(this.state.participants).map((userName) => {
-                if (this.state.participants[userName].attention) {
-                  return (this.state.participants[userName].seatNumber);
-                }
-              })[0])} />
-              <Debug
-                playerName={this.state.playerName}
-                participants={this.state.participants}
-              />
+            <CopyText roomName={this.state.roomName} />
+            <CopyText
+              roomName={JSON.stringify(
+                Object.keys(this.state.participants).map((userName) => {
+                  if (this.state.participants[userName].attention) {
+                    return this.state.participants[userName].seatNumber;
+                  }
+                })[0]
+              )}
+            />
+            <Debug
+              playerName={this.state.playerName}
+              participants={this.state.participants}
+            />
 
-              <div>{this.settable()}</div>
-              <div className="has-text-centered mt-2" position="absolute">
-                <div className="columns">
-                  <div className="column is-3 mx-4">
-                    <Chat
-                      chatBoardRef={this.chatBoardRef}
-                      chatRef={this.chatRef}
-                      handleChat={this.handleChat}
-                      handleClose={this.handleChatClose}
-                      open={this.state.chatOpen}
-                      playerName={this.state.playerName}
-                      peers={this.peers}
-                    />
-                  </div>
+            <div>{this.settable()}</div>
+            <div className="has-text-centered mt-2" position="absolute">
+              <div className="columns">
+                <div className="column is-3 mx-4">
+                  <Chat
+                    chatBoardRef={this.chatBoardRef}
+                    chatRef={this.chatRef}
+                    handleChat={this.handleChat}
+                    handleClose={this.handleChatClose}
+                    open={this.state.chatOpen}
+                    playerName={this.state.playerName}
+                    peers={this.peers}
+                  />
                 </div>
               </div>
             </div>
           </div>
-          <Draggable>
-            <Youtube>{this.getYoutubeVideo()}</Youtube>
-          </Draggable>
-          {this.state.attentionInProgress && (
-            <Spotlight
-              x={50}
-              y={50}
-              radius={180}
-              color="#000000"
-              usePercentage
-              borderColor="#ffffff"
-              borderWidth={10}
+        </div>
+        <Draggable>
+          <Youtube>{this.getYoutubeVideo()}</Youtube>
+        </Draggable>
+        {this.state.attentionInProgress && (
+          <Spotlight
+            x={50}
+            y={50}
+            radius={180}
+            color="#000000"
+            usePercentage
+            borderColor="#ffffff"
+            borderWidth={10}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "-50px",
+                transform: "translate(-50%, -100%)",
+                whiteSpace: "nowrap",
+              }}
             >
+              <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
+                It's Your Turn to Say
+              </div>
+            </div>
+            {getNamebyAttention(this.state.participants) ===
+            this.state.playerName ? (
               <div
                 style={{
                   position: "absolute",
-                  left: "50%",
-                  top: "-50px",
-                  transform: "translate(-50%, -100%)",
-                  whiteSpace: "nowrap",
+                  left: "220%",
+                  top: "-55%",
                 }}
               >
-                <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
-                  It's Your Turn to Say
-                </div>
+                <Button
+                  className="button is-large"
+                  onClick={this.handleAttention}
+                >
+                  <span className="icon is-large is-white">
+                    <i className={"fas fa-times-circle"}></i>
+                  </span>
+                </Button>
               </div>
-                {(getNamebyAttention(this.state.participants) === this.state.playerName) ? 
-                <div style={{
-                  position: 'absolute',
-                  left: '220%',
-                  top: '-55%',
-                }}>
-                  <Button
-                    className= "button is-large"
-                    onClick={this.handleAttention}
-                  >
-                    <span className="icon is-large is-white">
-                      <i className={"fas fa-times-circle"}></i>
-                    </span>
-                  </Button>
-                </div>
-                :
-                null}
-            </Spotlight>
-          )}
-          <MenuBar>
-            <ButtonDropdown
-              buttonClass={
-                this.state.videoAvailable
-                  ? "button is-large is-white"
-                  : "button is-static is-large is-white"
-              }
-              handler={this.handleVideo}
-              fontawesome="fas fa-video-slash"
-              description={this.state.videoOn ? "Video Off" : "Video On"}
-            />
-            <ButtonDropdown
-              buttonClass={
-                this.state.audioAvailable
-                  ? "button is-large is-white"
-                  : "button is-static is-large is-white"
-              }
-              handler={this.handleAudio}
-              fontawesome="fas fa-microphone-slash"
-              description={this.state.audioOn ? "Audio Off" : "Audio On"}
-            />
-            <ButtonDropdown
-              buttonClass={this.getClinkClass()}
-              handler={this.handleClink}
-              fontawesome="fas fa-glass-cheers"
-              description="Clink"
-            />
-            <ButtonDropdown
-              buttonClass={this.getAttentionClass()}
-              handler={this.handleAttention}
-              fontawesome="fas fa-bullhorn"
-              description="Attention"
-            />
-            <ButtonDropdown
-              buttonClass="button is-large is-white"
-              handler={this.handleSeatSwap}
-              fontawesome="fas fa-exchange-alt"
-              description="Seat Swap"
-            />
-            <ButtonDropdown
-              buttonClass="button is-large is-white"
-              handler={this.handleSeatShuffle}
-              fontawesome="fas fa-random"
-              description="Seat Shuffle"
-            />
-            <ButtonDropdown
-              buttonClass={
-                this.state.chatOpen
-                  ? "button is-large is-black"
-                  : "button is-large is-white"
-              }
-              handler={() => {
-                this.setState({ chatOpen: !this.state.chatOpen });
-              }}
-              fontawesome="fas fa-comments"
-              description="Chat"
-            />
-            <ButtonDropdown
-              buttonClass={
-                this.state.youtubeOpen
-                  ? "button is-large is-black"
-                  : "button is-large is-white"
-              }
-              handler={this.handleYoutubeVideo}
-              fontawesome="fab fa-youtube"
-              description="Share Video"
-            />
-            <ButtonDropdown
-              buttonClass="button is-large is-white"
-              handler={this.handleFullScreen}
-              fontawesome="fas fa-expand"
-              description="Full Screen"
-            />
-          </MenuBar>
-        </MainContainer>
+            ) : null}
+          </Spotlight>
+        )}
+        <MenuBar>
+          <ButtonDropdown
+            buttonClass={
+              this.state.videoAvailable
+                ? "button is-large is-white"
+                : "button is-static is-large is-white"
+            }
+            handler={this.handleVideo}
+            fontawesome="fas fa-video-slash"
+            description={this.state.videoOn ? "Video Off" : "Video On"}
+          />
+          <ButtonDropdown
+            buttonClass={
+              this.state.audioAvailable
+                ? "button is-large is-white"
+                : "button is-static is-large is-white"
+            }
+            handler={this.handleAudio}
+            fontawesome="fas fa-microphone-slash"
+            description={this.state.audioOn ? "Audio Off" : "Audio On"}
+          />
+          <ButtonDropdown
+            buttonClass={this.getClinkClass()}
+            handler={this.handleClink}
+            fontawesome="fas fa-glass-cheers"
+            description="Clink"
+          />
+          <ButtonDropdown
+            buttonClass={this.getAttentionClass()}
+            handler={this.handleAttention}
+            fontawesome="fas fa-bullhorn"
+            description="Attention"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatSwap}
+            fontawesome="fas fa-exchange-alt"
+            description="Seat Swap"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleSeatShuffle}
+            fontawesome="fas fa-random"
+            description="Seat Shuffle"
+          />
+          <ButtonDropdown
+            buttonClass={
+              this.state.chatOpen
+                ? "button is-large is-black"
+                : "button is-large is-white"
+            }
+            handler={() => {
+              this.setState({ chatOpen: !this.state.chatOpen });
+            }}
+            fontawesome="fas fa-comments"
+            description="Chat"
+          />
+          <ButtonDropdown
+            buttonClass={
+              this.state.youtubeOpen
+                ? "button is-large is-black"
+                : "button is-large is-white"
+            }
+            handler={this.handleYoutubeVideo}
+            fontawesome="fab fa-youtube"
+            description="Share Video"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={this.handleFullScreen}
+            fontawesome="fas fa-expand"
+            description="Full Screen"
+          />
+        </MenuBar>
+      </MainContainer>
     );
   }
 }
