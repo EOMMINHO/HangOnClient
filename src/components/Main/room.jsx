@@ -6,7 +6,6 @@ import Chat from "./Chat";
 import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
 import VideoDropdown from "./VideoDropdown";
-import YoutubePlayer from "./YoutubePlayer";
 import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +18,7 @@ import Spotlight from "react-spotlight";
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
-const { Howl, Howler } = require("howler");
+const { Howl } = require("howler");
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
   { width: 1320, itemsToShow: 2 },
@@ -396,8 +395,9 @@ class Room extends Component {
   }
 
   getYoutubeVideo() {
-    if (this.state.youtubeOpen) var classname = "box";
-    else var classname = "is-invisible";
+    let classname;
+    if (this.state.youtubeOpen) classname = "box";
+    else classname = "is-invisible";
     return (
       <div className={classname}>
         <div>
@@ -859,9 +859,9 @@ class Room extends Component {
           </Draggable>
           {this.state.attentionInProgress && (
             <Spotlight
-              x="50"
-              y="50"
-              radius="180"
+              x={50}
+              y={50}
+              radius={180}
               color="#000000"
               usePercentage
               borderColor="#ffffff"
