@@ -57,7 +57,7 @@ class Room extends Component {
 
   constructor() {
     super();
-    // set reference to local video
+    // set references to local video
     this.localVideoRef = React.createRef();
     // set the availableness of media devices
     navigator.mediaDevices.enumerateDevices().then((devices) => {
@@ -238,20 +238,14 @@ class Room extends Component {
       this.socket.emit("join", playerName, roomName);
     }
     // binding
-    this.handleClink = this.handleClink.bind(this);
-    this.handleAttention = this.handleAttention.bind(this);
-    this.handleSeatSwap = this.handleSeatSwap.bind(this);
     this.handleSwapClick = this.handleSwapClick.bind(this);
-    this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
-    this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
     this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
     this.handleLinkInput = this.handleLinkInput.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
-    this.handleChatClose = this.handleChatClose.bind(this);
   }
 
   getModalClass() {
@@ -260,10 +254,6 @@ class Room extends Component {
     } else {
       return "modal";
     }
-  }
-
-  handleChatClose() {
-    this.setState({ chatOpen: !this.state.chatOpen });
   }
 
   getModalContent() {
@@ -324,22 +314,6 @@ class Room extends Component {
     this.setState({ clinked: false, swapInProgress: false });
   }
 
-  handleClink() {
-    this.socket.emit("clink", this.state.playerName, this.state.roomName);
-  }
-
-  handleAttention() {
-    this.socket.emit("attention", this.state.playerName, this.state.roomName);
-  }
-
-  handleSeatSwap() {
-    this.setState({ modalActive: true, swapInProgress: true });
-  }
-
-  handleSeatShuffle() {
-    this.socket.emit("seatShuffle", this.state.roomName);
-  }
-
   async handleVideo() {
     if (this.state.videoOn) {
       this.setState({ videoOn: false });
@@ -377,10 +351,6 @@ class Room extends Component {
         p.addStream(this.stream);
       });
     }
-  }
-
-  handleYoutubeVideo() {
-    this.setState({ youtubeOpen: !this.state.youtubeOpen });
   }
 
   getYoutubeVideo() {
@@ -1602,15 +1572,6 @@ class Room extends Component {
         <div>
           <div>
             <CopyText roomName={this.state.roomName} />
-            <CopyText
-              roomName={JSON.stringify(
-                Object.keys(this.state.participants).map((userName) => {
-                  if (this.state.participants[userName].attention) {
-                    return this.state.participants[userName].seatNumber;
-                  }
-                })[0]
-              )}
-            />
             <Debug
               playerName={this.state.playerName}
               participants={this.state.participants}
@@ -1704,25 +1665,41 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass={this.getClinkClass()}
-            handler={this.handleClink}
+            handler={() => {
+              this.socket.emit(
+                "clink",
+                this.state.playerName,
+                this.state.roomName
+              );
+            }}
             fontawesome="fas fa-glass-cheers"
             description="Clink"
           />
           <ButtonDropdown
             buttonClass={this.getAttentionClass()}
-            handler={this.handleAttention}
+            handler={() => {
+              this.socket.emit(
+                "attention",
+                this.state.playerName,
+                this.state.roomName
+              );
+            }}
             fontawesome="fas fa-bullhorn"
             description="Attention"
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={this.handleSeatSwap}
+            handler={() => {
+              this.setState({ modalActive: true, swapInProgress: true });
+            }}
             fontawesome="fas fa-exchange-alt"
             description="Seat Swap"
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={this.handleSeatShuffle}
+            handler={() => {
+              this.socket.emit("seatShuffle", this.state.roomName);
+            }}
             fontawesome="fas fa-random"
             description="Seat Shuffle"
           />
@@ -1744,7 +1721,9 @@ class Room extends Component {
                 ? "button is-large is-black"
                 : "button is-large is-white"
             }
-            handler={this.handleYoutubeVideo}
+            handler={() => {
+              this.setState({ youtubeOpen: !this.state.youtubeOpen });
+            }}
             fontawesome="fab fa-youtube"
             description="Share Video"
           />
