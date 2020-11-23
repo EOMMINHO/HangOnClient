@@ -12,10 +12,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import ScrollLock from "react-scrolllock";
-import Spotlight from "react-spotlight";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import {Move1, Move2, Move3, Move4} from "./Clink"
 import Draggable from "react-draggable";
+import Spotlight from "react-spotlight";
 
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
@@ -53,7 +52,6 @@ class Room extends Component {
     youtubeLinkInput: null,
     items: [],
     lockScroll: false,
-    spotplay: false,
   };
 
   constructor() {
@@ -161,36 +159,36 @@ class Room extends Component {
       });
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
-      if (isSuccess) {
-        if (this.state.attentionInProgress === true){
-          this.setState({
-            attentionInProgress: false,
-          })
+        if (isSuccess) {
+          if (this.state.attentionInProgress === true){
+            this.setState({
+              attentionInProgress: false,
+            })
+          }
+          else{
+            this.setState({
+              attentionInProgress: true,
+            })
+          console.log(`${playerName} has requested to get attention`);
+          toast.info(`🚀 ${playerName} has requested to get attention!`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
         }
         else{
-          this.setState({
-            attentionInProgress: true,
-          })
-        console.log(`${playerName} has requested to get attention`);
-        toast.info(`🚀 ${playerName} has requested to get attention!`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-      }
-      else{
-        if (this.state.attentionInProgress === true){
-          this.setState({
-            attentionInProgress: false,
-          })
+          if (this.state.attentionInProgress === true){
+            this.setState({
+              attentionInProgress: false,
+            })
+          }
         }
-      }
-    });
+      });
     this.socket.on("attentionAgreeResponse", (participants) => {
       this.setState({ participants: participants });
     });
@@ -390,18 +388,18 @@ class Room extends Component {
           <ReactPlayer
             url={this.state.youtubeLink}
             controls={true}
-            width="320px"
-            height="180px"
+            width="340px"
+            height="200px"
           />
         </div>
         <div>
           <input
-            style={{width: 260, height: 20}}
+            style={{width: 260, height: 40}}
             className="input"
             placeholder="Youtube Link"
             onChange={this.handleLinkInput}
           />
-          <button style={{width: 60, height: 20}} className="button has-text-centered" onClick={this.handleYoutubeLink}>
+          <button style={{width: 80, height: 40}} className="button has-text-centered" onClick={this.handleYoutubeLink}>
             Share
           </button>
         </div>
@@ -428,7 +426,7 @@ class Room extends Component {
   getAttentionClass() {
     return "button is-large is-white";
   }
-  
+
   toastIfVisible(newText) {
     if (!this.state.chatOpen) {
       toast.success(newText, {
@@ -448,41 +446,6 @@ class Room extends Component {
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     }
-  }
-
-  /*set_attention(){
-    Object.keys(this.state.participants).map((userName) => {
-      if (this.state.participants[userName].attention) {
-        return (this.state.participants[userName].seatNumber);
-      }
-  })
-  }
-
-  handle_attention(num){
-    
-    }
-  }
-  */
-
-  handleatenntionclose(){
-    this.setState({spotplay : false})
-  }
-
-  start() {
-  this.setStatePromise({ spotplay: true })
-    .then(() => this.sleep(60000))
-    .then(() => this.setStatePromise({ spotplay: false }));
-  }
-
-/* The following are some convenience methods to make chaining the animation more convenient */
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  setStatePromise(state) {
-    this.setState(state);
-    return Promise.resolve();
   }
 
   get_video(i) {
@@ -572,7 +535,6 @@ class Room extends Component {
                       marginLeft: "50%",
                       marginTop: "6%",
                     }}
-                    className = "Hello"
                   >
                     {this.get_video(3)}
                   </td>
@@ -758,7 +720,7 @@ class Room extends Component {
               aria-label="close"
               onClick={this.handleModalOutClick}
             ></button>
-          </div>       
+          </div>
           <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -777,11 +739,7 @@ class Room extends Component {
                 playerName={this.state.playerName}
                 participants={this.state.participants}
               />
-              <Draggable>
-                <Youtube>
-                  {this.getYoutubeVideo()}
-                </Youtube>
-              </Draggable>
+            
               <div>{this.settable()}</div>
               <div className="has-text-centered mt-2" position="absolute">
                 <div className="columns">
@@ -800,7 +758,11 @@ class Room extends Component {
               </div>
             </div>
           </div>
-
+          <Draggable>
+            <Youtube>
+              {this.getYoutubeVideo()}
+            </Youtube>
+          </Draggable>
           {this.state.attentionInProgress &&
             <Spotlight
               x= "50"
@@ -836,7 +798,6 @@ class Room extends Component {
                 
             </Spotlight>
           }
-
           <MenuBar>
             <ButtonDropdown
               buttonClass={
