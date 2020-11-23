@@ -529,12 +529,12 @@ class Room extends Component {
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
-                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(1)}></Move3>
-                  <Move3 width="50%" position="absolute" marginLeft="12%" marginTop="3.7%" contents={this.get_video(3)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.8%" contents={this.get_video(1)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="0.8%" marginTop="3.8%" contents={this.get_video(3)}></Move3>
                 </tr>
                 <tr>
-                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="9%" contents={this.get_video(2)}></Move3>
-                  <Move3 width="50%" position="absolute" marginLeft="12%" marginTop="9%" contents={this.get_video(4)}></Move3>
+                  <Move4 width="50%" position="absolute" marginLeft="1.5%" marginTop="9.5%" contents={this.get_video(2)}></Move4>
+                  <Move4 width="50%" position="absolute" marginLeft="0.8%" marginTop="9.5%" contents={this.get_video(4)}></Move4>
                 </tr>
               </tbody>
             </table>
@@ -543,12 +543,12 @@ class Room extends Component {
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
-                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(5)}></Move3>
-                  <Move3 width="50%" position="absolute" marginLeft="23%" marginTop="3.7%" contents={this.get_video(7)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.8%" contents={this.get_video(5)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="0.8%" marginTop="3.8%" contents={this.get_video(7)}></Move3>
                 </tr>
                 <tr>
-                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="9%" contents={this.get_video(6)}></Move3>
-                  <Move3 width="50%" position="absolute" marginLeft="23%" marginTop="9%" contents={this.get_video(8)}></Move3>
+                  <Move4 width="50%" position="absolute" marginLeft="1.5%" marginTop="9.5%" contents={this.get_video(6)}></Move4>
+                  <Move4 width="50%" position="absolute" marginLeft="0.8%" marginTop="9.5%" contents={this.get_video(8)}></Move4>
                 </tr>
               </tbody>
             </table>
@@ -564,9 +564,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
+                      position: "absolute",
                       marginLeft: "1.5%",
-                      marginTop: "3.7%",
+                      marginTop: "3.8%",
                     }}
                   >
                     {this.get_video(1)}
@@ -574,9 +574,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
-                      marginLeft: "23%",
-                      marginTop: "3.7%",
+                      position: "absolute",
+                      marginLeft: "25%",
+                      marginTop: "3.8%",
                     }}
                   >
                     {this.get_video(3)}
@@ -586,9 +586,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
+                      position: "absolute",
                       marginLeft: "1.5%",
-                      marginTop: "9%",
+                      marginTop: "9.5%",
                     }}
                   >
                     {this.get_video(2)}
@@ -596,9 +596,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
-                      marginLeft: "23%",
-                      marginTop: "9%",
+                      position: "absolute",
+                      marginLeft: "25%",
+                      marginTop: "9.5%",
                     }}
                   >
                     {this.get_video(4)}
@@ -614,9 +614,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
+                      position: "absolute",
                       marginLeft: "1.5%",
-                      marginTop: "3.7%",
+                      marginTop: "3.8%",
                     }}
                   >
                     {this.get_video(5)}
@@ -624,9 +624,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
-                      marginLeft: "23%",
-                      marginTop: "3.7%",
+                      position: "absolute",
+                      marginLeft: "25%",
+                      marginTop: "3.8%",
                     }}
                   >
                     {this.get_video(7)}
@@ -636,9 +636,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
+                      position: "absolute",
                       marginLeft: "1.5%",
-                      marginTop: "9%",
+                      marginTop: "9.5%",
                     }}
                   >
                     {this.get_video(6)}
@@ -646,9 +646,9 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "fixed",
-                      marginLeft: "23%",
-                      marginTop: "9%",
+                      position: "absolute",
+                      marginLeft: "25%",
+                      marginTop: "9.5%",
                     }}
                   >
                     {this.get_video(8)}

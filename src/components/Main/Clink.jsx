@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useSpring, animated } from "react-spring";
 
 export const Move1 = ({ width, position, marginLeft, marginTop, contents }) => {
@@ -85,16 +85,11 @@ export const Move3 = ({ width, position, marginLeft, marginTop, contents }) => {
   }
   const [counter, setCounter] = useState(false);
   var centerLeft;
-  var centerTop;
+  var centerTop = "19.3%";
   if (marginLeft === "1.5%") {
-    centerLeft = "13.75%";
+    centerLeft = "13.95%";
   } else {
-    centerLeft = "-10%";
-  }
-  if (marginTop === "3.7%") {
-    centerTop = "17.6%";
-  } else {
-    centerTop = "-5.45%";
+    centerLeft = "-11.95%";
   }
   const animation = useSpring({
     from: {
@@ -129,16 +124,11 @@ export const Move4 = ({ width, position, marginLeft, marginTop, contents }) => {
   }
   const [counter, setCounter] = useState(false);
   var centerLeft;
-  var centerTop;
+  var centerTop = "-6.6%";
   if (marginLeft === "1.5%") {
-    centerLeft = "13.75%";
+    centerLeft = "13.95%";
   } else {
-    centerLeft = "0.3%";
-  }
-  if (marginTop === "3.7%") {
-    centerTop = "17.6%";
-  } else {
-    centerTop = "-5.45%";
+    centerLeft = "-11.95%";
   }
   const animation = useSpring({
     from: {
