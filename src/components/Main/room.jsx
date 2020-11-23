@@ -1,20 +1,19 @@
 import React, { Component } from "react";
-import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
-import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
+import YoutubePlayer from "./YoutubePlayer";
+import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
-import { getNamebyNumber } from "../../utils/utils";
-import ScrollLock from 'react-scrolllock';
-import Spotlight from 'react-spotlight';
+import ScrollLock from "react-scrolllock";
 
 const Util = require("../../utils/utils");
+const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
@@ -27,6 +26,7 @@ class Room extends Component {
   peers = {};
   videoRefs = {};
   stream = null;
+  peerStreams = {};
   state = {
     playerName: "",
     roomName: "",
@@ -43,12 +43,13 @@ class Room extends Component {
     videoAvailable: false,
     audioAvailable: false,
     chatOpen: false,
+    youtubeOpen: false,
     full_screen: false,
     YoutubeInProgress: false,
     youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
     youtubeLinkInput: null,
     items: [],
-    lockScroll: false
+    lockScroll: false,
   };
 
   constructor() {
@@ -91,7 +92,8 @@ class Room extends Component {
             this.videoRefs,
             this.chatBoardRef,
             this.stream,
-            this.toastIfVisible
+            this.toastIfVisible,
+            this.peerStreams
           );
         } else {
           Util.makeNewPeer(
@@ -103,7 +105,8 @@ class Room extends Component {
             this.videoRefs,
             this.chatBoardRef,
             this.stream,
-            this.toastIfVisible
+            this.toastIfVisible,
+            this.peerStreams
           );
           toast.info("🚀 New Member Joined!", {
             position: "top-right",
@@ -226,19 +229,13 @@ class Room extends Component {
     }
     // binding
     this.handleClink = this.handleClink.bind(this);
-    this.handleClinkAgree = this.handleClinkAgree.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
-    this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
-    this.getParticipantsList = this.getParticipantsList.bind(this);
     this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
-    this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
-    this.handleLinkInput = this.handleLinkInput.bind(this);
-    this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
@@ -257,38 +254,28 @@ class Room extends Component {
   }
 
   getModalContent() {
-    if (this.state.clinked) {
+    if (this.state.swapInProgress) {
       return (
         <div>
-          <div className="field">{this.getClinkVideos()}</div>
+          <div className="field">
+            {Object.keys(this.state.participants).map((userName) => {
+              if (userName !== this.state.playerName) {
+                return (
+                  <button
+                    className="button"
+                    textvariable={userName}
+                    onClick={() => this.handleSwapClick(userName)}
+                  >
+                    {userName}
+                  </button>
+                );
+              }
+              else return null;
+            })}
+          </div>
         </div>
       );
-    } else if (this.state.swapInProgress) {
-      return (
-        <div>
-          <div className="field">{this.getParticipantsList()}</div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  getParticipantsList() {
-    return Object.keys(this.state.participants).map((userName) => {
-      if (userName !== this.state.playerName) {
-        return (
-          <button
-            className="button"
-            textvariable={userName}
-            onClick={this.handleSwapClick(userName)}
-          >
-            {userName}
-          </button>
-        );
-      }
-      return null;
-    });
+    } else return null;
   }
 
   handleSwapClick(swap_target) {
@@ -298,18 +285,7 @@ class Room extends Component {
       swap_target,
       this.state.roomName
     );
-  }
-
-  handleLinkInput(event) {
-    this.setState({ youtubeLinkInput: event.target.value });
-  }
-
-  handleYoutubeLink() {
-    this.socket.emit(
-      "youtube link",
-      this.state.youtubeLinkInput,
-      this.state.roomName
-    );
+    this.setState({ modalActive: false, swapInProgress: false });
   }
 
   handleModalOutClick() {
@@ -329,10 +305,6 @@ class Room extends Component {
     this.socket.emit("clink", this.state.playerName, this.state.roomName);
   }
 
-  handleClinkAgree() {
-    this.socket.emit("clinkAgree", this.state.playerName, this.state.roomName);
-  }
-
   handleAttention() {
     if (this.state.playerName === this.state.attention_target) {
       this.setState({ attention_target: "", attended: false });
@@ -342,23 +314,13 @@ class Room extends Component {
     }
   }
 
-  handleAttentionAgree() {
-    this.socket.emit(
-      "attentionAgree",
-      this.state.playerName,
-      this.state.roomName
-    );
-  }
-
   handleSeatSwap() {
-    return alert("not yet developed");
-    //this.setState({ modalActive: true, swapInProgress: true });
+    this.setState({ modalActive: true, swapInProgress: true });
   }
 
   handleSeatShuffle() {
     this.socket.emit("seatShuffle", this.state.roomName);
   }
-
 
   async handleVideo() {
     if (this.state.videoOn) {
@@ -399,38 +361,6 @@ class Room extends Component {
     }
   }
 
-  handleYoutubeVideo() {
-    this.setState({ YoutubeInProgress: !this.state.YoutubeInProgress });
-  }
-
-  getYoutubeVideo() {
-    let classname;
-    if (this.state.YoutubeInProgress) classname = "top-left";
-    else classname = "is-invisible";
-    return (
-      <div className={classname}>
-        <div>
-          <ReactPlayer
-            url={this.state.youtubeLink}
-            controls={true}
-            width="320px"
-            height="180px"
-          />
-        </div>
-        <div>
-          <input
-            className="input"
-            placeholder="Youtube Link"
-            onChange={this.handleLinkInput}
-          />
-          <button className="button" onClick={this.handleYoutubeLink}>
-            Share
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   handleFullScreen() {
     this.setState({ full_screen: true });
     this.fullscreen();
@@ -455,89 +385,6 @@ class Room extends Component {
     } else {
       return "button is-large is-white";
     }
-  }
-
-  getVideos() {
-    return Object.keys(this.state.participants).map((userName) => {
-      if (this.state.clinked) {
-        if (userName === this.state.playerName)
-          // TODO: clink visualization
-          return (
-            <VideoDropdown
-              key={userName}
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          );
-        else
-          return (
-            <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
-            />
-          );
-      } else if (!this.state.participants[userName].clinked) {
-        if (this.state.attention_target === userName) {
-          if (userName === this.state.playerName)
-            return (
-              // TODO: attention target video featured
-              <VideoDropdown
-                ref={this.localVideoRef}
-                description={this.state.playerName}
-              />
-            );
-          else
-            return (
-              // TODO: attention target video featured
-              <VideoDropdown
-                key={userName}
-                myRef={this.videoRefs[userName]}
-                description={userName}
-              />
-            );
-        } else {
-          if (userName === this.state.playerName)
-            return (
-              <VideoDropdown
-                key={userName}
-                myRef={this.localVideoRef}
-                description={this.state.playerName}
-              />
-            );
-          else
-            return (
-              <VideoDropdown
-                key={userName}
-                myRef={this.videoRefs[userName]}
-                description={userName}
-              />
-            );
-        }
-      } else {
-        return null;
-      }
-    });
-  }
-
-  getClinkVideos() {
-    return Object.keys(this.state.clink_participants).map((userName) => {
-      if (userName === this.state.playerName)
-        return (
-          <VideoDropdown
-            ref={this.localVideoRef}
-            description={this.state.playerName}
-          />
-        );
-      else
-        return (
-          <VideoDropdown
-            key={userName}
-            myRef={this.videoRefs[userName]}
-            description={userName}
-          />
-        );
-    });
   }
 
   toastIfVisible(newText) {
@@ -568,8 +415,11 @@ class Room extends Component {
       ) {
         return (
           <VideoDropdown
+            key={this.state.playerName}
             myRef={this.localVideoRef}
             description={this.state.playerName}
+            isUp={i % 2}
+            stream={this.stream}
           />
         );
       } else {
@@ -578,6 +428,10 @@ class Room extends Component {
             key={getNamebyNumber(this.state.participants, i)}
             myRef={this.videoRefs[getNamebyNumber(this.state.participants, i)]}
             description={getNamebyNumber(this.state.participants, i)}
+            isUp={i % 2}
+            stream={
+              this.peerStreams[getNamebyNumber(this.state.participants, i)]
+            }
           />
         );
       }
@@ -604,7 +458,7 @@ class Room extends Component {
                       width: "50%",
                       position: "absolute",
                       marginLeft: "16%",
-                      marginTop: "6%"
+                      marginTop: "6%",
                     }}
                   >
                     {this.get_video(1)}
@@ -614,7 +468,7 @@ class Room extends Component {
                       width: "50%",
                       position: "absolute",
                       marginLeft: "50%",
-                      marginTop: "6%"
+                      marginTop: "6%",
                     }}
                   >
                     {this.get_video(3)}
@@ -651,47 +505,47 @@ class Room extends Component {
       return (
         <Carousel breakPoints={breakPoints}>
           <Item>
-            <table style= {{width: '100%' , height:'100%' }}>
+            <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "1.5%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
                   >
                     {this.get_video(1)}
                   </td>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "23%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
                   >
                     {this.get_video(3)}
                   </td>
                 </tr>
                 <tr>
-                  <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "1.5%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "1.5%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(2)}
                   </td>
-                  <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "23%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "23%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(4)}
@@ -701,54 +555,54 @@ class Room extends Component {
             </table>
           </Item>
           <Item>
-          <table style= {{width: '100%' , height:'100%' }}>
-            <tbody>
+            <table style={{ width: "100%", height: "100%" }}>
+              <tbody>
                 <tr>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "1.5%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
-                  >                    
+                  >
                     {this.get_video(5)}
                   </td>
-                  <td 
-                    style= {{ 
-                      width:"50%", 
-                      position: "fixed", 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
                       marginLeft: "23%",
-                      marginTop: "3.7%" 
+                      marginTop: "3.7%",
                     }}
-                  >                    
+                  >
                     {this.get_video(7)}
                   </td>
                 </tr>
                 <tr>
-                <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "1.5%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "1.5%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(6)}
                   </td>
-                  <td 
-                    style={{ 
-                      width:"50%", 
-                      position: "fixed", 
-                      marginLeft: "23%", 
-                      marginTop: "9%" 
+                  <td
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "23%",
+                      marginTop: "9%",
                     }}
                   >
                     {this.get_video(8)}
                   </td>
                 </tr>
               </tbody>
-            </table>           
+            </table>
           </Item>
         </Carousel>
       );
@@ -757,15 +611,12 @@ class Room extends Component {
 
   render() {
     return (
-      
       <ScrollLock>
         <MainContainer>
           <div className={this.getModalClass()}>
             <div
               className="modal-background"
-              // onClick={this.handleModalClick}
             ></div>
-
             <div className="modal-content box">{this.getModalContent()}</div>
             <button
               className="modal-close is-large"
@@ -784,7 +635,6 @@ class Room extends Component {
             draggable
             pauseOnHover
           />
-          
           <div>
             <div>
               <CopyText roomName={this.state.roomName} />
@@ -792,9 +642,11 @@ class Room extends Component {
                 playerName={this.state.playerName}
                 participants={this.state.participants}
               />
-              <Youtube>{this.getYoutubeVideo()}</Youtube>
+              <Youtube>
+                <YoutubePlayer visible={this.state.youtubeOpen} />
+              </Youtube>
               <div>{this.settable()}</div>
-              <div className="has-text-centered mt-2" position = "absolute">
+              <div className="has-text-centered mt-2" position="absolute">
                 <div className="columns">
                   <div className="column is-3 mx-4">
                     <Chat
@@ -871,11 +723,13 @@ class Room extends Component {
             />
             <ButtonDropdown
               buttonClass={
-                this.state.YoutubeInProgress
+                this.state.youtubeOpen
                   ? "button is-large is-black"
                   : "button is-large is-white"
               }
-              handler={this.handleYoutubeVideo}
+              handler={() => {
+                this.setState({ youtubeOpen: !this.state.youtubeOpen });
+              }}
               fontawesome="fab fa-youtube"
               description="Share Video"
             />
