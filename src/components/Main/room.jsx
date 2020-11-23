@@ -178,6 +178,7 @@ class Room extends Component {
           } else {
             this.setState({
               attentionInProgress: true,
+              participants: participants
             });
             console.log(`${playerName} has requested to get attention`);
             toast.info(`🚀 ${playerName} has requested to get attention!`, {
@@ -194,6 +195,7 @@ class Room extends Component {
           if (this.state.attentionInProgress === true) {
             this.setState({
               attentionInProgress: false,
+              participants: participants
             });
           }
         }
