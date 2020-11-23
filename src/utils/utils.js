@@ -151,9 +151,15 @@ function getNamebyNumber(participants, number) {
   return names.find((name) => participants[name].seatNumber === number);
 }
 
+function getNamebyAttention(participants) {
+  let names = Object.keys(participants);
+  return names.find((name) => participants[name].attention === true);
+}
+
 module.exports.makeNewPeer = makeNewPeer;
 module.exports.makeNewPeers = makeNewPeers;
 module.exports.disconnectPeer = disconnectPeer;
 module.exports.stopVideo = stopVideo;
 module.exports.stopAudio = stopAudio;
 module.exports.getNamebyNumber = getNamebyNumber;
+module.exports.getNamebyAttention = getNamebyAttention;
