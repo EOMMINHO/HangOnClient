@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import { getNamebyNumber } from "../../utils/utils";
 import ScrollLock from 'react-scrolllock';
+import Spotlight from 'react-spotlight';
 
 const Util = require("../../utils/utils");
 const delay = require("delay");
@@ -352,6 +353,10 @@ class Room extends Component {
   handleSeatSwap() {
     return alert("not yet developed");
     //this.setState({ modalActive: true, swapInProgress: true });
+  }
+
+  handleSeatShuffle() {
+    this.socket.emit("seatShuffle", this.state.roomName);
   }
 
 
@@ -752,6 +757,7 @@ class Room extends Component {
 
   render() {
     return (
+      
       <ScrollLock>
         <MainContainer>
           <div className={this.getModalClass()}>
@@ -759,6 +765,7 @@ class Room extends Component {
               className="modal-background"
               // onClick={this.handleModalClick}
             ></div>
+
             <div className="modal-content box">{this.getModalContent()}</div>
             <button
               className="modal-close is-large"
@@ -777,6 +784,7 @@ class Room extends Component {
             draggable
             pauseOnHover
           />
+          
           <div>
             <div>
               <CopyText roomName={this.state.roomName} />
