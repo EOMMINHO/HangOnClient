@@ -5,16 +5,16 @@ import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import VideoDropdown from "./VideoDropdown";
-import { MainContainer, MenuBar, Item, Youtube, Button } from "./MainElement";
+import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import { Move1, Move2, Move3, Move4 } from "./Clink";
 import Draggable from "react-draggable";
-import Spotlight from "react-spotlight";
+import MySpotlight from "./MySpotlight";
 
 const Util = require("../../utils/utils");
-const { getNamebyNumber, getNamebyAttention } = require("../../utils/utils");
+const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
 const { Howl } = require("howler");
 const breakPoints = [
@@ -141,7 +141,7 @@ class Room extends Component {
         console.log(`${playerName} has requested to clink`);
         toast.info(`🚀 ${playerName} has requested to clink!`, {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -168,7 +168,7 @@ class Room extends Component {
             });
             toast.info(`🚀 ${playerName} has requested to get attention!`, {
               position: "top-right",
-              autoClose: 5000,
+              autoClose: 2000,
               hideProgressBar: false,
               closeOnClick: true,
               pauseOnHover: true,
@@ -373,21 +373,6 @@ class Room extends Component {
     this.fullscreen();
   }
 
-  getClinkClass() {
-    if (
-      this.state.clinkInProgress &&
-      this.state.clink_participants.length !== 0
-    ) {
-      return "button is-loading is-large is-white";
-    } else {
-      return "button is-large is-white";
-    }
-  }
-
-  getAttentionClass() {
-    return "button is-large is-white";
-  }
-
   toastIfVisible(newText) {
     if (!this.state.chatOpen) {
       toast.success(newText, {
@@ -408,7 +393,6 @@ class Room extends Component {
       elem.requestFullscreen();
     }
   }
-
 
   get_video(i) {
     if (Object.keys(this.state.participants).length >= i) {
@@ -1883,7 +1867,6 @@ class Room extends Component {
               </Item>
             </Carousel>
         );
-        
       }else{
         if(this.state.attentionInProgress)
           return(this.set_8_table())
@@ -2020,24 +2003,20 @@ class Room extends Component {
           pauseOnHover
         />
         <div>
-          <div>
-            <div>
-              <CopyText roomName= {this.state.roomName}/>
-              <div>{this.settable()}</div>
-              <div className="has-text-centered mt-2" position="absolute">
-                <div className="columns">
-                  <div className="column is-3 mx-4">
-                    <Chat
-                      chatBoardRef={this.chatBoardRef}
-                      chatRef={this.chatRef}
-                      handleChat={this.handleChat}
-                      handleClose={this.handleChatClose}
-                      open={this.state.chatOpen}
-                      playerName={this.state.playerName}
-                      peers={this.peers}
-                    />
-                  </div>
-                </div>
+          <CopyText roomName={this.state.roomName} />
+          <div>{this.settable()}</div>
+          <div className="has-text-centered mt-2" position="absolute">
+            <div className="columns">
+              <div className="column is-3 mx-4">
+                <Chat
+                  chatBoardRef={this.chatBoardRef}
+                  chatRef={this.chatRef}
+                  handleChat={this.handleChat}
+                  handleClose={this.handleChatClose}
+                  open={this.state.chatOpen}
+                  playerName={this.state.playerName}
+                  peers={this.peers}
+                />
               </div>
             </div>
           </div>
@@ -2045,50 +2024,12 @@ class Room extends Component {
         <Draggable>
           <Youtube>{this.getYoutubeVideo()}</Youtube>
         </Draggable>
-        {this.state.attentionInProgress && (
-          <Spotlight
-            x={50}
-            y={50}
-            radius={180}
-            color="#000000"
-            usePercentage
-            borderColor="#ffffff"
-            borderWidth={10}
-          >
-            <div
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "-50px",
-                transform: "translate(-50%, -100%)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
-                It's Your Turn to Say
-              </div>
-            </div>
-            {getNamebyAttention(this.state.participants) ===
-            this.state.playerName ? (
-              <div
-                style={{
-                  position: "absolute",
-                  left: "220%",
-                  top: "-55%",
-                }}
-              >
-                <Button
-                  className="button is-large"
-                  onClick={this.handleAttention}
-                >
-                  <span className="icon is-large is-white">
-                    <i className={"fas fa-times-circle"}></i>
-                  </span>
-                </Button>
-              </div>
-            ) : null}
-          </Spotlight>
-        )}
+        <MySpotlight
+          attentionInProgress={this.state.attentionInProgress}
+          participants={this.state.participants}
+          playerName={this.state.playerName}
+          handleAttention={this.handleAttention}
+        />
         <MenuBar>
           <ButtonDropdown
             buttonClass={
@@ -2111,7 +2052,12 @@ class Room extends Component {
             description={this.state.audioOn ? "Audio Off" : "Audio On"}
           />
           <ButtonDropdown
-            buttonClass={this.getClinkClass()}
+            buttonClass={
+              this.state.clinkInProgress &&
+              this.state.clink_participants.length !== 0
+                ? "button is-loading is-large is-white"
+                : "button is-large is-white"
+            }
             handler={() => {
               this.socket.emit(
                 "clink",
@@ -2123,7 +2069,7 @@ class Room extends Component {
             description="Clink"
           />
           <ButtonDropdown
-            buttonClass={this.getAttentionClass()}
+            buttonClass="button is-large is-white"
             handler={() => {
               this.socket.emit(
                 "attention",
