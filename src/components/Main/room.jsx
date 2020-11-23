@@ -168,35 +168,39 @@ class Room extends Component {
         clink_participants: [...this.state.clink_participants, playerName],
       });
     });
-    this.socket.on("attentionResponse", (isSuccess, playerName) => {
-      if (isSuccess) {
-        if (this.state.attentionInProgress === true) {
-          this.setState({
-            attentionInProgress: false,
-          });
+    this.socket.on(
+      "attentionResponse",
+      (isSuccess, playerName, participants) => {
+        if (isSuccess) {
+          if (this.state.attentionInProgress === true) {
+            this.setState({
+              attentionInProgress: false,
+            });
+          } else {
+            this.setState({
+              attentionInProgress: true,
+            });
+            console.log(`${playerName} has requested to get attention`);
+            toast.info(`🚀 ${playerName} has requested to get attention!`, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
         } else {
-          this.setState({
-            attentionInProgress: true,
-          });
-          console.log(`${playerName} has requested to get attention`);
-          toast.info(`🚀 ${playerName} has requested to get attention!`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          if (this.state.attentionInProgress === true) {
+            this.setState({
+              attentionInProgress: false,
+            });
+          }
         }
-      } else {
-        if (this.state.attentionInProgress === true) {
-          this.setState({
-            attentionInProgress: false,
-          });
-        }
+        this.setState({ participants: participants });
       }
-    });
+    );
     this.socket.on("attentionAgreeResponse", (participants) => {
       this.setState({ participants: participants });
     });
