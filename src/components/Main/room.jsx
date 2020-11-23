@@ -12,13 +12,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import ScrollLock from "react-scrolllock";
-import {Move1, Move2, Move3, Move4} from "./Clink"
+import { Move1, Move2, Move3, Move4 } from "./Clink";
 import Draggable from "react-draggable";
 import Spotlight from "react-spotlight";
 
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
+const { Howl, Howler } = require("howler");
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
   { width: 1320, itemsToShow: 2 },
@@ -48,7 +49,7 @@ class Room extends Component {
     chatOpen: false,
     youtubeOpen: false,
     full_screen: false,
-    youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
+    youtubeLink: "https://www.youtube.com/watch?v=neV3EPgvZ3g",
     youtubeLinkInput: null,
     items: [],
     lockScroll: false,
@@ -68,6 +69,12 @@ class Room extends Component {
     // set reference to chatting
     this.chatRef = React.createRef();
     this.chatBoardRef = React.createRef();
+
+    // set sound
+    this.clinkSoud = new Howl({
+      src: ["clinkSound.mp3"],
+      volume: 0.2,
+    });
 
     // Set connection
     this.socket = io("https://hangonserver.minhoeom.com");
@@ -132,9 +139,10 @@ class Room extends Component {
       Util.disconnectPeer(this.peers, userName);
       console.log(this.peers);
     });
-    this.socket.on("clinkResponse", (isSuccess, playerName) => {
+    this.socket.on("clinkResponse", async (isSuccess, playerName) => {
       if (isSuccess) {
-        if (this.state.clinkInProgress) this.setState({ clinkInProgress: false });
+        if (this.state.clinkInProgress)
+          this.setState({ clinkInProgress: false });
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
         toast.info(`🚀 ${playerName} has requested to clink!`, {
@@ -146,6 +154,8 @@ class Room extends Component {
           draggable: true,
           progress: undefined,
         });
+        await delay(600);
+        this.clinkSoud.play();
       }
     });
     this.socket.on("clinkAgreeResponse", (playerName) => {
@@ -159,16 +169,15 @@ class Room extends Component {
       });
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
-        if (isSuccess) {
-          if (this.state.attentionInProgress === true){
-            this.setState({
-              attentionInProgress: false,
-            })
-          }
-          else{
-            this.setState({
-              attentionInProgress: true,
-            })
+      if (isSuccess) {
+        if (this.state.attentionInProgress === true) {
+          this.setState({
+            attentionInProgress: false,
+          });
+        } else {
+          this.setState({
+            attentionInProgress: true,
+          });
           console.log(`${playerName} has requested to get attention`);
           toast.info(`🚀 ${playerName} has requested to get attention!`, {
             position: "top-right",
@@ -180,15 +189,14 @@ class Room extends Component {
             progress: undefined,
           });
         }
+      } else {
+        if (this.state.attentionInProgress === true) {
+          this.setState({
+            attentionInProgress: false,
+          });
         }
-        else{
-          if (this.state.attentionInProgress === true){
-            this.setState({
-              attentionInProgress: false,
-            })
-          }
-        }
-      });
+      }
+    });
     this.socket.on("attentionAgreeResponse", (participants) => {
       this.setState({ participants: participants });
     });
@@ -282,8 +290,7 @@ class Room extends Component {
                     {userName}
                   </button>
                 );
-              }
-              else return null;
+              } else return null;
             })}
           </div>
         </div>
@@ -306,7 +313,11 @@ class Room extends Component {
   }
 
   handleYoutubeLink() {
-    this.socket.emit("youtube link", this.state.youtubeLinkInput, this.state.roomName);
+    this.socket.emit(
+      "youtube link",
+      this.state.youtubeLinkInput,
+      this.state.roomName
+    );
   }
 
   handleModalOutClick() {
@@ -381,7 +392,8 @@ class Room extends Component {
   }
 
   getYoutubeVideo() {
-    if (this.state.youtubeOpen) var classname = "box"; else var classname = "is-invisible";
+    if (this.state.youtubeOpen) var classname = "box";
+    else var classname = "is-invisible";
     return (
       <div className={classname}>
         <div>
@@ -390,16 +402,22 @@ class Room extends Component {
             controls={true}
             width="340px"
             height="200px"
+            playing={true}
+            onStart={() => console.log("new play starts")}
           />
         </div>
         <div>
           <input
-            style={{width: 260, height: 40}}
+            style={{ width: 260, height: 40 }}
             className="input"
             placeholder="Youtube Link"
             onChange={this.handleLinkInput}
           />
-          <button style={{width: 80, height: 40}} className="button has-text-centered" onClick={this.handleYoutubeLink}>
+          <button
+            style={{ width: 80, height: 40 }}
+            className="button has-text-centered"
+            onClick={this.handleYoutubeLink}
+          >
             Share
           </button>
         </div>
@@ -480,229 +498,305 @@ class Room extends Component {
 
   settable() {
     if (Object.keys(this.state.participants).length < 5) {
-      if (this.state.clinkInProgress) return (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Item>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <Move1 width="50%" position="absolute" marginLeft="16%" marginTop="6%" contents={this.get_video(1)}></Move1>
-                  <Move1 width="50%" position="absolute" marginLeft="0%" marginTop="6%" contents={this.get_video(3)}></Move1>
-                </tr>
-                <tr>
-                  <Move2 width="50%" position="absolute" marginLeft="16%" bottom="8.8%" contents={this.get_video(2)}></Move2>
-                  <Move2 width="50%" position="absolute" marginLeft="0%" bottom="8.8%" contents={this.get_video(4)}></Move2>
-                </tr>
-              </tbody>
-            </table>
-          </Item>
-        </div>
-      );
-      else return (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Item>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(1)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "50%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(3)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      bottom: "8.8%",
-                    }}
-                  >
-                    {this.get_video(2)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      bottom: "8.8%",
-                      marginLeft: "50%",
-                    }}
-                  >
-                    {this.get_video(4)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Item>
-        </div>
-      );
+      if (this.state.clinkInProgress)
+        return (
+          <div
+            style={{
+              position: "fixed",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Item>
+              <table style={{ width: "100%", height: "100%" }}>
+                <tbody>
+                  <tr>
+                    <Move1
+                      width="50%"
+                      position="absolute"
+                      marginLeft="16%"
+                      marginTop="6%"
+                      contents={this.get_video(1)}
+                    ></Move1>
+                    <Move1
+                      width="50%"
+                      position="absolute"
+                      marginLeft="0%"
+                      marginTop="6%"
+                      contents={this.get_video(3)}
+                    ></Move1>
+                  </tr>
+                  <tr>
+                    <Move2
+                      width="50%"
+                      position="absolute"
+                      marginLeft="16%"
+                      bottom="8.8%"
+                      contents={this.get_video(2)}
+                    ></Move2>
+                    <Move2
+                      width="50%"
+                      position="absolute"
+                      marginLeft="0%"
+                      bottom="8.8%"
+                      contents={this.get_video(4)}
+                    ></Move2>
+                  </tr>
+                </tbody>
+              </table>
+            </Item>
+          </div>
+        );
+      else
+        return (
+          <div
+            style={{
+              position: "fixed",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Item>
+              <table style={{ width: "100%", height: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "16%",
+                        marginTop: "6%",
+                      }}
+                    >
+                      {this.get_video(1)}
+                    </td>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "50%",
+                        marginTop: "6%",
+                      }}
+                    >
+                      {this.get_video(3)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "16%",
+                        bottom: "8.8%",
+                      }}
+                    >
+                      {this.get_video(2)}
+                    </td>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        bottom: "8.8%",
+                        marginLeft: "50%",
+                      }}
+                    >
+                      {this.get_video(4)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Item>
+          </div>
+        );
     } else {
-      if (this.state.clinkInProgress) return (
-        <Carousel breakPoints={breakPoints}>
-          <Item>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.8%" contents={this.get_video(1)}></Move3>
-                  <Move3 width="50%" position="absolute" marginLeft="0.8%" marginTop="3.8%" contents={this.get_video(3)}></Move3>
-                </tr>
-                <tr>
-                  <Move4 width="50%" position="absolute" marginLeft="1.5%" marginTop="9.5%" contents={this.get_video(2)}></Move4>
-                  <Move4 width="50%" position="absolute" marginLeft="0.8%" marginTop="9.5%" contents={this.get_video(4)}></Move4>
-                </tr>
-              </tbody>
-            </table>
-          </Item>
-          <Item>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.8%" contents={this.get_video(5)}></Move3>
-                  <Move3 width="50%" position="absolute" marginLeft="0.8%" marginTop="3.8%" contents={this.get_video(7)}></Move3>
-                </tr>
-                <tr>
-                  <Move4 width="50%" position="absolute" marginLeft="1.5%" marginTop="9.5%" contents={this.get_video(6)}></Move4>
-                  <Move4 width="50%" position="absolute" marginLeft="0.8%" marginTop="9.5%" contents={this.get_video(8)}></Move4>
-                </tr>
-              </tbody>
-            </table>
-          </Item>
-        </Carousel>
-      );
-      else return (
-        <Carousel breakPoints={breakPoints}>
-          <Item>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "1.5%",
-                      marginTop: "3.8%",
-                    }}
-                  >
-                    {this.get_video(1)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "25%",
-                      marginTop: "3.8%",
-                    }}
-                  >
-                    {this.get_video(3)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "1.5%",
-                      marginTop: "9.5%",
-                    }}
-                  >
-                    {this.get_video(2)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "25%",
-                      marginTop: "9.5%",
-                    }}
-                  >
-                    {this.get_video(4)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Item>
-          <Item>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "1.5%",
-                      marginTop: "3.8%",
-                    }}
-                  >
-                    {this.get_video(5)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "25%",
-                      marginTop: "3.8%",
-                    }}
-                  >
-                    {this.get_video(7)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "1.5%",
-                      marginTop: "9.5%",
-                    }}
-                  >
-                    {this.get_video(6)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "25%",
-                      marginTop: "9.5%",
-                    }}
-                  >
-                    {this.get_video(8)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Item>
-        </Carousel>
-      );
+      if (this.state.clinkInProgress)
+        return (
+          <Carousel breakPoints={breakPoints}>
+            <Item>
+              <table style={{ width: "100%", height: "100%" }}>
+                <tbody>
+                  <tr>
+                    <Move3
+                      width="50%"
+                      position="absolute"
+                      marginLeft="1.5%"
+                      marginTop="3.8%"
+                      contents={this.get_video(1)}
+                    ></Move3>
+                    <Move3
+                      width="50%"
+                      position="absolute"
+                      marginLeft="0.8%"
+                      marginTop="3.8%"
+                      contents={this.get_video(3)}
+                    ></Move3>
+                  </tr>
+                  <tr>
+                    <Move4
+                      width="50%"
+                      position="absolute"
+                      marginLeft="1.5%"
+                      marginTop="9.5%"
+                      contents={this.get_video(2)}
+                    ></Move4>
+                    <Move4
+                      width="50%"
+                      position="absolute"
+                      marginLeft="0.8%"
+                      marginTop="9.5%"
+                      contents={this.get_video(4)}
+                    ></Move4>
+                  </tr>
+                </tbody>
+              </table>
+            </Item>
+            <Item>
+              <table style={{ width: "100%", height: "100%" }}>
+                <tbody>
+                  <tr>
+                    <Move3
+                      width="50%"
+                      position="absolute"
+                      marginLeft="1.5%"
+                      marginTop="3.8%"
+                      contents={this.get_video(5)}
+                    ></Move3>
+                    <Move3
+                      width="50%"
+                      position="absolute"
+                      marginLeft="0.8%"
+                      marginTop="3.8%"
+                      contents={this.get_video(7)}
+                    ></Move3>
+                  </tr>
+                  <tr>
+                    <Move4
+                      width="50%"
+                      position="absolute"
+                      marginLeft="1.5%"
+                      marginTop="9.5%"
+                      contents={this.get_video(6)}
+                    ></Move4>
+                    <Move4
+                      width="50%"
+                      position="absolute"
+                      marginLeft="0.8%"
+                      marginTop="9.5%"
+                      contents={this.get_video(8)}
+                    ></Move4>
+                  </tr>
+                </tbody>
+              </table>
+            </Item>
+          </Carousel>
+        );
+      else
+        return (
+          <Carousel breakPoints={breakPoints}>
+            <Item>
+              <table style={{ width: "100%", height: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "1.5%",
+                        marginTop: "3.8%",
+                      }}
+                    >
+                      {this.get_video(1)}
+                    </td>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "25%",
+                        marginTop: "3.8%",
+                      }}
+                    >
+                      {this.get_video(3)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "1.5%",
+                        marginTop: "9.5%",
+                      }}
+                    >
+                      {this.get_video(2)}
+                    </td>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "25%",
+                        marginTop: "9.5%",
+                      }}
+                    >
+                      {this.get_video(4)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Item>
+            <Item>
+              <table style={{ width: "100%", height: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "1.5%",
+                        marginTop: "3.8%",
+                      }}
+                    >
+                      {this.get_video(5)}
+                    </td>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "25%",
+                        marginTop: "3.8%",
+                      }}
+                    >
+                      {this.get_video(7)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "1.5%",
+                        marginTop: "9.5%",
+                      }}
+                    >
+                      {this.get_video(6)}
+                    </td>
+                    <td
+                      style={{
+                        width: "50%",
+                        position: "absolute",
+                        marginLeft: "25%",
+                        marginTop: "9.5%",
+                      }}
+                    >
+                      {this.get_video(8)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Item>
+          </Carousel>
+        );
     }
   }
 
@@ -711,9 +805,7 @@ class Room extends Component {
       <ScrollLock>
         <MainContainer>
           <div className={this.getModalClass()}>
-            <div
-              className="modal-background"
-            ></div>
+            <div className="modal-background"></div>
             <div className="modal-content box">{this.getModalContent()}</div>
             <button
               className="modal-close is-large"
@@ -739,7 +831,7 @@ class Room extends Component {
                 playerName={this.state.playerName}
                 participants={this.state.participants}
               />
-            
+
               <div>{this.settable()}</div>
               <div className="has-text-centered mt-2" position="absolute">
                 <div className="columns">
@@ -759,45 +851,47 @@ class Room extends Component {
             </div>
           </div>
           <Draggable>
-            <Youtube>
-              {this.getYoutubeVideo()}
-            </Youtube>
+            <Youtube>{this.getYoutubeVideo()}</Youtube>
           </Draggable>
-          {this.state.attentionInProgress &&
+          {this.state.attentionInProgress && (
             <Spotlight
-              x= "50"
-              y= "50"
-              radius= "180"
-              color= "#000000"
+              x="50"
+              y="50"
+              radius="180"
+              color="#000000"
               usePercentage
               borderColor="#ffffff"
-              borderWidth={10}>
-              <div style={{
-                position: 'absolute',
-                left: '50%',
-                top: '-50px',
-                transform: 'translate(-50%, -100%)',
-                whiteSpace: 'nowrap'
-              }}>
-                <div className="has-text-centered has-text-white has-text-weight-medium is-size-3"> 
+              borderWidth={10}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "-50px",
+                  transform: "translate(-50%, -100%)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
                   It's Your Turn to Say
                 </div>
               </div>
-              <div style={{
-                position: 'absolute',
-                left: '220%',
-                top: '-50%',
-              }}>
+              <div
+                style={{
+                  position: "absolute",
+                  left: "220%",
+                  top: "-50%",
+                }}
+              >
                 <ButtonDropdown
-                  buttonClass= "button is-large is-transparent"
+                  buttonClass="button is-large is-transparent"
                   handler={this.handleAttention}
                   fontawesome="far fa-times-circle"
                   description="Close"
                 />
               </div>
-                
             </Spotlight>
-          }
+          )}
           <MenuBar>
             <ButtonDropdown
               buttonClass={
