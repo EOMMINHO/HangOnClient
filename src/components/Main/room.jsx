@@ -57,19 +57,16 @@ class Room extends Component {
 
   constructor() {
     super();
-    // set references to local video
+    // set references
     this.localVideoRef = React.createRef();
+    this.chatRef = React.createRef();
+    this.chatBoardRef = React.createRef();
     // set the availableness of media devices
     navigator.mediaDevices.enumerateDevices().then((devices) => {
       let types = devices.map((x) => x.kind);
       this.state.videoAvailable = types.includes("videoinput");
       this.state.audioAvailable = types.includes("audioinput");
     });
-
-    // set reference to chatting
-    this.chatRef = React.createRef();
-    this.chatBoardRef = React.createRef();
-
     // set sound
     this.clinkSoud = new Howl({
       src: ["clinkSound.mp3"],
@@ -137,7 +134,6 @@ class Room extends Component {
     this.socket.on("disconnectResponse", (participants, userName) => {
       this.setState({ participants: participants });
       Util.disconnectPeer(this.peers, userName);
-      console.log(this.peers);
     });
     this.socket.on("clinkResponse", async (isSuccess, playerName) => {
       if (isSuccess) {
@@ -162,7 +158,7 @@ class Room extends Component {
       "attentionResponse",
       (isSuccess, playerName, participants) => {
         if (isSuccess) {
-          if (this.state.attentionInProgress === true) {
+          if (this.state.attentionInProgress) {
             this.setState({
               attentionInProgress: false,
               participants: participants,
@@ -172,7 +168,6 @@ class Room extends Component {
               attentionInProgress: true,
               participants: participants,
             });
-            console.log(`${playerName} has requested to get attention`);
             toast.info(`🚀 ${playerName} has requested to get attention!`, {
               position: "top-right",
               autoClose: 5000,
@@ -189,7 +184,6 @@ class Room extends Component {
             participants: participants,
           });
         }
-        this.setState({ participants: participants });
       }
     );
     this.socket.on("attentionOn", (participants) => {
@@ -242,18 +236,8 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
-    this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
-    this.handleLinkInput = this.handleLinkInput.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
-  }
-
-  getModalClass() {
-    if (this.state.modalActive) {
-      return "modal is-active";
-    } else {
-      return "modal";
-    }
   }
 
   getModalContent() {
@@ -288,18 +272,6 @@ class Room extends Component {
       this.state.roomName
     );
     this.setState({ modalActive: false, swapInProgress: false });
-  }
-
-  handleLinkInput(event) {
-    this.setState({ youtubeLinkInput: event.target.value });
-  }
-
-  handleYoutubeLink() {
-    this.socket.emit(
-      "youtube link",
-      this.state.youtubeLinkInput,
-      this.state.roomName
-    );
   }
 
   handleModalOutClick() {
@@ -354,11 +326,8 @@ class Room extends Component {
   }
 
   getYoutubeVideo() {
-    let classname;
-    if (this.state.youtubeOpen) classname = "box";
-    else classname = "is-invisible";
     return (
-      <div className={classname}>
+      <div className={this.state.youtubeOpen ? "box" : "is-invisible"}>
         <div>
           <ReactPlayer
             url={this.state.youtubeLink}
@@ -374,12 +343,20 @@ class Room extends Component {
             style={{ width: 260, height: 40 }}
             className="input"
             placeholder="Youtube Link"
-            onChange={this.handleLinkInput}
+            onChange={(e) => {
+              this.setState({ youtubeLinkInput: e.target.value });
+            }}
           />
           <button
             style={{ width: 80, height: 40 }}
             className="button has-text-centered"
-            onClick={this.handleYoutubeLink}
+            onClick={() => {
+              this.socket.emit(
+                "youtube link",
+                this.state.youtubeLinkInput,
+                this.state.roomName
+              );
+            }}
           >
             Share
           </button>
@@ -1549,7 +1526,7 @@ class Room extends Component {
   render() {
     return (
       <MainContainer>
-        <div className={this.getModalClass()}>
+        <div className={this.state.modalActive ? "modal is-active" : "modal"}>
           <div className="modal-background"></div>
           <div className="modal-content box">{this.getModalContent()}</div>
           <button
@@ -1585,7 +1562,9 @@ class Room extends Component {
                     chatBoardRef={this.chatBoardRef}
                     chatRef={this.chatRef}
                     handleChat={this.handleChat}
-                    handleClose={this.handleChatClose}
+                    handleClose={() => {
+                      this.setState({ chatOpen: !this.state.chatOpen });
+                    }}
                     open={this.state.chatOpen}
                     playerName={this.state.playerName}
                     peers={this.peers}

@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import ReactPlayer from "react-player/youtube";
 
 class YoutubePlayer extends Component {
-  state = { link: "https://www.youtube.com/watch?v=Y633472KofU" };
+  state = {
+    youtubeOpen: false,
+  };
   constructor() {
     super();
     this.inputRef = React.createRef();
@@ -16,32 +18,40 @@ class YoutubePlayer extends Component {
     }
   }
 
-  getVisibility(isVisible) {
-    if (isVisible) {
-      return "box top-left";
-    } else {
-      return "is-invisible";
-    }
-  }
-
   render() {
     return (
-      <div className={this.getVisibility(this.props.visible)}>
+      <div className={this.state.youtubeOpen ? "box" : "is-invisible"}>
         <div>
           <ReactPlayer
-            url={this.state.link}
+            url={this.props.youtubeLink}
             controls={true}
-            width="320px"
-            height="180px"
+            width="340px"
+            height="200px"
+            playing={true}
+            onStart={() => console.log("new play starts")}
           />
         </div>
         <div>
           <input
+            style={{ width: 260, height: 40 }}
             className="input"
             placeholder="Youtube Link"
             ref={this.inputRef}
             onKeyPress={this.handleLink}
           />
+          <button
+            style={{ width: 80, height: 40 }}
+            className="button has-text-centered"
+            onClick={() => {
+              this.socket.emit(
+                "youtube link",
+                this.state.youtubeLinkInput,
+                this.state.roomName
+              );
+            }}
+          >
+            Share
+          </button>
         </div>
       </div>
     );
