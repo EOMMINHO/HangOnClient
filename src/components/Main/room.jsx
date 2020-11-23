@@ -10,7 +10,6 @@ import { MainContainer, MenuBar, Item, Youtube, Button } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
-import ScrollLock from "react-scrolllock";
 import { Move1, Move2, Move3, Move4 } from "./Clink";
 import Draggable from "react-draggable";
 import Spotlight from "react-spotlight";
@@ -48,7 +47,7 @@ class Room extends Component {
     chatOpen: false,
     youtubeOpen: false,
     full_screen: false,
-    youtubeLink: "https://www.youtube.com/watch?v=neV3EPgvZ3g",
+    youtubeLink: "https://www.youtube.com/watch?v=k7YzgZf-V5U&t=230s&ab_channel=%EC%86%8C%EB%A6%AC%EC%97%B0%EA%B5%AC%EC%86%8C-S.LAB",
     youtubeLinkInput: null,
     items: [],
     lockScroll: false,
@@ -174,6 +173,7 @@ class Room extends Component {
           if (this.state.attentionInProgress === true) {
             this.setState({
               attentionInProgress: false,
+              participants: participants
             });
           } else {
             this.setState({
@@ -192,12 +192,11 @@ class Room extends Component {
             });
           }
         } else {
-          if (this.state.attentionInProgress === true) {
             this.setState({
               attentionInProgress: false,
               participants: participants
             });
-          }
+          
         }
         this.setState({ participants: participants });
       }
@@ -808,7 +807,6 @@ class Room extends Component {
 
   render() {
     return (
-      <ScrollLock>
         <MainContainer>
           <div className={this.getModalClass()}>
             <div className="modal-background"></div>
@@ -976,7 +974,6 @@ class Room extends Component {
             />
           </MenuBar>
         </MainContainer>
-      </ScrollLock>
     );
   }
 }
