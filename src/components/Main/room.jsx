@@ -228,9 +228,7 @@ class Room extends Component {
     }
     // binding
     this.handleClink = this.handleClink.bind(this);
-    this.handleClinkAgree = this.handleClinkAgree.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
-    this.handleAttentionAgree = this.handleAttentionAgree.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
     this.getParticipantsList = this.getParticipantsList.bind(this);
     this.handleSwapClick = this.handleSwapClick.bind(this);
@@ -331,10 +329,6 @@ class Room extends Component {
     this.socket.emit("clink", this.state.playerName, this.state.roomName);
   }
 
-  handleClinkAgree() {
-    this.socket.emit("clinkAgree", this.state.playerName, this.state.roomName);
-  }
-
   handleAttention() {
     if (this.state.playerName === this.state.attention_target) {
       this.setState({ attention_target: "", attended: false });
@@ -342,14 +336,6 @@ class Room extends Component {
       this.setState({ attentionInProgress: true });
       this.socket.emit("attention", this.state.playerName, this.state.roomName);
     }
-  }
-
-  handleAttentionAgree() {
-    this.socket.emit(
-      "attentionAgree",
-      this.state.playerName,
-      this.state.roomName
-    );
   }
 
   handleSeatSwap() {
