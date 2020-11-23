@@ -4017,6 +4017,9 @@ class Room extends Component {
           <ButtonDropdown
             buttonClass="button is-large is-white"
             handler={() => {
+              if (Object.keys(this.state.participants).length === 1) {
+                return alert("cannot swap when solo");
+              }
               this.setState({ modalActive: true, swapInProgress: true });
             }}
             fontawesome="fas fa-exchange-alt"
@@ -4025,6 +4028,9 @@ class Room extends Component {
           <ButtonDropdown
             buttonClass="button is-large is-white"
             handler={() => {
+              if (Object.keys(this.state.participants).length === 1) {
+                return alert("cannot shuffle when solo");
+              }
               this.socket.emit("seatShuffle", this.state.roomName);
             }}
             fontawesome="fas fa-random"
