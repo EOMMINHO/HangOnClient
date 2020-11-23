@@ -231,7 +231,6 @@ class Room extends Component {
     this.handleClink = this.handleClink.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
     this.handleSeatSwap = this.handleSeatSwap.bind(this);
-    this.getParticipantsList = this.getParticipantsList.bind(this);
     this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleSeatShuffle = this.handleSeatShuffle.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
@@ -255,38 +254,28 @@ class Room extends Component {
   }
 
   getModalContent() {
-    if (this.state.clinked) {
+    if (this.state.swapInProgress) {
       return (
         <div>
-          <div className="field">{this.getClinkVideos()}</div>
+          <div className="field">
+            {Object.keys(this.state.participants).map((userName) => {
+              if (userName !== this.state.playerName) {
+                return (
+                  <button
+                    className="button"
+                    textvariable={userName}
+                    onClick={() => this.handleSwapClick(userName)}
+                  >
+                    {userName}
+                  </button>
+                );
+              }
+              else return null;
+            })}
+          </div>
         </div>
       );
-    } else if (this.state.swapInProgress) {
-      return (
-        <div>
-          <div className="field">{this.getParticipantsList()}</div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  getParticipantsList() {
-    return Object.keys(this.state.participants).map((userName) => {
-      if (userName !== this.state.playerName) {
-        return (
-          <button
-            className="button"
-            textvariable={userName}
-            onClick={this.handleSwapClick(userName)}
-          >
-            {userName}
-          </button>
-        );
-      }
-      return null;
-    });
+    } else return null;
   }
 
   handleSwapClick(swap_target) {
@@ -296,6 +285,7 @@ class Room extends Component {
       swap_target,
       this.state.roomName
     );
+    this.setState({ modalActive: false, swapInProgress: false });
   }
 
   handleModalOutClick() {
@@ -325,8 +315,7 @@ class Room extends Component {
   }
 
   handleSeatSwap() {
-    return alert("not yet developed");
-    //this.setState({ modalActive: true, swapInProgress: true });
+    this.setState({ modalActive: true, swapInProgress: true });
   }
 
   handleSeatShuffle() {
@@ -627,7 +616,6 @@ class Room extends Component {
           <div className={this.getModalClass()}>
             <div
               className="modal-background"
-              // onClick={this.handleModalClick}
             ></div>
             <div className="modal-content box">{this.getModalContent()}</div>
             <button
