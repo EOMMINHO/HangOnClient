@@ -11,6 +11,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import ScrollLock from "react-scrolllock";
+import {Move1, Move2, Move3} from "./Clink"
+import Draggable from "react-draggable";
 
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
@@ -132,14 +134,9 @@ class Room extends Component {
     });
     this.socket.on("clinkResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        if (playerName === this.state.playerName) {
-          this.setState({ clinked: true, modalActive: true });
-        }
+        if (this.state.clinkInProgress) this.setState({ clinkInProgress: false });
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
-        this.setState({
-          clink_participants: [...this.state.clink_participants, playerName],
-        });
         toast.info(`🚀 ${playerName} has requested to clink!`, {
           position: "top-right",
           autoClose: 5000,
@@ -301,7 +298,6 @@ class Room extends Component {
   }
 
   handleClink() {
-    this.setState({ clinked: true });
     this.socket.emit("clink", this.state.playerName, this.state.roomName);
   }
 
@@ -440,7 +436,32 @@ class Room extends Component {
 
   settable() {
     if (Object.keys(this.state.participants).length < 5) {
-      return (
+      if (this.state.clinkInProgress) return (
+        <div
+          style={{
+            position: "fixed",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <Item>
+            <table style={{ width: "100%", height: "100%" }}>
+              <tbody>
+                <tr>
+                  <Move1 width="50%" position="absolute" marginLeft="16%" marginTop="6%" contents={this.get_video(1)}></Move1>
+                  <Move1 width="50%" position="absolute" marginLeft="0%" marginTop="6%" contents={this.get_video(3)}></Move1>
+                </tr>
+                <tr>
+                  <Move2 width="50%" position="absolute" marginLeft="16%" bottom="8.8%" contents={this.get_video(2)}></Move2>
+                  <Move2 width="50%" position="absolute" marginLeft="0%" bottom="8.8%" contents={this.get_video(4)}></Move2>
+                </tr>
+              </tbody>
+            </table>
+          </Item>
+        </div>
+      );
+      else return (
         <div
           style={{
             position: "fixed",
@@ -502,7 +523,39 @@ class Room extends Component {
         </div>
       );
     } else {
-      return (
+      if (this.state.clinkInProgress) return (
+        <Carousel breakPoints={breakPoints}>
+          <Item>
+            <table style={{ width: "100%", height: "100%" }}>
+              <tbody>
+                <tr>
+                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(1)}></Move3>
+                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="3.7%" contents={this.get_video(3)}></Move3>
+                </tr>
+                <tr>
+                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="9%" contents={this.get_video(2)}></Move3>
+                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="9%" contents={this.get_video(4)}></Move3>
+                </tr>
+              </tbody>
+            </table>
+          </Item>
+          <Item>
+            <table style={{ width: "100%", height: "100%" }}>
+              <tbody>
+                <tr>
+                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(5)}></Move3>
+                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="3.7%" contents={this.get_video(7)}></Move3>
+                </tr>
+                <tr>
+                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="9%" contents={this.get_video(6)}></Move3>
+                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="9%" contents={this.get_video(8)}></Move3>
+                </tr>
+              </tbody>
+            </table>
+          </Item>
+        </Carousel>
+      );
+      else return (
         <Carousel breakPoints={breakPoints}>
           <Item>
             <table style={{ width: "100%", height: "100%" }}>
@@ -642,9 +695,11 @@ class Room extends Component {
                 playerName={this.state.playerName}
                 participants={this.state.participants}
               />
-              <Youtube>
-                <YoutubePlayer visible={this.state.youtubeOpen} />
-              </Youtube>
+              <Draggable>
+                <Youtube>
+                  <YoutubePlayer visible={this.state.youtubeOpen} />
+                </Youtube>
+              </Draggable>
               <div>{this.settable()}</div>
               <div className="has-text-centered mt-2" position="absolute">
                 <div className="columns">
