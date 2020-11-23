@@ -1,19 +1,19 @@
 import React, { Component } from "react";
-import ReactPlayer from "react-player/youtube";
 import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import Debug from "../Debug/Debug";
-import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import VideoDropdown from "./VideoDropdown";
+import YoutubePlayer from "./YoutubePlayer";
+import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
-import { getNamebyNumber } from "../../utils/utils";
 import ScrollLock from "react-scrolllock";
 
 const Util = require("../../utils/utils");
+const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
@@ -43,6 +43,7 @@ class Room extends Component {
     videoAvailable: false,
     audioAvailable: false,
     chatOpen: false,
+    youtubeOpen: false,
     full_screen: false,
     YoutubeInProgress: false,
     youtubeLink: "https://www.youtube.com/watch?v=UkSr9Lw5Gm8",
@@ -236,9 +237,6 @@ class Room extends Component {
     this.handleVideo = this.handleVideo.bind(this);
     this.handleAudio = this.handleAudio.bind(this);
     this.handleModalOutClick = this.handleModalOutClick.bind(this);
-    this.handleYoutubeVideo = this.handleYoutubeVideo.bind(this);
-    this.handleLinkInput = this.handleLinkInput.bind(this);
-    this.handleYoutubeLink = this.handleYoutubeLink.bind(this);
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleChatClose = this.handleChatClose.bind(this);
@@ -296,18 +294,6 @@ class Room extends Component {
       "seatSwap",
       this.state.playerName,
       swap_target,
-      this.state.roomName
-    );
-  }
-
-  handleLinkInput(event) {
-    this.setState({ youtubeLinkInput: event.target.value });
-  }
-
-  handleYoutubeLink() {
-    this.socket.emit(
-      "youtube link",
-      this.state.youtubeLinkInput,
       this.state.roomName
     );
   }
@@ -384,38 +370,6 @@ class Room extends Component {
         p.addStream(this.stream);
       });
     }
-  }
-
-  handleYoutubeVideo() {
-    this.setState({ YoutubeInProgress: !this.state.YoutubeInProgress });
-  }
-
-  getYoutubeVideo() {
-    let classname;
-    if (this.state.YoutubeInProgress) classname = "top-left";
-    else classname = "is-invisible";
-    return (
-      <div className={classname}>
-        <div>
-          <ReactPlayer
-            url={this.state.youtubeLink}
-            controls={true}
-            width="320px"
-            height="180px"
-          />
-        </div>
-        <div>
-          <input
-            className="input"
-            placeholder="Youtube Link"
-            onChange={this.handleLinkInput}
-          />
-          <button className="button" onClick={this.handleYoutubeLink}>
-            Share
-          </button>
-        </div>
-      </div>
-    );
   }
 
   handleFullScreen() {
@@ -700,7 +654,9 @@ class Room extends Component {
                 playerName={this.state.playerName}
                 participants={this.state.participants}
               />
-              <Youtube>{this.getYoutubeVideo()}</Youtube>
+              <Youtube>
+                <YoutubePlayer visible={this.state.youtubeOpen} />
+              </Youtube>
               <div>{this.settable()}</div>
               <div className="has-text-centered mt-2" position="absolute">
                 <div className="columns">
@@ -779,11 +735,13 @@ class Room extends Component {
             />
             <ButtonDropdown
               buttonClass={
-                this.state.YoutubeInProgress
+                this.state.youtubeOpen
                   ? "button is-large is-black"
                   : "button is-large is-white"
               }
-              handler={this.handleYoutubeVideo}
+              handler={() => {
+                this.setState({ youtubeOpen: !this.state.youtubeOpen });
+              }}
               fontawesome="fab fa-youtube"
               description="Share Video"
             />
