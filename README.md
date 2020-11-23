@@ -8,7 +8,7 @@ Drinking online via the current video chat system fails to give the liveness of 
 
 ## Development
 
-1. command "npm i" will install every dependencies required to run the program.
+1. command "npm i" will install all dependencies required to run the program.
 2. command "npm start" will start the server with PORT 3000.
 
 ## Deploy
