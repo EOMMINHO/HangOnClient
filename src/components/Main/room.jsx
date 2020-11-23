@@ -11,7 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import ScrollLock from "react-scrolllock";
-import {Move1, Move2, Move3} from "./Clink"
+import {Move1, Move2, Move3, Move4} from "./Clink"
 import Draggable from "react-draggable";
 
 const Util = require("../../utils/utils");
@@ -529,12 +529,12 @@ class Room extends Component {
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
-                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(1)}></Move3>
-                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="3.7%" contents={this.get_video(3)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(1)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="12%" marginTop="3.7%" contents={this.get_video(3)}></Move3>
                 </tr>
                 <tr>
-                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="9%" contents={this.get_video(2)}></Move3>
-                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="9%" contents={this.get_video(4)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="9%" contents={this.get_video(2)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="12%" marginTop="9%" contents={this.get_video(4)}></Move3>
                 </tr>
               </tbody>
             </table>
@@ -543,12 +543,12 @@ class Room extends Component {
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
-                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(5)}></Move3>
-                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="3.7%" contents={this.get_video(7)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="3.7%" contents={this.get_video(5)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="23%" marginTop="3.7%" contents={this.get_video(7)}></Move3>
                 </tr>
                 <tr>
-                  <Move3 width="50%" position="fixed" marginLeft="1.5%" marginTop="9%" contents={this.get_video(6)}></Move3>
-                  <Move3 width="50%" position="fixed" marginLeft="23%" marginTop="9%" contents={this.get_video(8)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="1.5%" marginTop="9%" contents={this.get_video(6)}></Move3>
+                  <Move3 width="50%" position="absolute" marginLeft="23%" marginTop="9%" contents={this.get_video(8)}></Move3>
                 </tr>
               </tbody>
             </table>
