@@ -13,7 +13,7 @@ import Carousel from "react-elastic-carousel";
 import ScrollLock from "react-scrolllock";
 import Spotlight from "react-spotlight";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import {Move1, Move2, Move3} from "./Clink"
+import {Move1, Move2, Move3, Move4} from "./Clink"
 import Draggable from "react-draggable";
 
 const Util = require("../../utils/utils");
@@ -38,8 +38,7 @@ class Room extends Component {
     clink_participants: [],
     clinked: false,
     clinkInProgress: false,
-    attention_target: "",
-    attended: false,
+    attentionResponse: false,
     attentionInProgress: false,
     swapInProgress: false,
     videoOn: false,
@@ -163,10 +162,15 @@ class Room extends Component {
     });
     this.socket.on("attentionResponse", (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({
-          attention_target: playerName,
-          attentionInProgress: true,
-        });
+        if (this.state.attentionInProgress === true){
+          this.setState({
+            attentionInProgress: false,
+          })
+        }
+        else{
+          this.setState({
+            attentionInProgress: true,
+          })
         console.log(`${playerName} has requested to get attention`);
         toast.info(`🚀 ${playerName} has requested to get attention!`, {
           position: "top-right",
@@ -177,6 +181,14 @@ class Room extends Component {
           draggable: true,
           progress: undefined,
         });
+      }
+      }
+      else{
+        if (this.state.attentionInProgress === true){
+          this.setState({
+            attentionInProgress: false,
+          })
+        }
       }
     });
     this.socket.on("attentionAgreeResponse", (participants) => {
@@ -305,7 +317,7 @@ class Room extends Component {
   }
 
   handleAttention() {
-    this.setState({ spotplay : true });
+    this.socket.emit("attention", this.state.playerName, this.state.roomName);
   }
 
   handleSeatSwap() {
@@ -372,15 +384,9 @@ class Room extends Component {
   }
 
   getAttentionClass() {
-    if (this.state.attentionInProgress) {
-      return "button is-loading is-large is-white";
-    } else if (this.state.playerName === this.state.attention_target) {
-      return "button is-large is-black";
-    } else {
-      return "button is-large is-white";
-    }
+    return "button is-large is-white";
   }
-
+  
   toastIfVisible(newText) {
     if (!this.state.chatOpen) {
       toast.success(newText, {
@@ -753,7 +759,7 @@ class Room extends Component {
             </div>
           </div>
 
-          {this.state.spotplay &&
+          {this.state.attentionInProgress &&
             <Spotlight
               x= "50"
               y= "50"
@@ -778,9 +784,11 @@ class Room extends Component {
                 left: '220%',
                 top: '-50%',
               }}>
-                <AiOutlineCloseCircle
-                  size = {40} 
-                  color = "#fff"
+                <ButtonDropdown
+                  buttonClass= "button is-large is-transparent"
+                  handler={this.handleAttention}
+                  fontawesome="far fa-times-circle"
+                  description="Close"
                 />
               </div>
                 
