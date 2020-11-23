@@ -26,6 +26,7 @@ class Room extends Component {
   peers = {};
   videoRefs = {};
   stream = null;
+  peerStreams = {};
   state = {
     playerName: "",
     roomName: "",
@@ -90,7 +91,8 @@ class Room extends Component {
             this.videoRefs,
             this.chatBoardRef,
             this.stream,
-            this.toastIfVisible
+            this.toastIfVisible,
+            this.peerStreams
           );
         } else {
           Util.makeNewPeer(
@@ -102,7 +104,8 @@ class Room extends Component {
             this.videoRefs,
             this.chatBoardRef,
             this.stream,
-            this.toastIfVisible
+            this.toastIfVisible,
+            this.peerStreams
           );
           toast.info("🚀 New Member Joined!", {
             position: "top-right",
@@ -455,89 +458,6 @@ class Room extends Component {
     }
   }
 
-  getVideos() {
-    return Object.keys(this.state.participants).map((userName) => {
-      if (this.state.clinked) {
-        if (userName === this.state.playerName)
-          // TODO: clink visualization
-          return (
-            <VideoDropdown
-              key={userName}
-              ref={this.localVideoRef}
-              description={this.state.playerName}
-            />
-          );
-        else
-          return (
-            <VideoDropdown
-              key={userName}
-              myRef={this.videoRefs[userName]}
-              description={userName}
-            />
-          );
-      } else if (!this.state.participants[userName].clinked) {
-        if (this.state.attention_target === userName) {
-          if (userName === this.state.playerName)
-            return (
-              // TODO: attention target video featured
-              <VideoDropdown
-                ref={this.localVideoRef}
-                description={this.state.playerName}
-              />
-            );
-          else
-            return (
-              // TODO: attention target video featured
-              <VideoDropdown
-                key={userName}
-                myRef={this.videoRefs[userName]}
-                description={userName}
-              />
-            );
-        } else {
-          if (userName === this.state.playerName)
-            return (
-              <VideoDropdown
-                key={userName}
-                myRef={this.localVideoRef}
-                description={this.state.playerName}
-              />
-            );
-          else
-            return (
-              <VideoDropdown
-                key={userName}
-                myRef={this.videoRefs[userName]}
-                description={userName}
-              />
-            );
-        }
-      } else {
-        return null;
-      }
-    });
-  }
-
-  getClinkVideos() {
-    return Object.keys(this.state.clink_participants).map((userName) => {
-      if (userName === this.state.playerName)
-        return (
-          <VideoDropdown
-            ref={this.localVideoRef}
-            description={this.state.playerName}
-          />
-        );
-      else
-        return (
-          <VideoDropdown
-            key={userName}
-            myRef={this.videoRefs[userName]}
-            description={userName}
-          />
-        );
-    });
-  }
-
   toastIfVisible(newText) {
     if (!this.state.chatOpen) {
       toast.success(newText, {
@@ -570,6 +490,7 @@ class Room extends Component {
             myRef={this.localVideoRef}
             description={this.state.playerName}
             isUp={i % 2}
+            stream={this.stream}
           />
         );
       } else {
@@ -579,6 +500,9 @@ class Room extends Component {
             myRef={this.videoRefs[getNamebyNumber(this.state.participants, i)]}
             description={getNamebyNumber(this.state.participants, i)}
             isUp={i % 2}
+            stream={
+              this.peerStreams[getNamebyNumber(this.state.participants, i)]
+            }
           />
         );
       }

@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 
 class VideoDropdown extends Component {
+  componentDidMount() {
+    if ("srcObject" in this.props.myRef.current) {
+      this.props.myRef.current.srcObject = this.props.stream;
+    } else {
+      this.props.myRef.current.src = window.URL.createObjectURL(
+        this.props.stream
+      );
+    }
+  }
+
   render() {
     return (
       <div

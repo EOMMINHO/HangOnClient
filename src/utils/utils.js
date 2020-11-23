@@ -11,7 +11,8 @@ function makeNewPeer(
   videoRefs,
   chatBoardRef,
   stream,
-  toastHandler
+  toastHandler,
+  peerStreams
 ) {
   // find a new peer
   let oldPeers = Object.keys(peers);
@@ -31,6 +32,7 @@ function makeNewPeer(
     console.log("connected");
   });
   p.on("stream", (stream) => {
+    peerStreams[newUser] = stream;
     if ("srcObject" in videoRef.current) {
       videoRef.current.srcObject = stream;
     } else {
@@ -69,7 +71,8 @@ function makeNewPeers(
   videoRefs,
   chatBoardRef,
   stream,
-  toastHandler
+  toastHandler,
+  peerStreams
 ) {
   // find receivers
   let newPeers = Object.keys(participants);
@@ -94,6 +97,7 @@ function makeNewPeers(
       console.log("connected");
     });
     p.on("stream", (stream) => {
+      peerStreams[userName] = stream;
       if ("srcObject" in videoRef.current) {
         videoRef.current.srcObject = stream;
       } else {
