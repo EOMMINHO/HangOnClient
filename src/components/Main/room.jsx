@@ -11,6 +11,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carousel from "react-elastic-carousel";
 import ScrollLock from "react-scrolllock";
+import Spotlight from "react-spotlight";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
@@ -50,6 +52,7 @@ class Room extends Component {
     youtubeLinkInput: null,
     items: [],
     lockScroll: false,
+    spotplay: false,
   };
 
   constructor() {
@@ -306,12 +309,7 @@ class Room extends Component {
   }
 
   handleAttention() {
-    if (this.state.playerName === this.state.attention_target) {
-      this.setState({ attention_target: "", attended: false });
-    } else {
-      this.setState({ attentionInProgress: true });
-      this.socket.emit("attention", this.state.playerName, this.state.roomName);
-    }
+    this.setState({ spotplay : true });
   }
 
   handleSeatSwap() {
@@ -408,6 +406,41 @@ class Room extends Component {
     }
   }
 
+  /*set_attention(){
+    Object.keys(this.state.participants).map((userName) => {
+      if (this.state.participants[userName].attention) {
+        return (this.state.participants[userName].seatNumber);
+      }
+  })
+  }
+
+  handle_attention(num){
+    
+    }
+  }
+  */
+
+  handleatenntionclose(){
+    this.setState({spotplay : false})
+  }
+
+  start() {
+  this.setStatePromise({ spotplay: true })
+    .then(() => this.sleep(60000))
+    .then(() => this.setStatePromise({ spotplay: false }));
+  }
+
+/* The following are some convenience methods to make chaining the animation more convenient */
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  setStatePromise(state) {
+    this.setState(state);
+    return Promise.resolve();
+  }
+
   get_video(i) {
     if (Object.keys(this.state.participants).length >= i) {
       if (
@@ -470,6 +503,7 @@ class Room extends Component {
                       marginLeft: "50%",
                       marginTop: "6%",
                     }}
+                    className = "Hello"
                   >
                     {this.get_video(3)}
                   </td>
@@ -623,7 +657,7 @@ class Room extends Component {
               aria-label="close"
               onClick={this.handleModalOutClick}
             ></button>
-          </div>
+          </div>       
           <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -645,7 +679,10 @@ class Room extends Component {
               <Youtube>
                 <YoutubePlayer visible={this.state.youtubeOpen} />
               </Youtube>
-              <div>{this.settable()}</div>
+
+              <div>{this.settable()}
+
+              </div>
               <div className="has-text-centered mt-2" position="absolute">
                 <div className="columns">
                   <div className="column is-3 mx-4">
@@ -663,6 +700,40 @@ class Room extends Component {
               </div>
             </div>
           </div>
+
+          {this.state.spotplay &&
+            <Spotlight
+              x= "50"
+              y= "50"
+              radius= "180"
+              color= "#000000"
+              usePercentage
+              borderColor="#ffffff"
+              borderWidth={10}>
+              <div style={{
+                position: 'absolute',
+                left: '50%',
+                top: '-50px',
+                transform: 'translate(-50%, -100%)',
+                whiteSpace: 'nowrap'
+              }}>
+                <div className="has-text-centered has-text-white has-text-weight-medium is-size-3"> 
+                  It's Your Turn to Say
+                </div>
+              </div>
+              <div style={{
+                position: 'absolute',
+                left: '220%',
+                top: '-50%',
+              }}>
+                <AiOutlineCloseCircle
+                  size = {40} 
+                  color = "#fff"
+                />
+              </div>
+                
+            </Spotlight>
+          }
 
           <MenuBar>
             <ButtonDropdown
