@@ -373,21 +373,6 @@ class Room extends Component {
     this.fullscreen();
   }
 
-  getClinkClass() {
-    if (
-      this.state.clinkInProgress &&
-      this.state.clink_participants.length !== 0
-    ) {
-      return "button is-loading is-large is-white";
-    } else {
-      return "button is-large is-white";
-    }
-  }
-
-  getAttentionClass() {
-    return "button is-large is-white";
-  }
-
   toastIfVisible(newText) {
     if (!this.state.chatOpen) {
       toast.success(newText, {
@@ -4118,7 +4103,12 @@ class Room extends Component {
             description={this.state.audioOn ? "Audio Off" : "Audio On"}
           />
           <ButtonDropdown
-            buttonClass={this.getClinkClass()}
+            buttonClass={
+              this.state.clinkInProgress &&
+              this.state.clink_participants.length !== 0
+                ? "button is-loading is-large is-white"
+                : "button is-large is-white"
+            }
             handler={() => {
               this.socket.emit(
                 "clink",
@@ -4130,7 +4120,7 @@ class Room extends Component {
             description="Clink"
           />
           <ButtonDropdown
-            buttonClass={this.getAttentionClass()}
+            buttonClass="button is-large is-white"
             handler={() => {
               this.socket.emit(
                 "attention",
