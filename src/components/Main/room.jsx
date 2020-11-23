@@ -880,7 +880,7 @@ class Room extends Component {
                   It's Your Turn to Say
                 </div>
               </div>
-              {getNamebyAttention(this.state.participants) === this.state.userName ? 
+              {(getNamebyAttention(this.state.participants) === this.state.playerName) ? 
                 <div style={{
                   position: 'absolute',
                   left: '220%',
