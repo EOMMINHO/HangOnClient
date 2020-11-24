@@ -235,6 +235,7 @@ class Room extends Component {
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
+    this.handleChat = this.handleChat.bind(this);
   }
 
   componentDidUpdate(prevState) {
@@ -268,6 +269,20 @@ class Room extends Component {
         </div>
       );
     } else return null;
+  }
+
+  handleChat(e) {
+    if (e.key === "Enter" && this.chatRef.current.value !== "") {
+      // send to peers
+      let newmsg = this.state.playerName + ": " + this.chatRef.current.value;
+      Object.values(this.peers).forEach((p) => {
+        p.send(newmsg);
+      });
+      this.chatRef.current.value = "";
+      this.chatBoardRef.current.value =
+        this.chatBoardRef.current.value + `${newmsg}\n`;
+      this.chatBoardRef.current.scrollTop = this.chatBoardRef.current.scrollHeight;
+    }
   }
 
   handleSwapClick(swap_target) {
@@ -2110,9 +2125,8 @@ class Room extends Component {
                   handleClose={() => {
                     this.setState({ chatOpen: !this.state.chatOpen });
                   }}
+                  handleChat={this.handleChat}
                   open={this.state.chatOpen}
-                  playerName={this.state.playerName}
-                  peers={this.peers}
                 />
               </div>
             </div>
