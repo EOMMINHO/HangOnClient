@@ -34,8 +34,8 @@ class MySpotlight extends Component {
             <div
               style={{
                 position: "absolute",
-                left: "220%",
-                top: "-55%",
+                left: "100vh",
+                top: "-25vh",
               }}
             >
               <Button

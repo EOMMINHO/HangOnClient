@@ -768,7 +768,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints}>
+          <Carousel breakPoints={breakPoints} width = "1620">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -893,7 +893,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints}>
+          <Carousel breakPoints={breakPoints} width = "100">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -1143,7 +1143,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints}>
+          <Carousel breakPoints={breakPoints} width = "100">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -1268,7 +1268,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints}>
+          <Carousel breakPoints={breakPoints} width = "100">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -1885,7 +1885,7 @@ class Room extends Component {
         if (this.state.attentionInProgress) return this.set_8_table();
         else
           return (
-            <Carousel breakPoints={breakPoints}>
+            <Carousel breakPoints={breakPoints} width = "100">
               <Item>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
@@ -1968,7 +1968,7 @@ class Room extends Component {
         if (this.state.attentionInProgress) return this.set_8_table();
         else
           return (
-            <Carousel breakPoints={breakPoints}>
+            <Carousel breakPoints={breakPoints} width = "100">
               <Item>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
