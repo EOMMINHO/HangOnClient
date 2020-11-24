@@ -1122,8 +1122,8 @@ class Room extends Component {
                         marginTop: "9.5%",
                       }}
                     >
-                    </td>
                       {this.get_video(2)}
+                    </td>
                     <td
                       style={{
                         width: "50%",
@@ -1132,7 +1132,6 @@ class Room extends Component {
                         marginTop: "9.5%",
                       }}
                     >
-                      {this.get_video()}
                     </td>
                   </tr>
                 </tbody>
@@ -1586,8 +1585,9 @@ class Room extends Component {
                         marginTop: "9.5%",
                       }}
                     >
-                    </td>
                       {this.get_video(2)}
+                    </td>
+                      
                     <td
                       style={{
                         width: "50%",
