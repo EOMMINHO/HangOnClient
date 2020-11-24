@@ -239,12 +239,34 @@ class Room extends Component {
   }
 
   componentDidUpdate(prevState) {
-    console.log(this.state.clinkInProgress);
-    console.log(prevState.clinkInProgress);
     if (this.state.clinkInProgress !== 0)
       new Promise((resolve) => setTimeout(resolve, 2550)).then(() =>
         this.setState({ clinkInProgress: 0 })
       );
+  }
+
+  getVideoButtonClass() {
+    if (!this.state.videoAvailable) {
+      return "button is-static is-large is-white";
+    } else {
+      if (this.state.videoOn) {
+        return "button is-large is-black";
+      } else {
+        return "button is-large is-white";
+      }
+    }
+  }
+
+  getAudioButtonClass() {
+    if (!this.state.audioAvailable) {
+      return "button is-static is-large is-white";
+    } else {
+      if (this.state.audioOn) {
+        return "button is-large is-black";
+      } else {
+        return "button is-large is-white";
+      }
+    }
   }
 
   getModalContent() {
@@ -315,6 +337,7 @@ class Room extends Component {
     if (this.state.videoOn) {
       this.setState({ videoOn: false });
       Util.stopVideo(this.stream);
+      Util.stopAudio(this.stream);
       this.localVideoRef.current.srcObject = null;
       this.socket.emit("videoOff", this.state.playerName, this.state.roomName);
     } else {
@@ -324,7 +347,7 @@ class Room extends Component {
           width: { min: 1280, ideal: 1280, max: 1920 },
           height: { min: 576, ideal: 720, max: 1080 },
         },
-        audio: this.state.audioOn,
+        audio: true,
       });
       this.localVideoRef.current.srcObject = this.stream;
       Object.values(this.peers).forEach((p) => {
@@ -334,6 +357,7 @@ class Room extends Component {
   }
 
   async handleAudio() {
+    return alert("not available");
     if (this.state.audioOn) {
       this.setState({ audioOn: false });
       Util.stopAudio(this.stream);
@@ -477,8 +501,7 @@ class Room extends Component {
                       marginLeft: "50%",
                       marginTop: "6%",
                     }}
-                  >
-                  </td>
+                  ></td>
                   <td
                     style={{
                       width: "50%",
@@ -2143,21 +2166,13 @@ class Room extends Component {
         />
         <MenuBar>
           <ButtonDropdown
-            buttonClass={
-              this.state.videoAvailable
-                ? "button is-large is-white"
-                : "button is-static is-large is-white"
-            }
+            buttonClass={this.getVideoButtonClass()}
             handler={this.handleVideo}
             fontawesome="fas fa-video-slash"
             description={this.state.videoOn ? "Video Off" : "Video On"}
           />
           <ButtonDropdown
-            buttonClass={
-              this.state.audioAvailable
-                ? "button is-large is-white"
-                : "button is-static is-large is-white"
-            }
+            buttonClass={this.getAudioButtonClass()}
             handler={this.handleAudio}
             fontawesome="fas fa-microphone-slash"
             description={this.state.audioOn ? "Audio Off" : "Audio On"}
