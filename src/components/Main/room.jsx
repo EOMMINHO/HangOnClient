@@ -35,7 +35,7 @@ class Room extends Component {
     participants: {},
     clink_participants: [],
     clinked: false,
-    clinkInProgress: false,
+    clinkInProgress: 0,
     attentionResponse: false,
     attentionInProgress: false,
     swapInProgress: false,
@@ -135,8 +135,6 @@ class Room extends Component {
     });
     this.socket.on("clinkResponse", async (isSuccess, playerName) => {
       if (isSuccess) {
-        if (this.state.clinkInProgress)
-          this.setState({ clinkInProgress: false });
         this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
         toast.info(`🚀 ${playerName} has requested to clink!`, {
@@ -237,6 +235,14 @@ class Room extends Component {
     this.toastIfVisible = this.toastIfVisible.bind(this);
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
+  }
+
+  componentDidUpdate(prevState) {
+    console.log(this.state.clinkInProgress);
+    console.log(prevState.clinkInProgress);
+    if (this.state.clinkInProgress !== 0)
+      new Promise(resolve => setTimeout(resolve, 2550))
+      .then(()=>this.setState({ clinkInProgress: 0 }))
   }
 
   getModalContent() {
