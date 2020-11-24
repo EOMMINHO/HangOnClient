@@ -8,7 +8,7 @@ const opts = {
       {
         urls: "turn:hangonserver.minhoeom.com:3478",
         username: "CS473",
-        credentials: "CS473PW",
+        credential: "CS473PW",
       },
     ],
   },
@@ -22,7 +22,7 @@ const optsInit = {
       {
         urls: "turn:hangonserver.minhoeom.com:3478",
         username: "CS473",
-        credentials: "CS473PW",
+        credential: "CS473PW",
       },
     ],
   },
