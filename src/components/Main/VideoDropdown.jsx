@@ -30,7 +30,7 @@ class VideoDropdown extends Component {
             height="150"
             poster="/video-not-working.png"
             autoPlay
-            muted
+            muted={this.props.muted}
             style={{
               WebkitTransform: "scaleX(-1)",
               transform: "scaleX(-1)",

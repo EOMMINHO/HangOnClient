@@ -452,6 +452,7 @@ class Room extends Component {
             description={this.state.playerName}
             isUp={i % 2}
             stream={this.stream}
+            muted={true}
           />
         );
       } else {
@@ -464,6 +465,7 @@ class Room extends Component {
             stream={
               this.peerStreams[getNamebyNumber(this.state.participants, i)]
             }
+            muted={false}
           />
         );
       }
@@ -806,7 +808,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints} width = "1620">
+          <Carousel breakPoints={breakPoints} width="1620">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -931,7 +933,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints} width = "100">
+          <Carousel breakPoints={breakPoints} width="100">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -1181,7 +1183,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints} width = "100">
+          <Carousel breakPoints={breakPoints} width="100">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -1306,7 +1308,7 @@ class Room extends Component {
     )
       return (
         <div>
-          <Carousel breakPoints={breakPoints} width = "100">
+          <Carousel breakPoints={breakPoints} width="100">
             <Item>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
@@ -1923,7 +1925,7 @@ class Room extends Component {
         if (this.state.attentionInProgress) return this.set_8_table();
         else
           return (
-            <Carousel breakPoints={breakPoints} width = "100">
+            <Carousel breakPoints={breakPoints} width="100">
               <Item>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
@@ -2006,7 +2008,7 @@ class Room extends Component {
         if (this.state.attentionInProgress) return this.set_8_table();
         else
           return (
-            <Carousel breakPoints={breakPoints} width = "100">
+            <Carousel breakPoints={breakPoints} width="100">
               <Item>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
