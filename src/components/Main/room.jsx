@@ -337,7 +337,6 @@ class Room extends Component {
     if (this.state.videoOn) {
       this.setState({ videoOn: false });
       Util.stopVideo(this.stream);
-      Util.stopAudio(this.stream);
       this.localVideoRef.current.srcObject = null;
       this.socket.emit("videoOff", this.state.playerName, this.state.roomName);
     } else {
@@ -347,7 +346,7 @@ class Room extends Component {
           width: { min: 1280, ideal: 1280, max: 1920 },
           height: { min: 576, ideal: 720, max: 1080 },
         },
-        audio: true,
+        audio: this.state.audioOn,
       });
       this.localVideoRef.current.srcObject = this.stream;
       Object.values(this.peers).forEach((p) => {
@@ -357,7 +356,6 @@ class Room extends Component {
   }
 
   async handleAudio() {
-    return alert("not available");
     if (this.state.audioOn) {
       this.setState({ audioOn: false });
       Util.stopAudio(this.stream);
