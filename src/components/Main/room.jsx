@@ -437,7 +437,7 @@ class Room extends Component {
           return this.state.participants[userName].seatNumber;
         }
         return null;
-      })[0] === 1)
+      }).includes(1))
       return (
         <div
           style={{
@@ -513,7 +513,7 @@ class Room extends Component {
           return this.state.participants[userName].seatNumber;
         }
         return null;
-      })[1] === 2
+      }).includes(2)
     )
       return (
         <div
@@ -591,7 +591,7 @@ class Room extends Component {
           return this.state.participants[userName].seatNumber;
         }
         return null;
-      })[2] === 3
+      }).includes(3)
     )
       return (
         <div
@@ -669,7 +669,7 @@ class Room extends Component {
             return (this.state.participants[userName].seatNumber);
           }
           return null;
-        })[3] === 4)
+        }).includes(4))
         return (
           <div
             style={{
@@ -742,7 +742,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[0] === 1)
+      }).includes(1))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -858,7 +858,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[1] === 2)
+      }).includes(2))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -974,7 +974,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[2] === 3)
+      }).includes(3))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -1090,7 +1090,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[3] === 4)
+      }).includes(4))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -1123,13 +1123,13 @@ class Room extends Component {
                     <td
                       style={{
                         width: "50%",
-                        position: "absolute",
+                        position: "fixed",
                         marginLeft: "1.5%",
                         marginTop: "9.5%",
                       }}
                     >
-                    </td>
                       {this.get_video(2)}
+                    </td>
                     <td
                       style={{
                         width: "50%",
@@ -1193,7 +1193,6 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            
           </Carousel>
           <div style = {{position : "absolute", left : "50%", top: "50%", marginLeft: "-150px", marginTop: "-85px"}}>
             {this.get_video(4)}
@@ -1206,7 +1205,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[4] === 5)
+      }).includes(5))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -1322,7 +1321,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[5] === 6)
+      }).includes(6))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -1438,7 +1437,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[6] === 7)
+      }).includes(7))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -1554,7 +1553,7 @@ class Room extends Component {
           return (this.state.participants[userName].seatNumber);
         }
         return null;
-      })[7] === 8)
+      }).includes(8))
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
@@ -1592,8 +1591,9 @@ class Room extends Component {
                         marginTop: "9.5%",
                       }}
                     >
-                    </td>
                       {this.get_video(2)}
+                    </td>
+                      
                     <td
                       style={{
                         width: "50%",
