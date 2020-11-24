@@ -1,5 +1,32 @@
 const React = require("react");
 const Peer = require("simple-peer");
+const opts = {
+  config: {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:global.stun.twilio.com:3478?transport=udp" },
+      {
+        urls: "turn:hangonserver.minhoeom.com:3478",
+        username: "CS473",
+        credentials: "CS473PW",
+      },
+    ],
+  },
+};
+const optsInit = {
+  initiator: true,
+  config: {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:global.stun.twilio.com:3478?transport=udp" },
+      {
+        urls: "turn:hangonserver.minhoeom.com:3478",
+        username: "CS473",
+        credentials: "CS473PW",
+      },
+    ],
+  },
+};
 
 // make a new peer for old users
 function makeNewPeer(
@@ -24,7 +51,7 @@ function makeNewPeer(
   let videoRef = React.createRef();
   videoRefs[newUser] = videoRef;
   // make a connection
-  let p = new Peer();
+  let p = new Peer(opts);
   p.on("signal", (data) => {
     socket.emit("RTC_offer", JSON.stringify(data), myName, newUser, roomName);
   });
@@ -83,7 +110,7 @@ function makeNewPeers(
     let videoRef = React.createRef();
     videoRefs[userName] = videoRef;
     // make peer connection
-    let p = new Peer({ initiator: true });
+    let p = new Peer(optsInit);
     p.on("signal", (data) => {
       socket.emit(
         "RTC_offer",
