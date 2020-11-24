@@ -471,16 +471,18 @@ class Room extends Component {
               <tbody>
                 <tr>
                   <td
-                    width="50%"
-                    position="absolute"
-                    marginLeft="16%"
-                    marginTop="6%"
-                    contents={this.get_video(1)}
-                  ></td>
+                    style={{
+                      width: "50%",
+                      position: "fixed",
+                      marginLeft: "50%",
+                      marginTop: "6%",
+                    }}
+                  >
+                  </td>
                   <td
                     style={{
                       width: "50%",
-                      position: "absolute",
+                      position: "fixed",
                       marginLeft: "50%",
                       marginTop: "6%",
                     }}
@@ -562,7 +564,7 @@ class Room extends Component {
                   <td
                     style={{
                       width: "50%",
-                      position: "absolute",
+                      position: "fixed",
                       marginLeft: "50%",
                       marginTop: "6%",
                     }}
