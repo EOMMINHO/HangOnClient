@@ -198,6 +198,9 @@ class Room extends Component {
     this.socket.on("youtube link", (youtubelink) => {
       this.setState({ youtubeLink: youtubelink });
     });
+    this.socket.on("youtubeLinkResponse", (youtubeLink) => {
+      this.setState({ youtubeLink: youtubeLink });
+    });
     // P2P for video conference
     this.socket.on("RTC_answer", async (offerer, receiver, data) => {
       // if receiver is me, signal it to offerer.
@@ -227,6 +230,7 @@ class Room extends Component {
       this.state.roomName = roomName;
       this.socket.emit("join", playerName, roomName);
     }
+    this.socket.emit("youtubeLinkRequest", this.state.roomName);
     // binding
     this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
