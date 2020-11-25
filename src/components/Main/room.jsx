@@ -47,7 +47,7 @@ class Room extends Component {
     youtubeOpen: false,
     full_screen: false,
     youtubeLink:
-      "https://www.youtube.com/watch?v=k7YzgZf-V5U&t=230s&ab_channel=%EC%86%8C%EB%A6%AC%EC%97%B0%EA%B5%AC%EC%86%8C-S.LAB",
+      "https://www.youtube.com/watch?v=k7YzgZf-V5U&t=250s&ab_channel=%EC%86%8C%EB%A6%AC%EC%97%B0%EA%B5%AC%EC%86%8C-S.LAB",
     youtubeLinkInput: null,
     items: [],
     lockScroll: false,
@@ -204,11 +204,15 @@ class Room extends Component {
     // P2P for video conference
     this.socket.on("RTC_answer", async (offerer, receiver, data) => {
       // if receiver is me, signal it to offerer.
-      if (receiver === this.state.playerName) {
-        while (!Object.keys(this.peers).includes(offerer)) {
-          await delay(100);
+      try {
+        if (receiver === this.state.playerName) {
+          while (!Object.keys(this.peers).includes(offerer)) {
+            await delay(100);
+          }
+          this.peers[offerer].signal(data);
         }
-        this.peers[offerer].signal(data);
+      } catch (error) {
+        console.log(error);
       }
     });
     this.socket.on("videoOffResponse", (userName) => {
@@ -229,8 +233,9 @@ class Room extends Component {
       let roomName = sessionStorage.getItem("roomName");
       this.state.roomName = roomName;
       this.socket.emit("join", playerName, roomName);
+      this.socket.emit("youtubeLinkRequest", this.state.roomName);
     }
-    this.socket.emit("youtubeLinkRequest", this.state.roomName);
+
     // binding
     this.handleSwapClick = this.handleSwapClick.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
@@ -252,24 +257,20 @@ class Room extends Component {
   getVideoButtonClass() {
     if (!this.state.videoAvailable) {
       return "button is-static is-large is-white";
+    } else if (this.state.videoOn) {
+      return "button is-large is-black";
     } else {
-      if (this.state.videoOn) {
-        return "button is-large is-black";
-      } else {
-        return "button is-large is-white";
-      }
+      return "button is-large is-white";
     }
   }
 
   getAudioButtonClass() {
     if (!this.state.audioAvailable) {
       return "button is-static is-large is-white";
+    } else if (this.state.audioOn) {
+      return "button is-large is-black";
     } else {
-      if (this.state.audioOn) {
-        return "button is-large is-black";
-      } else {
-        return "button is-large is-white";
-      }
+      return "button is-large is-white";
     }
   }
 
@@ -302,7 +303,11 @@ class Room extends Component {
       // send to peers
       let newmsg = this.state.playerName + ": " + this.chatRef.current.value;
       Object.values(this.peers).forEach((p) => {
-        p.send(newmsg);
+        try {
+          p.send(newmsg);
+        } catch (error) {
+          console.log(error);
+        }
       });
       this.chatRef.current.value = "";
       this.chatBoardRef.current.value =
@@ -354,7 +359,11 @@ class Room extends Component {
       });
       this.localVideoRef.current.srcObject = this.stream;
       Object.values(this.peers).forEach((p) => {
-        p.addStream(this.stream);
+        try {
+          p.addStream(this.stream);
+        } catch (error) {
+          console.log(error);
+        }
       });
     }
   }
@@ -371,7 +380,11 @@ class Room extends Component {
       });
       this.localVideoRef.current.srcObject = this.stream;
       Object.values(this.peers).forEach((p) => {
-        p.addStream(this.stream);
+        try {
+          p.addStream(this.stream);
+        } catch (error) {
+          console.log(error);
+        }
       });
     }
   }
