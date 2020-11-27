@@ -2220,13 +2220,13 @@ class Room extends Component {
           <ButtonDropdown
             buttonClass={this.getVideoButtonClass()}
             handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
+            fontawesome="fas fa-video"
             description={this.state.videoOn ? "Video Off" : "Video On"}
           />
           <ButtonDropdown
             buttonClass={this.getAudioButtonClass()}
             handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
+            fontawesome="fas fa-microphone"
             description={this.state.audioOn ? "Audio Off" : "Audio On"}
           />
           <ButtonDropdown
@@ -2237,6 +2237,9 @@ class Room extends Component {
                 : "button is-large is-white"
             }
             handler={() => {
+              if (Object.keys(this.state.participants).length === 1) {
+                return alert("cannot toast when solo");
+              }
               this.socket.emit(
                 "clink",
                 this.state.playerName,
@@ -2244,7 +2247,7 @@ class Room extends Component {
               );
             }}
             fontawesome="fas fa-glass-cheers"
-            description="Clink"
+            description="Clink!"
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
