@@ -195,6 +195,37 @@ class Room extends Component {
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
     });
+    this.socket.on("emojiResponse", (sender, num) => {
+      var message;
+      switch(num) {
+        case 1:
+          message = sender + ': 😊';
+          break;
+        case 2:
+          message = sender + ': 😢';
+          break;
+        case 3:
+          message = sender + ': 🤣';
+          break;
+        case 4:
+          message = sender + ': 😵';
+          break;
+        default:
+          break;
+      }
+      if (sender !== this.state.playerName) {
+        toast(message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+
+    });
     this.socket.on("youtube link", (youtubelink) => {
       this.setState({ youtubeLink: youtubelink });
     });
@@ -314,6 +345,10 @@ class Room extends Component {
         this.chatBoardRef.current.value + `${newmsg}\n`;
       this.chatBoardRef.current.scrollTop = this.chatBoardRef.current.scrollHeight;
     }
+  }
+
+  handleEmoji(num) {
+    this.socket.emit("emoji", this.state.playerName, this.state.roomName, num);
   }
 
   handleSwapClick(swap_target) {
@@ -2214,6 +2249,9 @@ class Room extends Component {
           <ButtonDropdown
             buttonClass="button is-large is-white"
             handler={() => {
+              if (Object.keys(this.state.participants).length === 1) {
+                return alert("cannot get attention when solo");
+              }
               this.socket.emit(
                 "attention",
                 this.state.playerName,
@@ -2256,6 +2294,26 @@ class Room extends Component {
             }}
             fontawesome="fas fa-comments"
             description="Chat"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            fontawesome="far fa-meh-blank"
+            description={
+              <>
+                <button className="button is-small is-white" onClick={() => {this.handleEmoji(1);}}>
+                  😊
+                </button>
+                <button className="button is-small is-white" onClick={() => {this.handleEmoji(2);}}>
+                  😢
+                </button>
+                <button className="button is-small is-white" onClick={() => {this.handleEmoji(3);}}>
+                  🤣
+                </button>
+                <button className="button is-small is-white" onClick={() => {this.handleEmoji(4);}}>
+                  😵
+                </button>
+              </>
+            }
           />
           <ButtonDropdown
             buttonClass={
