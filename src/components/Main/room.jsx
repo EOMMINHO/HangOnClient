@@ -216,7 +216,7 @@ class Room extends Component {
       if (sender !== this.state.playerName) {
         toast(message, {
           position: "bottom-right",
-          autoClose: 5000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -2303,16 +2303,16 @@ class Room extends Component {
             fontawesome="far fa-meh-blank"
             description={
               <>
-                <button className="button is-small is-white" onClick={() => {this.handleEmoji(1);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(1);}}>
                   😊
                 </button>
-                <button className="button is-small is-white" onClick={() => {this.handleEmoji(2);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(2);}}>
                   😢
                 </button>
-                <button className="button is-small is-white" onClick={() => {this.handleEmoji(3);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(3);}}>
                   🤣
                 </button>
-                <button className="button is-small is-white" onClick={() => {this.handleEmoji(4);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(4);}}>
                   😵
                 </button>
               </>
