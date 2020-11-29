@@ -2437,7 +2437,7 @@ class Room extends Component {
               this.setState({ modalActive: true, backgroundInProgress: true });
             }}
             fontawesome="far fa-image"
-            description="Image changer"
+            description="Image Changer"
           />
           <ButtonDropdown
             buttonClass={
