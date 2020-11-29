@@ -2362,16 +2362,16 @@ class Room extends Component {
             fontawesome="far fa-meh-blank"
             description={
               <>
-                <button className="button is-large is-white" onClick={() => {this.handleEmoji(1);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(1);}}>
                   😊
                 </button>
-                <button className="button is-large is-white" onClick={() => {this.handleEmoji(2);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(2);}}>
                   😢
                 </button>
-                <button className="button is-large is-white" onClick={() => {this.handleEmoji(3);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(3);}}>
                   🤣
                 </button>
-                <button className="button is-large is-white" onClick={() => {this.handleEmoji(4);}}>
+                <button className="button is-medium is-white" onClick={() => {this.handleEmoji(4);}}>
                   😵
                 </button>
               </>
