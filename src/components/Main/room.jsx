@@ -54,6 +54,7 @@ class Room extends Component {
     countdown: false,
     countdown_text: "",
     background_idx: 0,
+    table_idx: 0,
   };
 
   constructor() {
@@ -345,6 +346,13 @@ class Room extends Component {
               <button onClick={() => this.setState({ background_idx : 2 })}>3</button>
               <button onClick={() => this.setState({ background_idx : 3 })}>4</button>
             </div>
+            <text>Choose the table image:</text>
+            <div>
+              <button onClick={() => this.setState({ table_idx : 0 })}>1</button>
+              <button onClick={() => this.setState({ table_idx : 1 })}>2</button>
+              <button onClick={() => this.setState({ table_idx : 2 })}>3</button>
+              <button onClick={() => this.setState({ table_idx : 3 })}>4</button>
+            </div>
           </center>
         </div>
       );
@@ -626,7 +634,7 @@ class Room extends Component {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <Item>
+          <Item imgUrl={this.state.table_idx}>
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
@@ -706,7 +714,7 @@ class Room extends Component {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <Item>
+          <Item imgUrl={this.state.table_idx}>
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
@@ -786,7 +794,7 @@ class Room extends Component {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <Item>
+          <Item imgUrl={this.state.table_idx}>
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
@@ -866,7 +874,7 @@ class Room extends Component {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <Item>
+          <Item imgUrl={this.state.table_idx}>
             <table style={{ width: "100%", height: "100%" }}>
               <tbody>
                 <tr>
@@ -943,7 +951,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints} width="1620">
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -991,7 +999,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1068,7 +1076,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints} width="100">
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1116,7 +1124,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1193,7 +1201,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1241,7 +1249,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1318,7 +1326,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints} width="100">
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1366,7 +1374,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1443,7 +1451,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints} width="100">
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1493,7 +1501,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1568,7 +1576,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1618,7 +1626,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1693,7 +1701,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1743,7 +1751,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1818,7 +1826,7 @@ class Room extends Component {
       return (
         <div>
           <Carousel breakPoints={breakPoints}>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1869,7 +1877,7 @@ class Room extends Component {
                 </tbody>
               </table>
             </Item>
-            <Item>
+            <Item imgUrl={this.state.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
                   <tr>
@@ -1948,7 +1956,7 @@ class Room extends Component {
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <Item>
+              <Item imgUrl={this.state.table_idx}>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
                     <tr>
@@ -2001,7 +2009,7 @@ class Room extends Component {
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <Item>
+              <Item imgUrl={this.state.table_idx}>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
                     <tr>
@@ -2060,7 +2068,7 @@ class Room extends Component {
         else
           return (
             <Carousel breakPoints={breakPoints} width="100">
-              <Item>
+              <Item imgUrl={this.state.table_idx}>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
                     <tr>
@@ -2098,7 +2106,7 @@ class Room extends Component {
                   </tbody>
                 </table>
               </Item>
-              <Item>
+              <Item imgUrl={this.state.table_idx}>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
                     <tr>
@@ -2143,7 +2151,7 @@ class Room extends Component {
         else
           return (
             <Carousel breakPoints={breakPoints} width="100">
-              <Item>
+              <Item imgUrl={this.state.table_idx}>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
                     <tr>
@@ -2193,7 +2201,7 @@ class Room extends Component {
                   </tbody>
                 </table>
               </Item>
-              <Item>
+              <Item imgUrl={this.state.table_idx}>
                 <table style={{ width: "100%", height: "100%" }}>
                   <tbody>
                     <tr>
@@ -2429,7 +2437,7 @@ class Room extends Component {
               this.setState({ modalActive: true, backgroundInProgress: true });
             }}
             fontawesome="far fa-image"
-            description="Change background image"
+            description="Image changer"
           />
           <ButtonDropdown
             buttonClass={

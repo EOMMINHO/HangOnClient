@@ -3,7 +3,10 @@ import ImgBg0 from "./Bar.png";
 import ImgBg1 from "./Club.jpg";
 import ImgBg2 from "./LS.jpeg";
 import ImgBg3 from "./Window.jpeg";
-import table from "./table.png";
+import table0 from "./table1.png";
+import table1 from "./table2.png";
+import table2 from "./table3.png";
+import table3 from "./table4.png";
 /*
 import { Container, Row, Col } from 'react-awesome-styled-grid';
 import { MdClose } from 'react-icons/md';
@@ -12,7 +15,6 @@ import { MdClose } from 'react-icons/md';
 export const MainContainer = styled.div`
   background: ${props => `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url(${
-      //props.imgUrl ? ImgBg2 : ImgBg1
       {
         0 : ImgBg0,
         1 : ImgBg1,
@@ -28,7 +30,16 @@ export const MainContainer = styled.div`
 
 export const Item = styled.div`
   display: flex;
-  background: url(${table});
+  background: ${props =>
+    `url(${
+      {
+        0 : table0,
+        1 : table1,
+        2 : table2,
+        3 : table3
+      }[props.imgUrl]
+    })`
+  };
   background-repeat: no-repeat;
   background-position: center;
   justify-content: flex;
