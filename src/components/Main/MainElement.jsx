@@ -1,5 +1,8 @@
 import styled from "styled-components";
-import ImgBg from "./Bar.png";
+import ImgBg0 from "./Bar.png";
+import ImgBg1 from "./Club.jpg";
+import ImgBg2 from "./LS.jpeg";
+import ImgBg3 from "./Window.jpeg";
 import table from "./table.png";
 /*
 import { Container, Row, Col } from 'react-awesome-styled-grid';
@@ -7,8 +10,17 @@ import { MdClose } from 'react-icons/md';
 */
 
 export const MainContainer = styled.div`
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url(${ImgBg});
+  background: ${props => `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url(${
+      //props.imgUrl ? ImgBg2 : ImgBg1
+      {
+        0 : ImgBg0,
+        1 : ImgBg1,
+        2 : ImgBg2,
+        3 : ImgBg3
+      }[props.imgUrl]
+    })`
+  };
   height: 100vh;
   background-position: center;
   background-size: cover;

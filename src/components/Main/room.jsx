@@ -53,6 +53,7 @@ class Room extends Component {
     items: [],
     countdown: false,
     countdown_text: "",
+    background_idx: 0,
   };
 
   constructor() {
@@ -313,21 +314,38 @@ class Room extends Component {
     if (this.state.swapInProgress) {
       return (
         <div>
-          <div className="field">
-            {Object.keys(this.state.participants).map((userName) => {
-              if (userName !== this.state.playerName) {
-                return (
-                  <button
-                    className="button"
-                    textvariable={userName}
-                    onClick={() => this.handleSwapClick(userName)}
-                  >
-                    {userName}
-                  </button>
-                );
-              } else return null;
-            })}
-          </div>
+          <center>
+            <text>Choose the person to change seats with:</text>
+            <div className="field">
+              {Object.keys(this.state.participants).map((userName) => {
+                if (userName !== this.state.playerName) {
+                  return (
+                    <button
+                      className="button"
+                      textvariable={userName}
+                      onClick={() => this.handleSwapClick(userName)}
+                    >
+                      {userName}
+                    </button>
+                  );
+                } else return null;
+              })}
+            </div>
+          </center>
+        </div>
+      );
+    } else if (this.state.backgroundInProgress) {
+      return (
+        <div>
+          <center>
+            <text>Choose the background image:</text>
+            <div>
+              <button onClick={() => this.setState({ background_idx : 0 })}>1</button>
+              <button onClick={() => this.setState({ background_idx : 1 })}>2</button>
+              <button onClick={() => this.setState({ background_idx : 2 })}>3</button>
+              <button onClick={() => this.setState({ background_idx : 3 })}>4</button>
+            </div>
+          </center>
         </div>
       );
     } else return null;
@@ -468,9 +486,30 @@ class Room extends Component {
     );
   }
 
-  handleFullScreen() {
-    this.setState({ full_screen: true });
-    this.fullscreen();
+  handleFullScreen() { // to support several browsers
+    var docElm = document.documentElement;
+    if (!this.state.full_screen) {
+      if (docElm.requestFullscreen) {
+          docElm.requestFullscreen();
+      } else if (docElm.mozRequestFullScreen) {
+          docElm.mozRequestFullScreen();
+      } else if (docElm.webkitRequestFullScreen) {
+          docElm.webkitRequestFullScreen();
+      } else if (docElm.msRequestFullscreen) {
+          docElm.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+          document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+      }
+    }
+    this.setState({ full_screen : !this.state.full_screen });
   }
 
   toastIfVisible(newText) {
@@ -484,13 +523,6 @@ class Room extends Component {
         draggable: true,
         progress: undefined,
       });
-    }
-  }
-
-  fullscreen() {
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
     }
   }
 
@@ -2219,7 +2251,7 @@ class Room extends Component {
 
   render() {
     return (
-      <MainContainer>
+      <MainContainer imgUrl={this.state.background_idx}>
         <div className={this.state.modalActive ? "modal is-active" : "modal"}>
           <div className="modal-background"></div>
           <div className="modal-content box">{this.getModalContent()}</div>
@@ -2393,6 +2425,18 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
+            handler={() => {
+              this.setState({ modalActive: true, backgroundInProgress: true });
+            }}
+            fontawesome="far fa-image"
+            description="Change background image"
+          />
+          <ButtonDropdown
+            buttonClass={
+              this.state.full_screen
+                ? "button is-large is-black"
+                : "button is-large is-white"
+            }
             handler={this.handleFullScreen}
             fontawesome="fas fa-expand"
             description="Full Screen"
