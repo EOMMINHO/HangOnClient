@@ -2314,10 +2314,12 @@ class Room extends Component {
                 return alert("cannot get attention when solo");
               }
               this.start();
-              this.socket.emit(
-                "attention",
-                this.state.playerName,
-                this.state.roomName
+              new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>{
+                this.socket.emit(
+                  "attention",
+                  this.state.playerName,
+                  this.state.roomName
+                )}
               );
             }}
             fontawesome="fas fa-bullhorn"
