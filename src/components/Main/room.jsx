@@ -12,6 +12,7 @@ import Carousel from "react-elastic-carousel";
 import { Move1, Move2, Move3, Move4 } from "./Clink";
 import Draggable from "react-draggable";
 import MySpotlight from "./MySpotlight";
+import Spotlight from 'react-spotlight';
 
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
@@ -50,7 +51,8 @@ class Room extends Component {
       "https://www.youtube.com/watch?v=k7YzgZf-V5U&t=250s&ab_channel=%EC%86%8C%EB%A6%AC%EC%97%B0%EA%B5%AC%EC%86%8C-S.LAB",
     youtubeLinkInput: null,
     items: [],
-    lockScroll: false,
+    countdown: false,
+    countdown_text: "",
   };
 
   constructor() {
@@ -146,10 +148,11 @@ class Room extends Component {
           draggable: true,
           progress: undefined,
         });
-        await delay(600);
+        await delay(700);
         this.clinkSoud.play();
       }
     });
+
     this.socket.on(
       "attentionResponse",
       (isSuccess, playerName, participants) => {
@@ -194,6 +197,37 @@ class Room extends Component {
     });
     this.socket.on("seatShuffleResponse", (participants) => {
       this.setState({ participants: participants });
+    });
+    this.socket.on("emojiResponse", (sender, num) => {
+      var message;
+      switch(num) {
+        case 1:
+          message = sender + ': 😊';
+          break;
+        case 2:
+          message = sender + ': 😢';
+          break;
+        case 3:
+          message = sender + ': 🤣';
+          break;
+        case 4:
+          message = sender + ': 😵';
+          break;
+        default:
+          break;
+      }
+      if (sender !== this.state.playerName) {
+        toast(message, {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+
     });
     this.socket.on("youtube link", (youtubelink) => {
       this.setState({ youtubeLink: youtubelink });
@@ -245,6 +279,7 @@ class Room extends Component {
     this.handleFullScreen = this.handleFullScreen.bind(this);
     this.handleAttention = this.handleAttention.bind(this);
     this.handleChat = this.handleChat.bind(this);
+    this.start = this.start.bind(this);
   }
 
   componentDidUpdate(prevState) {
@@ -314,6 +349,10 @@ class Room extends Component {
         this.chatBoardRef.current.value + `${newmsg}\n`;
       this.chatBoardRef.current.scrollTop = this.chatBoardRef.current.scrollHeight;
     }
+  }
+
+  handleEmoji(num) {
+    this.socket.emit("emoji", this.state.playerName, this.state.roomName, num);
   }
 
   handleSwapClick(swap_target) {
@@ -485,6 +524,54 @@ class Room extends Component {
         );
       }
     }
+  }
+
+  start() {
+    this.setStatePromise({ countdown_text: 3, countdown: true })
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 2 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 1 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown: false }));
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  setStatePromise(state) {
+    this.setState(state);
+    return Promise.resolve();
+  }
+
+  countdown_3(){
+    return (
+      <div>
+        {this.state.countdown && (
+        <Spotlight
+            x={50}
+            y={50}
+            radius={0}
+            color="#000000"
+            usePercentage
+            borderColor="#ffffff"
+            borderWidth={185}
+        >
+            <div style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: "200px",
+                color: "#000000"
+            }}>
+                <div>{this.state.countdown_text}</div>
+            </div>
+        </Spotlight>
+        )}
+      </div>
+    );
   }
 
   set_4_table() {
@@ -2155,7 +2242,7 @@ class Room extends Component {
         />
         <div>
           <CopyText roomName={this.state.roomName} />
-          <div>{this.settable()}</div>
+          <div>{this.settable()}{this.countdown_3()}</div>
           <div className="has-text-centered mt-2" position="absolute">
             <div className="columns">
               <div className="column is-3 mx-4">
@@ -2181,17 +2268,18 @@ class Room extends Component {
           playerName={this.state.playerName}
           handleAttention={this.handleAttention}
         />
+        
         <MenuBar>
           <ButtonDropdown
             buttonClass={this.getVideoButtonClass()}
             handler={this.handleVideo}
-            fontawesome="fas fa-video-slash"
+            fontawesome="fas fa-video"
             description={this.state.videoOn ? "Video Off" : "Video On"}
           />
           <ButtonDropdown
             buttonClass={this.getAudioButtonClass()}
             handler={this.handleAudio}
-            fontawesome="fas fa-microphone-slash"
+            fontawesome="fas fa-microphone"
             description={this.state.audioOn ? "Audio Off" : "Audio On"}
           />
           <ButtonDropdown
@@ -2202,18 +2290,30 @@ class Room extends Component {
                 : "button is-large is-white"
             }
             handler={() => {
-              this.socket.emit(
-                "clink",
-                this.state.playerName,
-                this.state.roomName
+              if (Object.keys(this.state.participants).length === 1) {
+                return alert("cannot toast when solo");
+              }
+              this.start();
+              new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>{
+                this.socket.emit(
+                  "clink",
+                  this.state.playerName,
+                  this.state.roomName
+                )}
               );
+              
+              
             }}
             fontawesome="fas fa-glass-cheers"
-            description="Clink"
+            description="Clink!"
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
             handler={() => {
+              if (Object.keys(this.state.participants).length === 1) {
+                return alert("cannot get attention when solo");
+              }
+              this.start();
               this.socket.emit(
                 "attention",
                 this.state.playerName,
@@ -2256,6 +2356,26 @@ class Room extends Component {
             }}
             fontawesome="fas fa-comments"
             description="Chat"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            fontawesome="far fa-meh-blank"
+            description={
+              <>
+                <button className="button is-large is-white" onClick={() => {this.handleEmoji(1);}}>
+                  😊
+                </button>
+                <button className="button is-large is-white" onClick={() => {this.handleEmoji(2);}}>
+                  😢
+                </button>
+                <button className="button is-large is-white" onClick={() => {this.handleEmoji(3);}}>
+                  🤣
+                </button>
+                <button className="button is-large is-white" onClick={() => {this.handleEmoji(4);}}>
+                  😵
+                </button>
+              </>
+            }
           />
           <ButtonDropdown
             buttonClass={
