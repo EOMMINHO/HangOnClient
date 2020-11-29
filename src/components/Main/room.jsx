@@ -139,7 +139,6 @@ class Room extends Component {
     });
     this.socket.on("clinkResponse", async (isSuccess, playerName) => {
       if (isSuccess) {
-        this.setState({ clinkInProgress: true });
         console.log(`${playerName} has requested to clink`);
         toast.info(`🚀 ${playerName} has requested to clink!`, {
           position: "top-right",
@@ -150,35 +149,42 @@ class Room extends Component {
           draggable: true,
           progress: undefined,
         });
-        await delay(700);
+        this.start();
+        new Promise((resolve) => setTimeout(resolve, 3200)).then(() =>{
+        this.setState({ clinkInProgress: true });
+      })
+      new Promise((resolve) => setTimeout(resolve, 3900)).then(() => {
         this.clinkSoud.play();
-      }
-    });
+      })
+    }
+  });
 
     this.socket.on(
       "attentionResponse",
       (isSuccess, playerName, participants) => {
         if (isSuccess) {
-          if (this.state.attentionInProgress) {
-            this.setState({
-              attentionInProgress: false,
-              participants: participants,
-            });
-          } else {
-            this.setState({
-              attentionInProgress: true,
-              participants: participants,
-            });
-            toast.info(`🚀 ${playerName} has requested to get attention!`, {
-              position: "top-right",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
+          toast.info(`🚀 ${playerName} has requested to get attention!`, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          this.start();
+          new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>{
+            if (this.state.attentionInProgress) {
+              this.setState({
+                attentionInProgress: false,
+                participants: participants,
+              });
+            } else {
+              this.setState({
+                attentionInProgress: true,
+                participants: participants,
+              });
+          }})
         } else {
           this.setState({
             attentionInProgress: false,
@@ -2332,17 +2338,12 @@ class Room extends Component {
             handler={() => {
               if (Object.keys(this.state.participants).length === 1) {
                 return alert("cannot toast when solo");
-              }
-              this.start();
-              new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>{
-                this.socket.emit(
-                  "clink",
-                  this.state.playerName,
-                  this.state.roomName
-                )}
-              );
-              
-              
+              }            
+              this.socket.emit(
+                "clink",
+                this.state.playerName,
+                this.state.roomName
+              )          
             }}
             fontawesome="fas fa-glass-cheers"
             description="Clink!"
@@ -2353,14 +2354,11 @@ class Room extends Component {
               if (Object.keys(this.state.participants).length === 1) {
                 return alert("cannot get attention when solo");
               }
-              this.start();
-              new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>{
-                this.socket.emit(
-                  "attention",
-                  this.state.playerName,
-                  this.state.roomName
-                )}
-              );
+              this.socket.emit(
+                "attention",
+                this.state.playerName,
+                this.state.roomName
+              )
             }}
             fontawesome="fas fa-bullhorn"
             description="Attention"
