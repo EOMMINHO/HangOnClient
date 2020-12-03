@@ -5,7 +5,7 @@ import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
 import VideoDropdown from "./VideoDropdown";
-import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
+import { MainContainer, MenuBar, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Draggable from "react-draggable";
@@ -892,65 +892,63 @@ class Room extends Component {
   settable() {
     if (Object.keys(this.state.participants).length < 5) {
       if (this.state.clinkInProgress) {
-        if (this.state.attentionInProgress) {
-          return this.set_4_table();
-        } else
-          return (
-            <ClinkFour
-              participants = {this.state.participants}
-              playerName = {this.state.playerName}
-              localVideoRef = {this.state.localVideoRef}
-              stream = {this.stream}
-              videoRefs = {this.videoRefs}
-              peerStreams = {this.peerStreams}
-              table_idx = {this.state.table_idx}
-            />
-          );
-      } else {
-        if (this.state.attentionInProgress) {
-          return this.set_4_table();
-        } else
-          return (
-            <FourTable
-              participants = {this.state.participants}
-              playerName = {this.state.playerName}
-              localVideoRef = {this.state.localVideoRef}
-              stream = {this.stream}
-              videoRefs = {this.videoRefs}
-              peerStreams = {this.peerStreams}
-              table_idx = {this.state.table_idx}
-            />
-          );
+        return (
+          <ClinkFour
+            participants = {this.state.participants}
+            playerName = {this.state.playerName}
+            localVideoRef = {this.state.localVideoRef}
+            stream = {this.stream}
+            videoRefs = {this.videoRefs}
+            peerStreams = {this.peerStreams}
+            table_idx = {this.state.table_idx}
+          />
+        );
+      } 
+      else if (this.state.attentionInProgress){
+        return this.set_4_table();
       }
-    } else {
+      else{
+        return (
+          <FourTable
+            participants = {this.state.participants}
+            playerName = {this.state.playerName}
+            localVideoRef = {this.state.localVideoRef}
+            stream = {this.stream}
+            videoRefs = {this.videoRefs}
+            peerStreams = {this.peerStreams}
+            table_idx = {this.state.table_idx}
+          />
+        );
+      }
+    } 
+    else {
       if (this.state.clinkInProgress) {
-        if (this.state.attentionInProgress) return this.set_8_table();
-        else
-          return (
-            <ClinkEight
-              participants = {this.state.participants}
-              playerName = {this.state.playerName}
-              localVideoRef = {this.state.localVideoRef}
-              stream = {this.stream}
-              videoRefs = {this.videoRefs}
-              peerStreams = {this.peerStreams}
-              table_idx = {this.state.table_idx}
-            />
-          );
-      } else {
-        if (this.state.attentionInProgress) return this.set_8_table();
-        else
-          return (
-            <EightTable
-              participants = {this.state.participants}
-              playerName = {this.state.playerName}
-              localVideoRef = {this.state.localVideoRef}
-              stream = {this.stream}
-              videoRefs = {this.videoRefs}
-              peerStreams = {this.peerStreams}
-              table_idx = {this.state.table_idx}
-            />
-          );
+        return (
+          <ClinkEight
+            participants = {this.state.participants}
+            playerName = {this.state.playerName}
+            localVideoRef = {this.state.localVideoRef}
+            stream = {this.stream}
+            videoRefs = {this.videoRefs}
+            peerStreams = {this.peerStreams}
+            table_idx = {this.state.table_idx}
+          />
+        );
+      }
+      else if (this.state.attentionInProgress) 
+        return this.set_8_table();
+      else {
+        return (
+          <EightTable
+            participants = {this.state.participants}
+            playerName = {this.state.playerName}
+            localVideoRef = {this.state.localVideoRef}
+            stream = {this.stream}
+            videoRefs = {this.videoRefs}
+            peerStreams = {this.peerStreams}
+            table_idx = {this.state.table_idx}
+          />
+        );
       }
     }
   }
