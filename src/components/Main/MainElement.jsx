@@ -52,7 +52,7 @@ export const Item = styled.div`
 `;
 
 export const MenuBar = styled.div`
-  width: 700px;
+  width: 800px;
   height: 80px;
   position: center;
   background: #fff;

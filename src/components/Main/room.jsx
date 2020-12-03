@@ -8,20 +8,30 @@ import VideoDropdown from "./VideoDropdown";
 import { MainContainer, MenuBar, Item, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Carousel from "react-elastic-carousel";
-import { Move1, Move2, Move3, Move4 } from "./Clink";
 import Draggable from "react-draggable";
 import MySpotlight from "./MySpotlight";
 import Spotlight from 'react-spotlight';
+import FourTable from "./Four_Table";
+import ClinkFour from "./Clink_Four";
+import EightTable from "./Eight_Table";
+import ClinkEight from "./Clink_Eight";
+import PartOne from "./Attention_Four/Part_One";
+import PartTwo from "./Attention_Four/Part_Two";
+import PartFour from "./Attention_Four/Part_Four";
+import PartThree from "./Attention_Four/Part_Three";
+import Part1 from "./Attention_Eight/Part1";
+import Part2 from "./Attention_Eight/Part2";
+import Part3 from "./Attention_Eight/Part3";
+import Part4 from "./Attention_Eight/Part4";
+import Part5 from "./Attention_Eight/Part5";
+import Part6 from "./Attention_Eight/Part6";
+import Part7 from "./Attention_Eight/Part7";
+import Part8 from "./Attention_Eight/Part8";
 
 const Util = require("../../utils/utils");
 const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
 const { Howl } = require("howler");
-const breakPoints = [
-  { width: 1, itemsToShow: 1 },
-  { width: 1320, itemsToShow: 2 },
-];
 
 class Room extends Component {
   socket;
@@ -55,6 +65,7 @@ class Room extends Component {
     countdown_text: "",
     background_idx: 0,
     table_idx: 0,
+    icebreak: false
   };
 
   constructor() {
@@ -632,74 +643,15 @@ class Room extends Component {
         .includes(1)
     )
       return (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Item imgUrl={this.state.table_idx}>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "fixed",
-                      marginLeft: "50%",
-                      marginTop: "6%",
-                    }}
-                  ></td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "fixed",
-                      marginLeft: "50%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(3)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      bottom: "8.8%",
-                    }}
-                  >
-                    {this.get_video(2)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      bottom: "8.8%",
-                      marginLeft: "50%",
-                    }}
-                  >
-                    {this.get_video(4)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                marginLeft: "-150px",
-                marginTop: "-85px",
-              }}
-            >
-              {this.get_video(1)}
-            </div>
-          </Item>
-        </div>
+        <PartOne
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -712,74 +664,15 @@ class Room extends Component {
         .includes(2)
     )
       return (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Item imgUrl={this.state.table_idx}>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(1)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "fixed",
-                      marginLeft: "50%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(3)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      bottom: "8.8%",
-                    }}
-                  ></td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      bottom: "8.8%",
-                      marginLeft: "50%",
-                    }}
-                  >
-                    {this.get_video(4)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                marginLeft: "-150px",
-                marginTop: "-85px",
-              }}
-            >
-              {this.get_video(2)}
-            </div>
-          </Item>
-        </div>
+        <PartTwo
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -792,74 +685,15 @@ class Room extends Component {
         .includes(3)
     )
       return (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Item imgUrl={this.state.table_idx}>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(1)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "50%",
-                      marginTop: "6%",
-                    }}
-                  ></td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      bottom: "8.8%",
-                    }}
-                  >
-                    {this.get_video(2)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      bottom: "8.8%",
-                      marginLeft: "50%",
-                    }}
-                  >
-                    {this.get_video(4)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                marginLeft: "-150px",
-                marginTop: "-85px",
-              }}
-            >
-              {this.get_video(3)}
-            </div>
-          </Item>
-        </div>
+        <PartThree
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -872,74 +706,15 @@ class Room extends Component {
         .includes(4)
     )
       return (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Item imgUrl={this.state.table_idx}>
-            <table style={{ width: "100%", height: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(1)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "50%",
-                      marginTop: "6%",
-                    }}
-                  >
-                    {this.get_video(3)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      marginLeft: "16%",
-                      bottom: "8.8%",
-                    }}
-                  >
-                    {this.get_video(2)}
-                  </td>
-                  <td
-                    style={{
-                      width: "50%",
-                      position: "absolute",
-                      bottom: "8.8%",
-                      marginLeft: "50%",
-                    }}
-                  ></td>
-                </tr>
-              </tbody>
-            </table>
-            <div
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                marginLeft: "-150px",
-                marginTop: "-85px",
-              }}
-            >
-              {this.get_video(4)}
-            </div>
-          </Item>
-        </div>
+        <PartFour
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
   }
 
@@ -955,119 +730,15 @@ class Room extends Component {
         .includes(1)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints} width="1620">
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(1)}
-          </div>
-        </div>
+        <Part1
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1080,119 +751,15 @@ class Room extends Component {
         .includes(2)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints} width="100">
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(2)}
-          </div>
-        </div>
+        <Part2
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1205,119 +772,15 @@ class Room extends Component {
         .includes(3)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints}>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    ></td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(3)}
-          </div>
-        </div>
+        <Part3
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1330,119 +793,15 @@ class Room extends Component {
         .includes(4)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints} width="100">
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "fixed",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    ></td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(4)}
-          </div>
-        </div>
+        <Part4
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1455,119 +814,15 @@ class Room extends Component {
         .includes(5)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints} width="100">
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(5)}
-          </div>
-        </div>
+        <Part5
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1580,119 +835,15 @@ class Room extends Component {
         .includes(6)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints}>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(6)}
-          </div>
-        </div>
+        <Part6
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1705,119 +856,15 @@ class Room extends Component {
         .includes(7)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints}>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    ></td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(8)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(7)}
-          </div>
-        </div>
+        <Part7
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
     if (
       Object.keys(this.state.participants)
@@ -1830,120 +877,15 @@ class Room extends Component {
         .includes(8)
     )
       return (
-        <div>
-          <Carousel breakPoints={breakPoints}>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(1)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(2)}
-                    </td>
-
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(4)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-            <Item imgUrl={this.state.table_idx}>
-              <table style={{ width: "100%", height: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(5)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "3.8%",
-                      }}
-                    >
-                      {this.get_video(7)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    >
-                      {this.get_video(6)}
-                    </td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
-                        marginTop: "9.5%",
-                      }}
-                    ></td>
-                  </tr>
-                </tbody>
-              </table>
-            </Item>
-          </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(8)}
-          </div>
-        </div>
+        <Part8
+          participants = {this.state.participants}
+          playerName = {this.state.playerName}
+          localVideoRef = {this.state.localVideoRef}
+          stream = {this.stream}
+          videoRefs = {this.videoRefs}
+          peerStreams = {this.peerStreams}
+          table_idx = {this.state.table_idx}
+        />
       );
   }
 
@@ -1954,118 +896,30 @@ class Room extends Component {
           return this.set_4_table();
         } else
           return (
-            <div
-              style={{
-                position: "fixed",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <Item imgUrl={this.state.table_idx}>
-                <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <Move1
-                        width="50%"
-                        position="absolute"
-                        marginLeft="16%"
-                        marginTop="6%"
-                        contents={this.get_video(1)}
-                      ></Move1>
-                      <Move1
-                        width="50%"
-                        position="absolute"
-                        marginLeft="0%"
-                        marginTop="6%"
-                        contents={this.get_video(3)}
-                      ></Move1>
-                    </tr>
-                    <tr>
-                      <Move2
-                        width="50%"
-                        position="absolute"
-                        marginLeft="16%"
-                        bottom="8.8%"
-                        contents={this.get_video(2)}
-                      ></Move2>
-                      <Move2
-                        width="50%"
-                        position="absolute"
-                        marginLeft="0%"
-                        bottom="8.8%"
-                        contents={this.get_video(4)}
-                      ></Move2>
-                    </tr>
-                  </tbody>
-                </table>
-              </Item>
-            </div>
+            <ClinkFour
+              participants = {this.state.participants}
+              playerName = {this.state.playerName}
+              localVideoRef = {this.state.localVideoRef}
+              stream = {this.stream}
+              videoRefs = {this.videoRefs}
+              peerStreams = {this.peerStreams}
+              table_idx = {this.state.table_idx}
+            />
           );
       } else {
         if (this.state.attentionInProgress) {
           return this.set_4_table();
         } else
           return (
-            <div
-              style={{
-                position: "fixed",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <Item imgUrl={this.state.table_idx}>
-                <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "50%",
-                          marginTop: "6%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "16%",
-                          bottom: "8.8%",
-                        }}
-                      >
-                        {this.get_video(2)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          bottom: "8.8%",
-                          marginLeft: "50%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </Item>
-            </div>
+            <FourTable
+              participants = {this.state.participants}
+              playerName = {this.state.playerName}
+              localVideoRef = {this.state.localVideoRef}
+              stream = {this.stream}
+              videoRefs = {this.videoRefs}
+              peerStreams = {this.peerStreams}
+              table_idx = {this.state.table_idx}
+            />
           );
       }
     } else {
@@ -2073,191 +927,29 @@ class Room extends Component {
         if (this.state.attentionInProgress) return this.set_8_table();
         else
           return (
-            <Carousel breakPoints={breakPoints} width="100">
-              <Item imgUrl={this.state.table_idx}>
-                <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <Move3
-                        width="50%"
-                        position="absolute"
-                        marginLeft="1.5%"
-                        marginTop="3.8%"
-                        contents={this.get_video(1)}
-                      ></Move3>
-                      <Move3
-                        width="50%"
-                        position="absolute"
-                        marginLeft="0.8%"
-                        marginTop="3.8%"
-                        contents={this.get_video(3)}
-                      ></Move3>
-                    </tr>
-                    <tr>
-                      <Move4
-                        width="50%"
-                        position="absolute"
-                        marginLeft="1.5%"
-                        marginTop="9.5%"
-                        contents={this.get_video(2)}
-                      ></Move4>
-                      <Move4
-                        width="50%"
-                        position="absolute"
-                        marginLeft="0.8%"
-                        marginTop="9.5%"
-                        contents={this.get_video(4)}
-                      ></Move4>
-                    </tr>
-                  </tbody>
-                </table>
-              </Item>
-              <Item imgUrl={this.state.table_idx}>
-                <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <Move3
-                        width="50%"
-                        position="absolute"
-                        marginLeft="1.5%"
-                        marginTop="3.8%"
-                        contents={this.get_video(5)}
-                      ></Move3>
-                      <Move3
-                        width="50%"
-                        position="absolute"
-                        marginLeft="0.8%"
-                        marginTop="3.8%"
-                        contents={this.get_video(7)}
-                      ></Move3>
-                    </tr>
-                    <tr>
-                      <Move4
-                        width="50%"
-                        position="absolute"
-                        marginLeft="1.5%"
-                        marginTop="9.5%"
-                        contents={this.get_video(6)}
-                      ></Move4>
-                      <Move4
-                        width="50%"
-                        position="absolute"
-                        marginLeft="0.8%"
-                        marginTop="9.5%"
-                        contents={this.get_video(8)}
-                      ></Move4>
-                    </tr>
-                  </tbody>
-                </table>
-              </Item>
-            </Carousel>
+            <ClinkEight
+              participants = {this.state.participants}
+              playerName = {this.state.playerName}
+              localVideoRef = {this.state.localVideoRef}
+              stream = {this.stream}
+              videoRefs = {this.videoRefs}
+              peerStreams = {this.peerStreams}
+              table_idx = {this.state.table_idx}
+            />
           );
       } else {
         if (this.state.attentionInProgress) return this.set_8_table();
         else
           return (
-            <Carousel breakPoints={breakPoints} width="100">
-              <Item imgUrl={this.state.table_idx}>
-                <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "1.5%",
-                          marginTop: "3.8%",
-                        }}
-                      >
-                        {this.get_video(1)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "25%",
-                          marginTop: "3.8%",
-                        }}
-                      >
-                        {this.get_video(3)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "1.5%",
-                          marginTop: "9.5%",
-                        }}
-                      >
-                        {this.get_video(2)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "25%",
-                          marginTop: "9.5%",
-                        }}
-                      >
-                        {this.get_video(4)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </Item>
-              <Item imgUrl={this.state.table_idx}>
-                <table style={{ width: "100%", height: "100%" }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "1.5%",
-                          marginTop: "3.8%",
-                        }}
-                      >
-                        {this.get_video(5)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "25%",
-                          marginTop: "3.8%",
-                        }}
-                      >
-                        {this.get_video(7)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "1.5%",
-                          marginTop: "9.5%",
-                        }}
-                      >
-                        {this.get_video(6)}
-                      </td>
-                      <td
-                        style={{
-                          width: "50%",
-                          position: "absolute",
-                          marginLeft: "25%",
-                          marginTop: "9.5%",
-                        }}
-                      >
-                        {this.get_video(8)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </Item>
-            </Carousel>
+            <EightTable
+              participants = {this.state.participants}
+              playerName = {this.state.playerName}
+              localVideoRef = {this.state.localVideoRef}
+              stream = {this.stream}
+              videoRefs = {this.videoRefs}
+              peerStreams = {this.peerStreams}
+              table_idx = {this.state.table_idx}
+            />
           );
       }
     }
@@ -2428,6 +1120,13 @@ class Room extends Component {
             }}
             fontawesome="fab fa-youtube"
             description="Share Video"
+          />
+          <ButtonDropdown
+            buttonClass="button is-large is-white"
+            handler={() => {
+              this.setState({icebreak: true})}}
+            fontawesome="fas fa-users"
+            description="Icebreak"
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
