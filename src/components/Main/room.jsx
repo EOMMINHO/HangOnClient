@@ -4,7 +4,6 @@ import { io } from "socket.io-client";
 import ButtonDropdown from "./ButtonDropdown";
 import Chat from "./Chat";
 import CopyText from "./CopyText";
-import VideoDropdown from "./VideoDropdown";
 import { MainContainer, MenuBar, Youtube } from "./MainElement";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,9 +26,10 @@ import Part5 from "./Attention_Eight/Part5";
 import Part6 from "./Attention_Eight/Part6";
 import Part7 from "./Attention_Eight/Part7";
 import Part8 from "./Attention_Eight/Part8";
+import IceMain from "./IceBreak/IceMain";
+import IceMain8 from "./IceBreak/IceMain_8";
 
 const Util = require("../../utils/utils");
-const { getNamebyNumber } = require("../../utils/utils");
 const delay = require("delay");
 const { Howl } = require("howler");
 
@@ -65,7 +65,15 @@ class Room extends Component {
     countdown_text: "",
     background_idx: 0,
     table_idx: 0,
-    icebreak: false
+    icebreak: false,
+    user1: false,
+    user2: false,
+    user3: false,
+    user4: false,
+    user5: false,
+    user6: false,
+    user7: false,
+    user8: false,
   };
 
   constructor() {
@@ -246,7 +254,21 @@ class Room extends Component {
           progress: undefined,
         });
       }
-
+    });
+    this.socket.on("icebreakResponse", async (playerName) => {
+      toast.info(`🚀 ${playerName} has requested for an icebreak!`, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      this.start();
+      new Promise((resolve) => setTimeout(resolve, 3200)).then(() =>{
+        this.start_icebreak();
+      });
     });
     this.socket.on("youtube link", (youtubelink) => {
       this.setState({ youtubeLink: youtubelink });
@@ -299,6 +321,7 @@ class Room extends Component {
     this.handleAttention = this.handleAttention.bind(this);
     this.handleChat = this.handleChat.bind(this);
     this.start = this.start.bind(this);
+    this.setStatePromise = this.setStatePromise.bind(this);
   }
 
   componentDidUpdate(prevState) {
@@ -551,38 +574,6 @@ class Room extends Component {
     }
   }
 
-  get_video(i) {
-    if (Object.keys(this.state.participants).length >= i) {
-      if (
-        getNamebyNumber(this.state.participants, i) === this.state.playerName
-      ) {
-        return (
-          <VideoDropdown
-            key={this.state.playerName}
-            myRef={this.localVideoRef}
-            description={this.state.playerName}
-            isUp={i % 2}
-            stream={this.stream}
-            muted={true}
-          />
-        );
-      } else {
-        return (
-          <VideoDropdown
-            key={getNamebyNumber(this.state.participants, i)}
-            myRef={this.videoRefs[getNamebyNumber(this.state.participants, i)]}
-            description={getNamebyNumber(this.state.participants, i)}
-            isUp={i % 2}
-            stream={
-              this.peerStreams[getNamebyNumber(this.state.participants, i)]
-            }
-            muted={false}
-          />
-        );
-      }
-    }
-  }
-
   start() {
     this.setStatePromise({ countdown_text: 3, countdown: true })
       .then(() => this.sleep(1000))
@@ -591,6 +582,68 @@ class Room extends Component {
       .then(() => this.setStatePromise({ countdown_text: 1 }))
       .then(() => this.sleep(1000))
       .then(() => this.setStatePromise({ countdown: false }));
+  }
+
+  start_icebreak() {
+    this.setStatePromise({ user1: true, icebreak: true })
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 1){
+            this.setStatePromise({ icebreak: false, user1: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user1: false, user2: true }))
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 2){
+            this.setStatePromise({ icebreak: false, user2: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user2: false, user3: true }))
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 3){
+            this.setStatePromise({ icebreak: false, user3: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user3: false, user4: true }))
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 4){
+            this.setStatePromise({ icebreak: false, user4: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user4: false, user5: true }))
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 5){
+            this.setStatePromise({ icebreak: false, user5: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user5: false, user6: true }))
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 6){
+            this.setStatePromise({ icebreak: false, user6: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user6: false, user7: true }))
+        .then(() => this.sleep(21000))
+        .then(() => {
+          if (Object.keys(this.state.participants).length === 7){
+            this.setStatePromise({ icebreak: false, user7: false })
+            return;
+          }
+        })
+        .then(() => this.setStatePromise({ user7: false, user8: true }))
+        .then(() => this.sleep(21000))
+        .then(() => this.setStatePromise({ user8: false, icebreak: false }));
   }
 
   sleep(ms) {
@@ -907,6 +960,23 @@ class Room extends Component {
       else if (this.state.attentionInProgress){
         return this.set_4_table();
       }
+      else if (this.state.icebreak){
+        return(
+          <IceMain
+            participants = {this.state.participants}
+            playerName = {this.state.playerName}
+            localVideoRef = {this.state.localVideoRef}
+            stream = {this.stream}
+            videoRefs = {this.videoRefs}
+            peerStreams = {this.peerStreams}
+            table_idx = {this.state.table_idx}
+            user1 = {this.state.user1}
+            user2 = {this.state.user2}
+            user3 = {this.state.user3}
+            user4 = {this.state.user4}
+          />
+        )
+      }
       else{
         return (
           <FourTable
@@ -937,6 +1007,27 @@ class Room extends Component {
       }
       else if (this.state.attentionInProgress) 
         return this.set_8_table();
+      else if (this.state.icebreak){
+        return(
+          <IceMain8
+            participants = {this.state.participants}
+            playerName = {this.state.playerName}
+            localVideoRef = {this.state.localVideoRef}
+            stream = {this.stream}
+            videoRefs = {this.videoRefs}
+            peerStreams = {this.peerStreams}
+            table_idx = {this.state.table_idx}
+            user1 = {this.state.user1}
+            user2 = {this.state.user2}
+            user3 = {this.state.user3}
+            user4 = {this.state.user4}
+            user5 = {this.state.user5}
+            user6 = {this.state.user6}
+            user7 = {this.state.user7}
+            user8 = {this.state.user8}
+          />
+        )
+      }
       else {
         return (
           <EightTable
@@ -1004,7 +1095,12 @@ class Room extends Component {
           playerName={this.state.playerName}
           handleAttention={this.handleAttention}
         />
-        
+        <MySpotlight
+          attentionInProgress={this.state.icebreak}
+          participants={this.state.participants}
+          playerName={this.state.playerName}
+          handleAttention={this.handleAttention}
+        />
         <MenuBar>
           <ButtonDropdown
             buttonClass={this.getVideoButtonClass()}
@@ -1121,8 +1217,9 @@ class Room extends Component {
           />
           <ButtonDropdown
             buttonClass="button is-large is-white"
-            handler={() => {
-              this.setState({icebreak: true})}}
+            handler={() =>{
+              this.socket.emit("icebreak", this.state.playerName, this.state.roomName)
+            }}
             fontawesome="fas fa-users"
             description="Icebreak"
           />

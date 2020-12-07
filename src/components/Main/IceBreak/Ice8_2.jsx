@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { Spot6 } from "./Icebreak";
 import { Item } from "../MainElement";
 import VideoDropdown from "../VideoDropdown";
 import Carousel from "react-elastic-carousel";
-
 const { getNamebyNumber } = require("../../../utils/utils");
 
 const breakPoints = [
@@ -10,7 +10,7 @@ const breakPoints = [
     { width: 1320, itemsToShow: 2 },
   ];
 
-class Part2 extends Component {
+class Ice82 extends Component {
 
     get_video(i) {
         if (Object.keys(this.props.participants).length >= i) {
@@ -45,9 +45,8 @@ class Part2 extends Component {
       }
 
     render(){
-        return (
-            <div>
-          <Carousel breakPoints={breakPoints} width="100" style={{
+        return(
+            <Carousel breakPoints={breakPoints} width="100" style={{
               position: "fixed",
               left: "50%",
               top: "50%",
@@ -79,19 +78,18 @@ class Part2 extends Component {
                     </td>
                   </tr>
                   <tr>
+                    <Spot6
+                      width="50%"
+                      position="absolute"
+                      marginLeft="1.5%"
+                      marginTop="9.5%"
+                      contents={this.get_video(2)}
+                    ></Spot6>
                     <td
                       style={{
                         width: "50%",
                         position: "absolute",
-                        marginLeft: "1.5%",
-                        marginTop: "9.5%",
-                      }}
-                    ></td>
-                    <td
-                      style={{
-                        width: "50%",
-                        position: "absolute",
-                        marginLeft: "25%",
+                        marginLeft: "0%",
                         marginTop: "9.5%",
                       }}
                     >
@@ -152,21 +150,8 @@ class Part2 extends Component {
               </table>
             </Item>
           </Carousel>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              marginLeft: "-150px",
-              marginTop: "-85px",
-            }}
-          >
-            {this.get_video(2)}
-          </div>
-        </div>
         );
-        
     }
 }
 
-export default Part2;
+export default Ice82;

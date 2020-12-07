@@ -47,7 +47,12 @@ class Part1 extends Component {
     render(){
         return (
             <div>
-          <Carousel breakPoints={breakPoints} width="1620">
+          <Carousel breakPoints={breakPoints} width="100%" style={{
+              position: "fixed",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}>
             <Item imgUrl={this.props.table_idx}>
               <table style={{ width: "100%", height: "100%" }}>
                 <tbody>
