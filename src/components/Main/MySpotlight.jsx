@@ -30,7 +30,7 @@ class MySpotlight extends Component {
               It's Your Turn to Say
             </div>):(
             <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
-              Introduce Yourself. You Have 20 Seconds
+              Introduce Yourself. You Have {this.props.countdown_text} Seconds
             </div>)
             }
             

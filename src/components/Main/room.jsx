@@ -322,6 +322,7 @@ class Room extends Component {
     this.handleChat = this.handleChat.bind(this);
     this.start = this.start.bind(this);
     this.setStatePromise = this.setStatePromise.bind(this);
+    this.start_icebreak = this.start_icebreak.bind(this);
   }
 
   componentDidUpdate(prevState) {
@@ -584,66 +585,102 @@ class Room extends Component {
       .then(() => this.setStatePromise({ countdown: false }));
   }
 
-  start_icebreak() {
-    this.setStatePromise({ user1: true, icebreak: true })
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 1){
-            this.setStatePromise({ icebreak: false, user1: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user1: false, user2: true }))
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 2){
-            this.setStatePromise({ icebreak: false, user2: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user2: false, user3: true }))
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 3){
-            this.setStatePromise({ icebreak: false, user3: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user3: false, user4: true }))
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 4){
-            this.setStatePromise({ icebreak: false, user4: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user4: false, user5: true }))
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 5){
-            this.setStatePromise({ icebreak: false, user5: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user5: false, user6: true }))
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 6){
-            this.setStatePromise({ icebreak: false, user6: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user6: false, user7: true }))
-        .then(() => this.sleep(21000))
-        .then(() => {
-          if (Object.keys(this.state.participants).length === 7){
-            this.setStatePromise({ icebreak: false, user7: false })
-            return;
-          }
-        })
-        .then(() => this.setStatePromise({ user7: false, user8: true }))
-        .then(() => this.sleep(21000))
-        .then(() => this.setStatePromise({ user8: false, icebreak: false }));
+  count20() {
+    this.setStatePromise({ countdown_text: 20 })
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 19 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 18 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 17 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 16 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 15 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 14 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 13 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 12 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 11 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 10 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 9 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 8 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 7 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 6 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 5 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 4 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 3 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 2 }))
+      .then(() => this.sleep(1000))
+      .then(() => this.setStatePromise({ countdown_text: 1 }));
+  }
+
+  async start_icebreak() {
+    this.setState({ user1: true, icebreak: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 1){
+      this.setState({ user1: false, icebreak: false });
+      return;
+    }
+    this.setState({ user1: false, user2: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 2){
+      this.setState({ user2: false, icebreak: false });
+      return;
+    }
+    this.setState({ user2: false, user3: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 3){
+      this.setState({ user3: false, icebreak: false });
+      return;
+    }    
+    this.setState({ user3: false, user4: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 4){
+      this.setState({ user4: false, icebreak: false });
+      return;
+    }    
+    this.setState({ user4: false, user5: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 5){
+      this.setState({ user5: false, icebreak: false });
+      return;
+    }
+    this.setState({ user5: false, user6: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 6){
+      this.setState({ user6: false, icebreak: false });
+      return;
+    }
+    this.setState({ user6: false, user7: true});
+    this.count20();
+    await delay(21000);
+    if (Object.keys(this.state.participants).length === 7){
+      this.setState({ user7: false, icebreak: false });
+      return;
+    }
+    this.setState({ user7: false, user8: true});
+    this.count20();
+    await delay(21000);
+    this.setState({ user8: false, icebreak: false});
   }
 
   sleep(ms) {
@@ -1095,6 +1132,7 @@ class Room extends Component {
           participants={this.state.participants}
           playerName={this.state.playerName}
           handleAttention={this.handleAttention}
+          countdown_text = {this.state.countdown_text}
         />
         <MySpotlight
           attentionInProgress={this.state.icebreak}
@@ -1102,6 +1140,7 @@ class Room extends Component {
           attention = {false}
           playerName={this.state.playerName}
           handleAttention={this.handleAttention}
+          countdown_text = {this.state.countdown_text}
         />
         <MenuBar>
           <ButtonDropdown

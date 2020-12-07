@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Spot1, Spot2 } from "./Icebreak";
+import { Spot1 } from "./Icebreak";
 import { Item } from "../MainElement";
 import VideoDropdown from "../VideoDropdown";
 const { getNamebyNumber } = require("../../../utils/utils");
