@@ -28,6 +28,8 @@ class MySpotlight extends Component {
             {this.props.attention ? (
             <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
               It's Your Turn to Say
+              {JSON.stringify(getNamebyAttention(this.props.participants) ===
+          this.props.playerName)}
             </div>):(
             <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
               Introduce Yourself. You Have 20 Seconds
@@ -40,7 +42,7 @@ class MySpotlight extends Component {
             <div
               style={{
                 position: "absolute",
-                left: "100vh",
+                left: "90vh",
                 top: "-25vh",
               }}
             >
