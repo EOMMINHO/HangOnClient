@@ -699,7 +699,7 @@ class Room extends Component {
         <PartOne
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -720,7 +720,7 @@ class Room extends Component {
         <PartTwo
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -741,7 +741,7 @@ class Room extends Component {
         <PartThree
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -762,7 +762,7 @@ class Room extends Component {
         <PartFour
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -786,7 +786,7 @@ class Room extends Component {
         <Part1
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -807,7 +807,7 @@ class Room extends Component {
         <Part2
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -828,7 +828,7 @@ class Room extends Component {
         <Part3
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -849,7 +849,7 @@ class Room extends Component {
         <Part4
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -870,7 +870,7 @@ class Room extends Component {
         <Part5
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -891,7 +891,7 @@ class Room extends Component {
         <Part6
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -912,7 +912,7 @@ class Room extends Component {
         <Part7
           participants = {this.state.participants}
           playerName = {this.state.playerName}
-          localVideoRef = {this.state.localVideoRef}
+          localVideoRef = {this.localVideoRef}
           stream = {this.stream}
           videoRefs = {this.videoRefs}
           peerStreams = {this.peerStreams}
@@ -949,7 +949,7 @@ class Room extends Component {
           <ClinkFour
             participants = {this.state.participants}
             playerName = {this.state.playerName}
-            localVideoRef = {this.state.localVideoRef}
+            localVideoRef = {this.localVideoRef}
             stream = {this.stream}
             videoRefs = {this.videoRefs}
             peerStreams = {this.peerStreams}
@@ -965,7 +965,7 @@ class Room extends Component {
           <IceMain
             participants = {this.state.participants}
             playerName = {this.state.playerName}
-            localVideoRef = {this.state.localVideoRef}
+            localVideoRef = {this.localVideoRef}
             stream = {this.stream}
             videoRefs = {this.videoRefs}
             peerStreams = {this.peerStreams}
@@ -982,7 +982,7 @@ class Room extends Component {
           <FourTable
             participants = {this.state.participants}
             playerName = {this.state.playerName}
-            localVideoRef = {this.state.localVideoRef}
+            localVideoRef = {this.localVideoRef}
             stream = {this.stream}
             videoRefs = {this.videoRefs}
             peerStreams = {this.peerStreams}
@@ -997,7 +997,7 @@ class Room extends Component {
           <ClinkEight
             participants = {this.state.participants}
             playerName = {this.state.playerName}
-            localVideoRef = {this.state.localVideoRef}
+            localVideoRef = {this.localVideoRef}
             stream = {this.stream}
             videoRefs = {this.videoRefs}
             peerStreams = {this.peerStreams}
@@ -1012,7 +1012,7 @@ class Room extends Component {
           <IceMain8
             participants = {this.state.participants}
             playerName = {this.state.playerName}
-            localVideoRef = {this.state.localVideoRef}
+            localVideoRef = {this.localVideoRef}
             stream = {this.stream}
             videoRefs = {this.videoRefs}
             peerStreams = {this.peerStreams}
@@ -1033,7 +1033,7 @@ class Room extends Component {
           <EightTable
             participants = {this.state.participants}
             playerName = {this.state.playerName}
-            localVideoRef = {this.state.localVideoRef}
+            localVideoRef = {this.localVideoRef}
             stream = {this.stream}
             videoRefs = {this.videoRefs}
             peerStreams = {this.peerStreams}
