@@ -25,9 +25,15 @@ class MySpotlight extends Component {
               whiteSpace: "nowrap",
             }}
           >
+            {this.props.attention ? (
             <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
               It's Your Turn to Say
-            </div>
+            </div>):(
+            <div className="has-text-centered has-text-white has-text-weight-medium is-size-3">
+              Introduce Yourself. You Have 20 Seconds
+            </div>)
+            }
+            
           </div>
           {getNamebyAttention(this.props.participants) ===
           this.props.playerName ? (

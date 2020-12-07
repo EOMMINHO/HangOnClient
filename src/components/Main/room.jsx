@@ -1091,6 +1091,7 @@ class Room extends Component {
         </Draggable>
         <MySpotlight
           attentionInProgress={this.state.attentionInProgress}
+          attention = {true}
           participants={this.state.participants}
           playerName={this.state.playerName}
           handleAttention={this.handleAttention}
@@ -1098,6 +1099,7 @@ class Room extends Component {
         <MySpotlight
           attentionInProgress={this.state.icebreak}
           participants={this.state.participants}
+          attention = {false}
           playerName={this.state.playerName}
           handleAttention={this.handleAttention}
         />
